@@ -53,7 +53,6 @@ solve minimize (count(i in 1..T, j in 1..D) ((dias_solicitados[i,j] == 1)/\(sol[
 % Optimization 2
 %solve minimize count(i in 1..T, j in 1..D) (turnos_indeseados[i,j] == sol[i,j]) + max(i in 1..T)(count(j in 1..D) (turnos_indeseados[i,j] == sol[i,j]));
 
-% Output
-output ["Turnos: \n"] ++ [" Trabajador \(i) - Día \(j) Turno \(sol[i,j])\n" | i in 1..T, j in 1..D];
+
  
 
