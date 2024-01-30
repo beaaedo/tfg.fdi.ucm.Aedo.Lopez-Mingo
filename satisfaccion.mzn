@@ -1,58 +1,42 @@
-% Primera practica de PR - Marcos Colombas Garcia y Beatriz Aedo Diaz 
+% Constantes
+set of string: TERM;
+int: s; % init_progr_len
+int: n; % max_sk_sz
+%set of int: ZEROARYOP;
+%array[1..s] of 1..n: zeroout;
+%set of int: UNARYOP;
+%array[1..s] of 1..n: unin;
+%array[1..s] of 1..n: unout;
+set of int: BINARYOP = {2};
+array[1..s] of 1..n: binin1;
+array[1..s] of 1..n: binin2;
+array[1..s] of 1..n: binout;
+set of int: PUSHOP;
+array[1..s] of 1..n: pushout;
 
-%Parámetros
-int: D;
-int: T;
-int: N1; int: N2; int: N3;
-int: MaxDT; int: MinDT; int: MaxDL;
-int: A;
-array[1..T,1..T] of bool: afines;
-set of int: R;
-array[1..T,1..D] of 0..1: dias_solicitados;
-array[1..T,1..D] of 1..4:   turnos_indeseados;
+array[1..n] of 1..n: startstack;
+array[1..n] of 1..n: endstack;
 
-%Variables
-array[1..T,1..D] of var 0..3: sol;
+% Variables
+% matriz n + 1 x s
+array[1..s, 1..n+1] of int: states;
 
-% Constraints assert
-constraint assert( MaxDT <= D, "El número de días máximos trabajados seguidos debe ser mayor o igual que el número de días.");
-constraint assert( MinDT <= D, "El número de días mínimos trabajados debe ser menor o igual que el número de días.");
-constraint assert( A < T, "El numero de trabajadores afines no puede ser igual al numero de trabajadores.");
-constraint assert((forall(i in 1..T) ((sum(j in 1..T) (afines[i,j])) >= A)), "El numero de trabajadores afines en cada turno no puede ser mayor a el numero de trabajadores afines que tiene cada trabajador.");
-constraint assert( (forall (i in 1..T,j in 1..T) (afines[i,j] = afines[j,i])), "La matriz afines debe ser simétrica.");
-constraint assert( (forall (i in 1..T) (afines[i,i] = 0)), "Un trabajador no puede ser afin a si mismo.");
+% Assert
 
-% Constraint 1
-constraint forall (j in 1..D) (count(i in 1..T) (sol[i,j] == 1) = N1);
-constraint forall (j in 1..D) (count(i in 1..T) (sol[i,j] == 2) = N2);
-constraint forall (j in 1..D) (count(i in 1..T) (sol[i,j] == 3) = N3);
+% Constraints
+% Start stack and End stack
+constraint forall (i in 1..n) ((states[1,i+1] == startstack[i])/\(states[s,i+1] == endstack[i]));
 
-% Constraint 2: resuelto con el array sol.
+% Zeroary operations
+%constraint forall (j in ZEROARYOP, i in 1..s where (states[i,1] == j)) (states[i,2] == zeroout[j]);
 
-% Constraint 3 - esta comentado porque tarda mucho en ejecutarse pero funciona
-%constraint forall(i in 1..T,j in 1..(D - MaxDT)) ((count(k in j..j+MaxDT) (sol[i,k] > 0)) <= MaxDT);
+% Unary operations
+%constraint forall (j in UNARYOP, i in 1..s where (states[i,1] == j)) ((states[i - 1,2] == unin[j])/\(states[i,2] == unout[j]));
 
-% Constraint 4 - esta comentado porque tarda mucho en ejecutarse pero funciona
-%constraint forall(i in 1..T,j in 1..(D - MaxDL)) ((count(k in j..j+MaxDL) (sol[i,k] == 0)) <= MaxDL);
+% Binary operations
+constraint forall (j in BINARYOP, i in 1..s where (states[i,1] == j)) ((states[i - 1,2] == binin1[j])/\(states[i - 1,3] == binin2[j])/\(states[i,2] == binout[j]));
 
-% Constraint 5
-constraint forall (i in 1..T) ((count(j in 1..D) (sol[i,j] != 0)) >= MinDT);
+% Push operations
+constraint forall (j in PUSHOP, i in 1..s where (states[i,1] == j)) ((states[i,2] == pushout[j])/\(states[i,n] == 0));
 
-% Constraint 6
-constraint forall (i in 1..T,j in 3..D where ((sol[i,j-2] == 3)/\(sol[i,j-1] == 1))) ((sol[i,j] = 0)\/(forall (k in j..(j+3) where (j + 3 <= D)) (sol[i,k] != 3)));
-
-% Constraint 7 - esta comentado porque tarda mucho en ejecutarse pero funciona
-%constraint forall (i in 1..T,j in 1..D) ((count(k in 1..T) ((afines[i,k])/\(sol[i,j] == sol[k,j])/\(sol[i,j] > 0))) >= A);
-
-% Constraint 8  
-constraint forall (j in 1..D, k in 1..3) ((count (i in 1..T) ((sol[i,j] == k)/\(i in R))) >= 1);
-
-% Optimization 1
-solve minimize (count(i in 1..T, j in 1..D) ((dias_solicitados[i,j] == 1)/\(sol[i,j] > 0))) + (max(i in 1..T)(count(j in 1..D)((dias_solicitados[i,j] == 1)/\(sol[i,j] > 0))));
-
-% Optimization 2
-%solve minimize count(i in 1..T, j in 1..D) (turnos_indeseados[i,j] == sol[i,j]) + max(i in 1..T)(count(j in 1..D) (turnos_indeseados[i,j] == sol[i,j]));
-
-
- 
-
+% Solución
