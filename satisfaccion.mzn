@@ -2,12 +2,13 @@
 set of string: TERM;
 int: s; % init_progr_len
 int: n; % max_sk_sz
+string: null; %string que representa null
 %set of int: ZEROARYOP;
 %array[1..s] of 1..n: zeroout;
 %set of int: UNARYOP;
 %array[1..s] of 1..n: unin;
 %array[1..s] of 1..n: unout;
-set of int: BINARYOP = {4}; %0=NOP 1=POP  2=PUSH  3=DUP2  4=GT
+set of int: BINARYOP = {4}; %0=NOP 1=POP  2=PUSH0  3=DUP2  4=GT 5=POP
 array[1..s] of 1..n: binin1;
 array[1..s] of 1..n: binin2;
 array[1..s] of 1..n: binout;
@@ -37,12 +38,20 @@ constraint forall (i in 1..n) ((states[i,1] == startstack[i])/\(states[i,s+1] ==
 %constraint forall (i in index_set(UNARYOP), j in 1..s) (program[j] = UNARYOP[i]) = ((states[1,j] = unin[i]) /\ (states[1,j+1] unout[i]));
 
 % Binary operations
-constraint forall (j in BINARYOP, i in 1..s where (states[i,1] == j)) ((states[i - 1,2] == binin1[j])/\(states[i - 1,3] == binin2[j])/\(states[i,2] == binout[j]));
+constraint forall (i in index_set(BINARYOP), j in 1..s) (program[j] = BINARYOP[i]) = ((states[1,j] = binin1[i])/\(states[2,j] = binin2[i])/\(states[1,j+1] = binout[i]));
 
 % Push operations
-constraint forall (j in PUSHOP, i in 1..s where (states[i,1] == j)) ((states[i,2] == pushout[j])/\(states[i,n] == 0));
+constraint forall (i in index_set(PUSHOP), j in 1..s, z in 1..s-1) (program[j] = PUSHOP[i]) = ((states[z+1,j+1] = states[z,j])/\(states[1,j+1] = pushout[i]));
 
 %NOPs, si una operación es un NOP, las siguientes deben serlo también
 constraint forall (j in 1..s, i in j+1..s) ((program[j] = 0) = (program[i] = 0));
+
+%POP
+constraint forall (i in 1..s, j in 1..s-1) (program[i] = 5) = ((states[z,j+1] = states[z+1,j])/\(states[s,j+1] = null));
+
+%DUP1
+%DUP2
+%DUP3
+%DUP4
 
 % Solución
