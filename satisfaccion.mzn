@@ -1,4 +1,4 @@
-%0=NOP 1=POP  2=PUSH0  3=DUP2  4=GT 5=POP 6=DUP1 7=DUP2
+%0=NOP 1=POP  2=PUSH0  3=DUP2  4=GT 5=POP 6=DUP1 7=DUP2 8=SWAP2 9=SWAP3 10=SWAP4
 
 % Constantes
 set of string: TERM;
@@ -52,8 +52,14 @@ constraint forall (j in 1..s, i in j+1..s) ((program[j] = 0) = (program[i] = 0))
 constraint forall (i in 1..s, j in 1..n-1) (program[i] = 5) = ((states[j,i+1] = states[j+1,i])/\(states[j,i+1] = null));
 
 %DUP1
-constraint forall (i in 1..s, j in 2..n-1) (program[i] = 6) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[j+1,i+1] = states[j,i]))
+constraint forall (i in 1..s, j in 2..n-1) (program[i] = 6) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[j+1,i+1] = states[j,i]));
 %DUP2
 constraint forall (i in 1..s, j in 3..n-1) (program[i] = 7) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[3,i+1] = states[2,i])/\(states[4,i+1] = states[2,i])/\(states[j+2,i+1] = states[j,i]));
 
+%SWAP2
+constraint forall (i in 1..s) (program[i] = 8) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[2,i]));
+%SWAP3
+constraint forall (i in 1..s) (program[i] = 9) = ((states[3,i+1] = states[1,i])/\(states[1,i+1] = states[3,i]));
+%SWAP4
+constraint forall (i in 1..s) (program[i] = 10) = ((states[4,i+1] = states[1,i])/\(states[1,i+1] = states[4,i]));
 % Solución
