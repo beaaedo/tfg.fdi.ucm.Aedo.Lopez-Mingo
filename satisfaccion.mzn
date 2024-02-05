@@ -52,8 +52,8 @@ constraint forall (j in 1..s, i in j+1..s) ((program[j] = 0) = (program[i] = 0))
 constraint forall (i in 1..s, j in 1..n-1) (program[i] = 5) = ((states[j,i+1] = states[j+1,i])/\(states[j,i+1] = null));
 
 %DUP1
-constraint forall (i in 1..s, j in 2..n-1) (program[i] = 6) = ((states[2,i+1] = states[1,i+1])/\(states[j+1,i+1] = states[j,i]))
+constraint forall (i in 1..s, j in 2..n-1) (program[i] = 6) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[j+1,i+1] = states[j,i]))
 %DUP2
-
+constraint forall (i in 1..s, j in 3..n-1) (program[i] = 7) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[3,i+1] = states[2,i])/\(states[4,i+1] = states[2,i])/\(states[j+2,i+1] = states[j,i]));
 
 % Solución
