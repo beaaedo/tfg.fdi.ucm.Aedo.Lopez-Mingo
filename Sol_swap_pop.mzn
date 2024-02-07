@@ -19,21 +19,21 @@ array[1..s] of var 0..6: program;
 constraint forall (i in 1..n) ((states[i,1] == startstack[i])/\(states[i,s+1] == endstack[i]));
 
 %NOPs, si una operación es un NOP, las siguientes deben serlo también
-constraint forall (j in 1..s, i in j..s, z in 1..n) ((program[j] = 0) = ((program[i] = 0)/\(states[z,i+1] = states[z,i])));
+constraint forall (j in 1..s, i in j..s, z in 1..n) ((program[j] == 0) = ((program[i] == 0)/\(states[z,i+1] == states[z,i])));
 
 %SWAP1
-constraint forall(i in 1..s, j in 3..n) ((program[i] = 1) = ((states[1,i] != null)/\(states[2,i] != null)/\(states[1,i+1] = states[2,i])/\(states[2,i+1] = states[1,i])/\(states[j,i+1] = states[j,i])));
+constraint forall(i in 1..s, j in 3..n) ((program[i] == 1) = ((states[1,i] != null)/\(states[2,i] != null)/\(states[1,i+1] == states[2,i])/\(states[2,i+1] == states[1,i])/\(states[j,i+1] == states[j,i])));
 %SWAP2
-constraint forall(i in 1..s, j in 4..n) ((program[i] = 2) = ((states[1,i] != null)/\(states[3,i] != null)/\(states[1,i+1] = states[3,i])/\(states[3,i+1] = states[1,i])/\(states[j,i+1] = states[j,i])/\(states[2,i+1] = states[2,i])));
+constraint forall(i in 1..s, j in 4..n) ((program[i] == 2) = ((states[1,i] != null)/\(states[3,i] != null)/\(states[1,i+1] == states[3,i])/\(states[3,i+1] == states[1,i])/\(states[j,i+1] == states[j,i])/\(states[2,i+1] == states[2,i])));
 %SWAP3
-constraint forall(i in 1..s, j in 5..n, z in 2..3) ((program[i] = 3) = ((states[1,i] != null)/\(states[4,i] != null)/\(states[1,i+1] = states[4,i])/\(states[4,i+1] = states[1,i])/\(states[j,i+1] = states[j,i])/\(states[z,i+1] = states[z,i])));
+constraint forall(i in 1..s, j in 5..n, z in 2..3) ((program[i] == 3) = ((states[1,i] != null)/\(states[4,i] != null)/\(states[1,i+1] == states[4,i])/\(states[4,i+1] == states[1,i])/\(states[j,i+1] == states[j,i])/\(states[z,i+1] == states[z,i])));
 %SWAP4
-constraint forall(i in 1..s, j in 2..4) ((program[i] = 4) = ((states[1,i] != null)/\(states[5,i] != null)/\(states[1,i+1] = states[5,i])/\(states[5,i+1] = states[1,i])/\(states[j,i+1] = states[j,i])/\(states[6,i+1] = states[6,i])));
+constraint forall(i in 1..s, j in 2..4) ((program[i] == 4) = ((states[1,i] != null)/\(states[5,i] != null)/\(states[1,i+1] == states[5,i])/\(states[5,i+1] == states[1,i])/\(states[j,i+1] == states[j,i])/\(states[6,i+1] == states[6,i])));
 %SWAP5
-constraint forall(i in 1..s, j in 2..5) ((program[i] = 5) = ((states[1,i] != null)/\(states[6,i] != null)/\(states[1,i+1] = states[6,i])/\(states[6,i+1] = states[1,i])/\(states[j,i+1] = states[j,i])));
+constraint forall(i in 1..s, j in 2..5) ((program[i] == 5) = ((states[1,i] != null)/\(states[6,i] != null)/\(states[1,i+1] == states[6,i])/\(states[6,i+1] == states[1,i])/\(states[j,i+1] == states[j,i])));
 
 %POP
-constraint forall (i in 1..s, j in 1..n-1) ((program[i] = 6) = ((states[j,i+1] = states[j+1,i])/\(states[n,i+1] = null)/\(states[1,i] != null)));
+constraint forall (i in 1..s, j in 1..n-1) ((program[i] == 6) = ((states[j,i+1] == states[j+1,i])/\(states[n,i+1] == null)/\(states[1,i] != null)));
 
 % Solución
 solve satisfy;
