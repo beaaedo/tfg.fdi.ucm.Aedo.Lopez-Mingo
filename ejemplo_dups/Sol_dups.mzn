@@ -22,14 +22,14 @@ constraint forall (i in 1..n) (states[i,1] == startstack[i]);
 constraint forall (i in 1..n) (states[i,s+1] == endstack[i]);
 
 %DUP1
-constraint forall (i in 1..s, j in 1..n-1 where (program[i] == 1)) ((states[1,i] != null)/\(states[1,i+1] = states[1,i])/\(states[j+1,i+1] = states[j,i]));
+constraint forall (i in 1..s, j in 1..n-1 where (program[i] == 1)) ((states[1,i] != null)/\(states[1,i+1] = states[1,i])/\(states[j+1,i+1] = states[j,i])/\(states[n,i] = null));
 %DUP2
-constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 2)) ((states[2,i] != null)/\(states[1,i+1] = states[2,i])/\(states[j+1,i+1] = states[j,i]));
+constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 2)) ((states[2,i] != null)/\(states[1,i+1] = states[2,i])/\(states[j+1,i+1] = states[j,i])/\(states[n,i] = null));
 %DUP3
-constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 3)) ((states[3,i] != null)/\(states[1,i+1] = states[3,i])/\(states[j+1,i+1] = states[j,i]));
+constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 3)) ((states[3,i] != null)/\(states[1,i+1] = states[3,i])/\(states[j+1,i+1] = states[j,i])/\(states[n,i] = null));
 %DUP4
-constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 4)) ((states[4,i] != null)/\(states[1,i+1] = states[4,i])/\(states[j+1,i+1] = states[j,i]));
+constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 4)) ((states[4,i] != null)/\(states[1,i+1] = states[4,i])/\(states[j+1,i+1] = states[j,i])/\(states[n,i] = null));
 %DUP5
-constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 5)) ((states[5,i] != null)/\(states[1,i+1] = states[5,i])/\(states[j+1,i+1] = states[j,i]));
+constraint forall (i in 1..s, j in 1..n-1 where(program[i] == 5)) ((states[5,i] != null)/\(states[1,i+1] = states[5,i])/\(states[j+1,i+1] = states[j,i])/\(states[n,i] = null));
 
 solve satisfy;
