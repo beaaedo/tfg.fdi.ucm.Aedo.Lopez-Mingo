@@ -20,10 +20,10 @@ array[1..s] of var 1..3: program;
 constraint forall (i in 1..n) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
 
 % Swap 1
-constraint forall (i in 1..s, j in 2..n where (program[i] == 1)/\(j != 2)) ((states[i,1] != null)/\(states[i,2] != null)/\(states[i+1,1] == states[i,2])/\(states[i+1,2] == states[i,1])/\(states[i+1,j] == states[i,j]));
+constraint forall (i in 1..s, j in 2..n where (program[i] == 1)/\(j != 2)) ((states[i,1] != null)/\(states[i+1,1] == states[i,2])/\(states[i+1,2] == states[i,1])/\(states[i+1,j] == states[i,j]));
 
 % Swap 2
-constraint forall (i in 1..s, j in 2..n where (program[i] == 2)/\(j != 3)) ((states[i,1] != null)/\(states[i,3] != null)/\(states[i+1,1] == states[i,3])/\(states[i+1,3] == states[i,1])/\(states[i+1,j] == states[i,j]));
+constraint forall (i in 1..s, j in 2..n where (program[i] == 2)/\(j != 3)) ((states[i,1] != null)/\(states[i+1,1] == states[i,3])/\(states[i+1,3] == states[i,1])/\(states[i+1,j] == states[i,j]));
 
 % Swap 3 
-constraint forall (i in 1..s, j in 2..n where (program[i] == 3)/\(j != 4)) ((states[i,1] != null)/\(states[i,4] != null)/\(states[i+1,1] == states[i,4])/\(states[i+1,4] == states[i,1])/\(states[i+1,j] == states[i,j]));
+constraint forall (i in 1..s, j in 2..n where (program[i] == 3)/\(j != 4)) ((states[i,1] != null)/\(states[i+1,1] == states[i,4])/\(states[i+1,4] == states[i,1])/\(states[i+1,j] == states[i,j]));
