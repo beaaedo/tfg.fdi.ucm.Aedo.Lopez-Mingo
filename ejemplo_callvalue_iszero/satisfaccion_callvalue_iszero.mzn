@@ -46,4 +46,4 @@ constraint forall (i in 1..s, j in 1..n-1 where (program[i] == 1)) ((states[i,1]
 constraint forall (y in 1..n_ZEROARYOP, i in 1..s, j in 2..n where (program[i] == 2)) ((states[i+1,1] = zeroout[y])/\(states[i+1,j] = states[i,j-1]));
 
 % UNARY OP
-constraint forall (y in 1..n_UNARYOP,i in 1..s, j in 2..n where (program[i] == 3)) ((states[i,1] = unin[y])/\(states[i+1,1] = unout[1])/\(states[i+1,j] = states[i,j]));
+constraint forall (y in 1..n_UNARYOP,i in 1..s, j in 2..n where (program[i] == 3)) ((states[i,1] = unin[y])/\(states[i+1,1] = unout[y])/\(states[i+1,j] = states[i,j]));
