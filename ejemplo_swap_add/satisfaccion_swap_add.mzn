@@ -42,5 +42,5 @@ constraint forall (i in 1..s, j in 2..n where (program[i] == 2)/\(j != 2)) ((sta
 % BINARY OP
 constraint forall (y in 1..n_BINARYOP,i in 1..s, j in 2..n where ((program[i] == 3)/\( not bincomm[y]))) ((states[i,1] = binin1[y])/\(states[i,2] = binin2[y])/\(states[i+1,1] = binout[y])/\(states[i+1,j] = states[i,j]));
 
-constraint forall (y in 1..n_BINARYOP,i in 1..s, j in 3..n where ((program[i] == 3)/\(bincomm[y]))) (((states[i,1] = binin2[y])\/(states[i,2] = binin2[y]))/\((states[i,1] = binin1[y])\/(states[i,2] = binin1[y]))/\(states[i+1,1] = binout[y])/\(states[i+1,2] = null)/\(states[i+1,j] = states[i,j]));
+constraint forall (y in 1..n_BINARYOP,i in 1..s, j in 2..n-1 where ((program[i] == 3)/\(bincomm[y]))) (((states[i,1] = binin2[y])\/(states[i,2] = binin2[y]))/\((states[i,1] = binin1[y])\/(states[i,2] = binin1[y]))/\(states[i+1,1] = binout[y])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
 
