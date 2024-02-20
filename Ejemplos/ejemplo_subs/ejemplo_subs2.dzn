@@ -1,7 +1,7 @@
 TERM = { '.', s0, s1, s2, s3};
 null = '.';
 s = 5;
-n = 3;
+n = 4;
 BINARYOP = { SUB_0, SUB_1 };
 binin1 = [s1, s0 ];
 binin2 = [s0, s1 ];
@@ -11,5 +11,5 @@ bingas = [3, 3 ];
 binsz = [1, 1 ];
 binlb = [ 1, 1 ];
 binub = [ 5, 5 ];
-startstack = [ s0, s1 ];
-endstack = [ s2, s3 ];
+startstack = [ s0, s1, null, null ];
+endstack = [ s2, s3, null, null ];
