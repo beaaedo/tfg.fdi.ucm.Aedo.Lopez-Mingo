@@ -1,4 +1,4 @@
-%0=NOP 1=POP 2=DUP1 3=DUP2 4=DUP3 5=DUP4 6=DUP5 7=SWAP1 8=SWAP2 9=SWAP3 10=SWAP4 11=BINARY
+%0=NOP 1=POP 2=DUP1 3=DUP2 4=DUP3 5=DUP4 6=DUP5 7=SWAP1 8=SWAP2 9=SWAP3 10=SWAP4 11=SUB_0 12=ADD_0
 
 % Constantes
 enum TERM = { '.', s0, s1, s2, s3, s4};
@@ -20,7 +20,7 @@ array[1..N2] of bool: bincomm = [false, true];
 % Variables
 % matriz s + 1 x n, s+1 pilas
 array[1..s+1, 1..n] of var TERM: states;
-array[1..s] of var 0..11: program;
+array[1..s] of var 0..12: program;
 
 % Init stacks
 constraint forall (i in 1..n) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
@@ -40,7 +40,6 @@ constraint forall (i in 1..s, j in 2..n  where (program[i] == 2)) ((states[i,1] 
 constraint forall (i in 1..s, j in 2..n  where (program[i] == 3)) ((states[i,2] != null)/\(states[i+1,1] = states[i,2])/\(states[i+1,j] == states[i,j-1])/\(states[i,n] = null));
 % Dup 3
 constraint forall (i in 1..s, j in 2..n  where (program[i] == 4)) ((states[i,3] != null)/\(states[i+1,1] = states[i,3])/\(states[i+1,j] == states[i,j-1])/\(states[i,n] = null));
-
 % Dup 4
 constraint forall (i in 1..s, j in 2..n  where (program[i] == 5)) ((states[i,4] != null)/\(states[i+1,1] = states[i,4])/\(states[i+1,j] == states[i,j-1])/\(states[i,n] = null));
 % Dup 5
@@ -55,8 +54,14 @@ constraint forall (i in 1..s, j in 2..n where (program[i] == 9)/\(j != 4)) ((sta
 % Swap 4
 constraint forall (i in 1..s, j in 2..n where (program[i] == 10)/\(j !=5)) ((states[i,1] != null)/\(states[i,5] != null)/\(states[i+1,1] == states[i,5])/\(states[i+1,5] == states[i,1])/\(states[i+1,j] == states[i,j]));
 
-%Binaryops
+%SUB_0
 %No conmutativas
-constraint forall (i in 1..s , j in 2..n-1, z in 1..card(BINARYOP) where ((program[i] == 11)/\(not bincomm[z]))) ((states[i,1] = binin1[z])/\(states[i,2] = binin2[z])/\(states[i+1,1] = binout[z])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+constraint forall (i in 1..s , j in 2..n-1 where ((program[i] == 11)/\(not bincomm[1]))) ((states[i,1] = binin1[1])/\(states[i,2] = binin2[1])/\(states[i+1,1] = binout[1])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
 %Conmutativas
-constraint forall (i in 1..s , j in 2..n-1, z in 1..card(BINARYOP) where ((program[i] == 11)/\(bincomm[z]))) ((((states[i,1] = binin1[z])/\(states[i,2] = binin2[z]))\/((states[i,1] = binin2[z])/\(states[i,2] = binin1[z])))/\(states[i+1,1] = binout[z])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+constraint forall (i in 1..s , j in 2..n-1 where ((program[i] == 11)/\(bincomm[1]))) ((((states[i,1] = binin1[1])/\(states[i,2] = binin2[1]))\/((states[i,1] = binin2[1])/\(states[i,2] = binin1[1])))/\(states[i+1,1] = binout[1])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+
+%ADD_0
+%No conmutativas
+constraint forall (i in 1..s , j in 2..n-1 where ((program[i] == 12)/\(not bincomm[2]))) ((states[i,1] = binin1[2])/\(states[i,2] = binin2[2])/\(states[i+1,1] = binout[2])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+%Conmutativas
+constraint forall (i in 1..s , j in 2..n-1 where ((program[i] == 12)/\(bincomm[2]))) ((((states[i,1] = binin1[2])/\(states[i,2] = binin2[2]))\/((states[i,1] = binin2[2])/\(states[i,2] = binin1[2])))/\(states[i+1,1] = binout[2])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
