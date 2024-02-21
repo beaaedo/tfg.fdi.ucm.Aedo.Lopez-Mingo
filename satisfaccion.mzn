@@ -1,5 +1,3 @@
-%0=NOP 1=POP  2=PUSH0  3=DUP2  4=GT 5=POP 6=DUP1 7=DUP2 8=SWAP2 9=SWAP3 10=SWAP4
-
 % Constantes
 enum TERM;
 int: s; % init_progr_len
@@ -7,88 +5,87 @@ int: n; % max_sk_sz
 int: min;
 TERM: null; %string que representa null
 
-%COmo hacer que 1 sea s?
-set of int: ZEROARYOP;
-array[1..1] of 1..n: zeroout;
-array[1..1] of 0..n: zerogas;
-array[1..1] of 0..n: zerosz;
-array[1..1] of 0..n: zerolb;
-array[1..1] of 0..n: zeroub;
-set of int: UNARYOP;
-array[1..1] of 1..n: unin;
-array[1..1] of 1..n: unout;
-array[1..1] of 0..n: ungas;
-array[1..1] of 0..n: unsz;
-array[1..1] of 0..n: unlb;
-array[1..1] of 0..n: unub;
-set of int: BINARYOP;
-array[1..1] of 0..n: binin1;
-array[1..1] of 0..n: binin2;
-array[1..1] of 0..n: binout;
-array[1..1] of bool: bincomm;
-array[1..1] of 0..n: bingas;
-array[1..1] of 0..n: binsz;
-array[1..1] of 0..n: binlb;
-array[1..1] of 0..n: binub;
+enum ZEROARYOP;
+int: n_ZEROARYOP = card(ZEROARYOP);
+array [1..n_ZEROARYOP] of TERM: zeroout;
+array [1..n_ZEROARYOP] of int: zerogas;
+array [1..n_ZEROARYOP] of int: zerosz;
+array [1..n_ZEROARYOP] of int: zerolb;
+array [1..n_ZEROARYOP] of int: zeroub;
 
-set of int: PUSHOP;
-array[1..1] of 1..n: pushout;
-array[1..1] of 0..n: pushgas;
-array[1..1] of 0..n: pushsz;
-array[1..1] of 0..n: pushlb;
-array[1..1] of 0..n: pushub;
-set of int: STOROP;
-array[1..1] of 1..n:storin1;
-array[1..1] of 1..n:storin2;
-array[1..1] of 0..n:storlb;
-array[1..1] of 0..n:storub;
+enum UNARYOP;
+int: n_UNARYOP = card(UNARYOP);
+array [1..n_UNARYOP] of TERM: unin;
+array [1..n_UNARYOP] of TERM: unout;
+array [1..n_UNARYOP] of int: ungas;
+array [1..n_UNARYOP] of int: unsz;
+array [1..n_UNARYOP] of int: unlb;
+array [1..n_UNARYOP] of int: unub;
 
-%Listas del tamaño maximo del stack que contienen variables de TERM
-% n a 2
+enum BINARYOP;
+int: n_BINARYOP = card(BINARYOP);
+array [1..n_BINARYOP] of TERM: binin1;
+array [1..n_BINARYOP] of TERM: binin2;
+array [1..n_BINARYOP] of TERM: binout;
+array [1..n_BINARYOP] of bool: bincomm;
+array [1..n_BINARYOP] of int: bingas;
+array [1..n_BINARYOP] of int: binsz;
+array [1..n_BINARYOP] of int: binlb;
+array [1..n_BINARYOP] of int: binub;
+
+enum PUSHOP;
+int: n_PUSHOP = card(PUSHOP);
+array[1..n_PUSHOP] of TERM: pushout;
+array[1..n_PUSHOP] of int: pushgas;
+array[1..n_PUSHOP] of int: pushsz;
+array[1..n_PUSHOP] of int: pushlb;
+array[1..n_PUSHOP] of int: pushub;
+
+enum STOROP;
+int: n_STOROP = card(STOROP);
+array[1..n_STOROP] of TERM: storin1;
+array[1..n_STOROP] of TERM: storin2;
+array[1..n_STOROP] of int: storlb;
+array[1..n_STOROP] of int: storub;
+
 array[1..n] of TERM: startstack;
 array[1..n] of TERM: endstack;
 array[1..0] of TERM: before;
 array[1..0] of TERM: after;
 
+int: NDUPS_SWAPS = if n < 5 then n - 1 else 4 endif;
+int: NUMOPS = 5 + 2*NDUPS_SWAPS;
+
 % Variables
 % matriz s + 1 x n, s+1 pilas
-array[1..n, 1..s+1] of var TERM: states;
-array[1..s] of var int: program;
+array[1..s+1, 1..n] of var TERM: states;
+array[1..s] of var 0..NUMOPS: program;
 
-% Assert
+% Init stacks
+constraint forall (i in 1..n) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
 
-% Constraints
-% Start stack and End stack
-constraint forall (i in 1..n) ((states[i,1] == startstack[i])/\(states[i,s+1] == endstack[i]));
+% Nop
+constraint forall (i in 1..s, j in 1..n , z in i..s where (program[i] == 0)) ((states[i+1,j] = states[i,j])/\(program[z] = 0));
 
-% Zeroary operations
-%constraint forall (i in index_set(ZEROARYOP), j in 1..s) (program[j] = ZEROARYOP[i]) = (states[1,j+1] = zeroout[i])
+% Pop
+constraint forall (i in 1..s, j in 1..n-1 where (program[i] == 1)) ((states[i,1] != null)/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] == null));
 
-% Unary operations
-%constraint forall (i in index_set(UNARYOP), j in 1..s) (program[j] = UNARYOP[i]) = ((states[1,j] = unin[i]) /\ (states[1,j+1] unout[i]));
+% ZEROARY
+constraint forall (x in 1..n_ZEROARYOP, i in 1..s, j in 2..n where (program[i] == 2)) ((states[i+1,1] = zeroout[x])/\(states[i+1,j] = states[i,j-1])/\(zeroout[x] != null));
 
-% Binary operations
-constraint forall (i in index_set(BINARYOP), j in 1..s) ((program[j] = BINARYOP[i]) = ((states[1,j] = binin1[i])/\(states[2,j] = binin2[i])/\(states[1,j+1] = binout[i])));
+% PUSH
+constraint forall (x in 1..n_PUSHOP, i in 1..s , j in 1..n-1 where (program[i] == 3)) ((states[i,n] = null)/\(states[i+1,1] = pushout[x])/\(states[i+1, j+1] = states[i,j])/\(pushout[x] != null));
 
-% Push operations
-constraint forall (i in index_set(PUSHOP), j in 1..s, z in 1..n-1) ((program[j] = PUSHOP[i]) = ((states[z+1,j+1] = states[z,j])/\(states[1,j+1] = pushout[i])));
+% UNARY OP
+constraint forall (x in 1..n_UNARYOP,i in 1..s, j in 2..n where (program[i] == 4)) ((states[i,1] = unin[x])/\(states[i+1,1] = unout[x])/\(states[i+1,j] = states[i,j])/\(unout[x] != null));
 
-%NOPs, si una operación es un NOP, las siguientes deben serlo también
-constraint forall (j in 1..s, i in j+1..s) ((program[j] = 0) = (program[i] = 0));
+% BINARY OP
+constraint forall (x in 1..n_BINARYOP,i in 1..s, j in 2..n where ((program[i] == 5)/\( not bincomm[x]))) ((states[i,1] = binin1[x])/\(states[i,2] = binin2[x])/\(states[i+1,1] = binout[x])/\(states[i+1,j] = states[i,j])/\(unout[x] != null));
 
-%POP
-constraint forall (i in 1..s, j in 1..n-1) ((program[i] = 5) = ((states[j,i+1] = states[j+1,i])/\(states[j,i+1] = TERM[0])));
+constraint forall (x in 1..n_BINARYOP,i in 1..s, j in 2..n-1 where ((program[i] == 5)/\(bincomm[x]))) (((states[i,1] = binin2[x])\/(states[i,2] = binin2[x]))/\((states[i,1] = binin1[x])\/(states[i,2] = binin1[x]))/\(states[i+1,1] = binout[x])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null)/\(unout[x] != null));
 
-%DUP1
-constraint forall (i in 1..s, j in 2..n-1) ((program[i] = 6) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[j+1,i+1] = states[j,i])));
-%DUP2
-constraint forall (i in 1..s, j in 3..n-1) ((program[i] = 7) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[1,i])/\(states[3,i+1] = states[2,i])/\(states[4,i+1] = states[2,i])/\(states[j+2,i+1] = states[j,i])));
+% Dup
+constraint forall (x in 1..NDUPS_SWAPS, i in 1..s, j in 2..n  where (program[i] == 5 + x)) ((states[i,x] != null)/\(states[i+1,1] = states[i,x])/\(states[i+1,j] == states[i,j-1])/\(states[i,n] = null));
 
-%SWAP2
-constraint forall (i in 1..s) ((program[i] = 8) = ((states[2,i+1] = states[1,i])/\(states[1,i+1] = states[2,i])));
-%SWAP3
-constraint forall (i in 1..s) ((program[i] = 9) = ((states[3,i+1] = states[1,i])/\(states[1,i+1] = states[3,i])));
-%SWAP4
-constraint forall (i in 1..s) ((program[i] = 10) = ((states[4,i+1] = states[1,i])/\(states[1,i+1] = states[4,i])));
-
-% Solución
+% Swap
+constraint forall (x in 1..NDUPS_SWAPS, i in 1..s, j in 2..n  where ((program[i] == 5 + 2*x)/\(j != x + 1))) ((states[i,1] != null)/\(states[i, x+1] != null)/\(states[i+1,1] == states[i, x+1])/\(states[i+1,x+1] == states[i,1])/\(states[i+1,j] == states[i,j]));
