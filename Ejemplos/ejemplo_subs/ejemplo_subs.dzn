@@ -1,7 +1,7 @@
 TERM = { '.', s0, s1, s2, s3};
 null = '.';
 s = 5;
-n = 3;
+n = 4;
 min = 4;
 ZEROARYOP = { ZEROARY_dummy };
 zeroout = [ null ];
