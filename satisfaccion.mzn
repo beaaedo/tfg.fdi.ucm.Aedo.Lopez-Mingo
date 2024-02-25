@@ -68,33 +68,33 @@ array[1..s] of var 0..NUMOPS: program;
 constraint forall (i in 1..n) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
 
 % Nop
-constraint forall (i in 1..s, j in 1..n , z in i..s where (program[i] == 0)) ((states[i+1,j] = states[i,j])/\(program[z] = 0));
+constraint forall (i in 1..s where (program[i] == 0)) ((if (i!=s) then program[i+1] = 0 endif)/\(forall (j in 1..n)(states[i+1,j] = states[i,j])));
 
 % Pop
-constraint forall (i in 1..s, j in 1..n-1 where (program[i] == 1)) ((states[i,1] != null)/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+constraint forall (i in 1..s where (program[i] == 1)) ((states[i,1] != null)/\(states[i+1,n] = null)/\(forall (j in 1..n-1)(states[i+1,j] = states[i,j+1])));
 
 % Dup
-constraint forall (x in 1..NDUPS_SWAPS, i in 1..s, j in 2..n  where (program[i] == 1+x)) ((states[i,x] != null)/\(states[i+1,1] = states[i,x])/\(states[i+1,j] = states[i,j-1])/\(states[i,n] = null));
+constraint forall (x in 1..NDUPS_SWAPS, i in 1..s where (program[i] == 1+x)) ((states[i,x] != null)/\(states[i+1,1] = states[i,x])/\(states[i,n] = null)/\(forall (j in 2..n)(states[i+1,j] = states[i,j-1])));
 
 % Swap
 constraint forall (x in 1..NDUPS_SWAPS, i in 1..s, j in 2..n  where ((program[i] == n+x)/\(j != x + 1))) ((states[i,1] != null)/\(states[i, x+1] != null)/\(states[i+1,1] = states[i, x+1])/\(states[i+1,x+1] = states[i,1])/\(states[i+1,j] = states[i,j]));
 
 % ZEROARY
-constraint forall (x in ZEROARYOP, i in 1..s, j in 2..n where (program[i] == (2*n)-1+x)) ((states[i+1,1] = zeroout[x])/\(states[i+1,j] = states[i,j-1])/\(states[i,n] = null));
+constraint forall (x in ZEROARYOP, i in 1..s where (program[i] == (2*n)-1+x)) ((states[i+1,1] = zeroout[x])/\(states[i,n] = null)/\(forall (j in 2..n)(states[i+1,j] = states[i,j-1])));
 
 % UNARY OP
-constraint forall (x in UNARYOP,i in 1..s, j in 2..n where (program[i] == (2*n)+N0-1+x)) ((states[i,1] = unin[x])/\(states[i+1,1] = unout[x])/\(states[i+1,j] = states[i,j]));
+constraint forall (x in UNARYOP,i in 1..s where (program[i] == (2*n)+N0-1+x)) ((states[i,1] = unin[x])/\(states[i+1,1] = unout[x])/\(forall (j in 2..n)(states[i+1,j] = states[i,j])));
 
 % BINARY OP
-constraint forall (x in BINARYOP,i in 1..s, j in 2..n-1 where ((program[i] == (2*n)+N0+N1-1+x)/\( not bincomm[x]))) ((states[i,1] = binin1[x])/\(states[i,2] = binin2[x])/\(states[i+1,1] = binout[x])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+constraint forall (x in BINARYOP,i in 1..s where ((program[i] == (2*n)+N0+N1-1+x)/\( not bincomm[x]))) ((states[i,1] = binin1[x])/\(states[i,2] = binin2[x])/\(states[i+1,1] = binout[x])/\(states[i+1,n] = null)/\(forall (j in 2..n-1)(states[i+1,j] = states[i,j+1])));
 
-constraint forall (x in BINARYOP,i in 1..s, j in 2..n-1 where ((program[i] == (2*n)+N0+N1-1+x)/\(bincomm[x]))) (((states[i,1] = binin2[x])\/(states[i,2] = binin2[x]))/\((states[i,1] = binin1[x])\/(states[i,2] = binin1[x]))/\(states[i+1,1] = binout[x])/\(states[i+1,j] = states[i,j+1])/\(states[i+1,n] = null));
+constraint forall (x in BINARYOP,i in 1..s where ((program[i] == (2*n)+N0+N1-1+x)/\(bincomm[x]))) (((states[i,1] = binin2[x])\/(states[i,2] = binin2[x]))/\((states[i,1] = binin1[x])\/(states[i,2] = binin1[x]))/\(states[i+1,1] = binout[x])/\(states[i+1,n] = null)/\(forall (j in 2..n-1)(states[i+1,j] = states[i,j+1])));
 
 % PUSH
-constraint forall (x in PUSHOP, i in 1..s , j in 1..n-1 where (program[i] == (2*n)+N0+N1+N2-1+x)) ((states[i,n] = null)/\(states[i+1,1] = pushout[x])/\(states[i+1, j+1] = states[i,j]));
+constraint forall (x in PUSHOP, i in 1..s where (program[i] == (2*n)+N0+N1+N2-1+x)) ((states[i,n] = null)/\(states[i+1,1] = pushout[x])/\(forall (j in 1..n-1)(states[i+1, j+1] = states[i,j])));
 
 % STORE
-constraint forall (x in STOROP, i in 1..s, j in 3..n where (program[i] == (2*n)+N0+N1+N2+NPUSH-1+x)) ((states[i,1] == storin1[x])/\(states[i,2] == storin2[x])/\(states[i+1,j-2] = states[i,j])/\(states[i+1,n] = null)/\(states[i+1,n-1] = null));
+constraint forall (x in STOROP, i in 1..s where (program[i] == (2*n)+N0+N1+N2+NPUSH-1+x)) ((states[i,1] == storin1[x])/\(states[i,2] == storin2[x])/\(states[i+1,n] = null)/\(states[i+1,n-1] = null)/\(forall (j in 3..n)(states[i+1,j-2] = states[i,j])));
 
 %Cuenta ceros
 constraint zeros = sum(i in 1..s)(program[i] = 0);
