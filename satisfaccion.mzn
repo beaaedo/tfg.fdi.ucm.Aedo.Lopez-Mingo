@@ -77,7 +77,7 @@ constraint forall (i in 1..s where (program[i] == 1)) ((states[i,1] != null)/\(s
 constraint forall (x in 1..NDUPS_SWAPS, i in 1..s where (program[i] == 1+x)) ((states[i,x] != null)/\(states[i+1,1] = states[i,x])/\(states[i,n] = null)/\(forall (j in 2..n)(states[i+1,j] = states[i,j-1])));
 
 % Swap
-constraint forall (x in 1..NDUPS_SWAPS, i in 1..s, j in 2..n  where ((program[i] == n+x)/\(j != x + 1))) ((states[i,1] != null)/\(states[i, x+1] != null)/\(states[i+1,1] = states[i, x+1])/\(states[i+1,x+1] = states[i,1])/\(states[i+1,j] = states[i,j]));
+constraint forall (x in 1..NDUPS_SWAPS, i in 1..s, j in 2..n  where (program[i] == n+x)) ( (states[i,1] != null)/\(states[i, x+1] != null)/\(states[i+1,1] = states[i, x+1])/\(states[i+1,x+1] = states[i,1])/\(if j != x + 1 then states[i+1,j] = states[i,j] endif));
 
 % ZEROARY
 constraint forall (x in ZEROARYOP, i in 1..s where (program[i] == (2*n)-1+x)) ((states[i+1,1] = zeroout[x])/\(states[i,n] = null)/\(forall (j in 2..n)(states[i+1,j] = states[i,j-1])));
