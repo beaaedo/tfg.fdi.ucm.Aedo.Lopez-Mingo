@@ -228,15 +228,22 @@ class SMSgreedy:
         # print("origsol = "+str(self._original_code_with_ids)+";", file=self._f)
         # print("% when empty means not available", file=self._f)
 
+        opcodes = "OPCODES = { NOP, POP"
+        for x in range(self._bs - 1):
+            opcodes += ", DUP" + str(x + 1)
+        for y in range(self._bs - 1):
+            opcodes += ", SWAP" + str(y + 1)
+
         if len(ZEROARYOP) == 0:
-            print("ZEROARYOP = { ZEROARY_dummy };", file=self._f)
+            print("N0 = 0;", file=self._f)
             print("zeroout = [ null ];", file=self._f)
             print("zerogas = [ 0 ];", file=self._f)
             print("zerosz =  [ 0 ];", file=self._f)
             print("zerolb =  [ 0 ];", file=self._f)
             print(f"zeroub =  [ {self._b0-1} ];", file=self._f)
         else:
-            print("ZEROARYOP = { " + make_list(ZEROARYOP) + " };", file=self._f)
+            opcodes += ", " + make_list(ZEROARYOP)
+            print("N0 = " + str(len(ZEROARYOP)) + ";", file=self._f)
             print("zeroout = [ " + make_list(zeout) + " ];", file=self._f)
             print("zerogas = [ " + make_list(zegas) + " ];", file=self._f)
             print("zerosz = [ " + make_list(zesz) + " ];", file=self._f)
@@ -247,7 +254,7 @@ class SMSgreedy:
                 print(f"zerolb =  [ {0} ];", file=self._f)
                 print(f"zeroub =  [ {0} ];", file=self._f)
         if len(UNARYOP) == 0:
-            print("UNARYOP = { UNARY_dummy };", file=self._f)
+            print("N1 = 0;", file=self._f)
             print("unin =  [ null ];", file=self._f)
             print("unout = [ null ];", file=self._f)
             print("ungas = [ 0 ];", file=self._f)
@@ -255,7 +262,8 @@ class SMSgreedy:
             print("unlb =  [ 0 ];", file=self._f)
             print(f"unub =  [ {self._b0-1} ];", file=self._f)
         else:
-            print("UNARYOP = { " + make_list(UNARYOP) + " };", file=self._f)
+            opcodes += ", " + make_list(UNARYOP)
+            print("N1 = " + str(len(UNARYOP)) + ";", file=self._f)
             print("unin = [ " + make_list(unin) + " ];", file=self._f)
             print("unout = [ " + make_list(unout) + " ];", file=self._f)
             print("ungas = [ " + make_list(ungas) + " ];", file=self._f)
@@ -267,7 +275,7 @@ class SMSgreedy:
                 print(f"unlb =  [ {0} ];", file=self._f)
                 print(f"unub =  [ {0} ];", file=self._f)
         if len(BINARYOP) == 0:
-            print("BINARYOP = { BINARY_dummy };", file=self._f)
+            print("N2 = 0;", file=self._f)
             print("binin1 =  [ null ];", file=self._f)
             print("binin2 =  [ null ];", file=self._f)
             print("binout = [ null ];", file=self._f)
@@ -277,7 +285,8 @@ class SMSgreedy:
             print("binlb =  [ 0 ];", file=self._f)
             print(f"binub =  [ {self._b0-1} ];", file=self._f)
         else:
-            print("BINARYOP = { " + make_list(BINARYOP) + " };", file=self._f)
+            opcodes += ", " + make_list(BINARYOP)
+            print("N2 = " + str(len(BINARYOP)) + ";", file=self._f)
             print("binin1 = [" + make_list(binin1) + " ];", file=self._f)
             print("binin2 = [" + make_list(binin2) + " ];", file=self._f)
             print("binout = [" + make_list(binout) + " ];", file=self._f)
@@ -291,14 +300,15 @@ class SMSgreedy:
                 print(f"binlb =  [ {0} ];", file=self._f)
                 print(f"binub =  [ {0} ];", file=self._f)
         if len(PUSHOP) == 0:
-            print("PUSHOP = { PUSH_dummy };", file=self._f)
+            print("NPUSH = 0;", file=self._f)
             print("pushout = [ null ];", file=self._f)
             print("pushgas = [ 0 ];", file=self._f)
             print("pushsz =  [ 0 ];", file=self._f)
             print("pushlb =  [ 0 ];", file=self._f)
             print(f"pushub =  [ {self._b0-1} ];", file=self._f)
         else:
-            print("PUSHOP = { " + make_list(PUSHOP) + " };", file=self._f)
+            opcodes += ", " + make_list(PUSHOP)
+            print("N0 = " + str(len(PUSHOP)) + ";", file=self._f)
             print("pushout = [ " + make_list(pushout) + " ];", file=self._f)
             print("pushgas = [ " + make_list(pushgas) + " ];", file=self._f)
             print("pushsz = [ " + make_list(pushsz) + " ];", file=self._f)
@@ -309,13 +319,14 @@ class SMSgreedy:
                 print(f"pushlb =  [ {0} ];", file=self._f)
                 print(f"pushub =  [ {0} ];", file=self._f)
         if len(STOROP) == 0:
-            print("STOROP = { STORE_dummy };", file=self._f)
+            print("NSTORE = 0;", file=self._f)
             print("storin1 =  [ null ];", file=self._f)
             print("storin2 =  [ null ];", file=self._f)
             print("storlb =  [ 0 ];", file=self._f)
             print(f"storub =  [ {self._b0-1} ];", file=self._f)
         else:
-            print("STOROP = { " + make_list(STOROP) + " };", file=self._f)
+            opcodes += ", " + make_list(STOROP)
+            print("NSTORE = " + str(len(STOROP)) + ";", file=self._f)
             print("storin1 = [" + make_list(storin1) + " ];", file=self._f)
             print("storin2 = [" + make_list(storin2) + " ];", file=self._f)
             if len(storlb) > 0:
@@ -324,14 +335,22 @@ class SMSgreedy:
             else:
                 print(f"storlb =  [ {0} ];", file=self._f)
                 print(f"storub =  [ {0} ];", file=self._f)
+        opcodes += "};"
+        print(opcodes, file=self._f)
         startstack = []
         for v in self._initial_stack:
             startstack += ["s" + v[2:-1]]
+        if len(self._initial_stack) < self._bs:
+            for i in range(self._bs - len(self._initial_stack)):
+                startstack += ["null"]
         print("startstack = [ " + make_list(startstack) + " ];", file=self._f)
 
         endstack = []
         for v in self._final_stack:
             endstack += ["s" + v[2:-1]]
+        if len(self._final_stack) < self._bs:
+            for i in range(self._bs - len(self._final_stack)):
+                endstack += ["null"]
         print("endstack = [ " + make_list(endstack) + " ];", file=self._f)
 
         before = []
