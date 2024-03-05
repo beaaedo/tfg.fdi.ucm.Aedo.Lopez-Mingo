@@ -59,7 +59,9 @@ array[SNSTORE] of TERM: storin2;
 array[SNSTORE] of int: storlb;
 array[SNSTORE] of int: storub;
 
-enum OPCODES;
+enum BASIC_ENUM;
+enum DUP_ENUM;
+enum SWAP_ENUM;
 array[SN] of TERM: startstack;
 array[SN] of TERM: endstack;
 array[1..0] of TERM: before;
