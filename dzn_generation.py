@@ -322,7 +322,7 @@ class SMSgreedy:
             print("pushlb =  [];", file=self._f)
             print(f"pushub =  [];", file=self._f)
         else:
-            print("N0 = " + str(len(PUSHOP)) + ";", file=self._f)
+            print("NPUSH = " + str(len(PUSHOP)) + ";", file=self._f)
             print("PUSHOP = { " + make_list(PUSHOP) + " };", file=self._f)
             print("pushout = [ " + make_list(pushout) + " ];", file=self._f)
             print("pushgas = [ " + make_list(pushgas) + " ];", file=self._f)
