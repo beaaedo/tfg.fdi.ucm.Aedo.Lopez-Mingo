@@ -1,1 +1,12 @@
-=====ERROR=====
+zeros = 2;
+states = 
+[| s0, '.', '.'
+ | s3, '.', '.'
+ | s5,  s3, '.'
+ | s3,  s5,  s3
+ | s3,  s5,  s3
+ | s3,  s5,  s3
+ |];
+program = [U(ISZERO_0), P(PUSH_0), D(DUP2), BA(NOP), BA(NOP)];
+----------
+==========

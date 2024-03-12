@@ -1,7 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                      DEFINITIONS                      %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 % CONSTANTS FROM DZN
 enum TERM;
 int: s; % init_progr_len
@@ -82,7 +81,6 @@ enum OPCODES = BA(BASIC_ENUM) ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++
 var int: zeros;
 array[1..s+1, SN] of var TERM: states;
 array[SS] of var OPCODES: program;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                      CONSTRAINTS                      %

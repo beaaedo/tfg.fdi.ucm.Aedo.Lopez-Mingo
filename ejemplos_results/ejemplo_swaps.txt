@@ -1,1 +1,11 @@
-=====ERROR=====
+zeros = 0;
+states = 
+[| s0, s1, s2, s3, '.'
+ | s1, s0, s2, s3, '.'
+ | s3, s0, s2, s1, '.'
+ | s0, s3, s2, s1, '.'
+ | s2, s3, s0, s1, '.'
+ |];
+program = [SW(SWAP1), SW(SWAP3), SW(SWAP1), SW(SWAP2)];
+----------
+==========
