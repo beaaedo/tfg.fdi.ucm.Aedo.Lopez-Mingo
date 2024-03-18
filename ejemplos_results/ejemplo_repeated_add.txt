@@ -7,6 +7,6 @@ states =
  | s2,  s2, '.'
  | s2,  s2, '.'
  |];
-program = [BI(ADD_0), D(DUP1), BA(NOP), BA(NOP), BA(NOP)];
+program = [BI(ADD_0), D(DUP1), NOP, NOP, NOP];
 ----------
 ==========

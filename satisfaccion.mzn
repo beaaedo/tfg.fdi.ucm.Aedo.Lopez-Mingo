@@ -63,7 +63,6 @@ array[SNSTORE] of TERM: storin2;
 array[SNSTORE] of int: storlb;
 array[SNSTORE] of int: storub;
 
-enum BASIC_ENUM; %Contiene nop y pop
 enum DUP_ENUM;   %Contiene Dups necesarios
 enum SWAP_ENUM;  %Contiene Swaps necesarios
 array[SN] of TERM: startstack;
@@ -73,8 +72,7 @@ array[1..0] of TERM: after;
 
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
-int: NUMOPS = 2*n + N0 + N1 + N2 + NPUSH + NSTORE;
-enum OPCODES = BA(BASIC_ENUM) ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP); %Crea el enum opcodes sumando todos los enums
+enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP); %Crea el enum opcodes sumando todos los enums
 
 % VARIABLES
 % matriz s + 1 x n, s+1 pilas
@@ -90,30 +88,32 @@ array[SS] of var OPCODES: program;
 constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
 
 % NOP
-constraint forall (i in SS where (BA^-1(program[i]) == BASIC_ENUM[1])) 
-  ((if (i!=s) then BA^-1(program[i+1]) = BASIC_ENUM[1] endif) /\
+constraint forall (i in SS where (program[i] == OPCODES[1]))
+  ((forall (x in i+1..s) (program[x] == OPCODES[1])) /\
+  (if (i!=s) then program[i+1] = OPCODES[1] endif) /\
   (forall (j in SN)(states[i+1,j] = states[i,j])));
 
 % POP
-constraint forall (i in SS where (BA^-1(program[i]) == BASIC_ENUM[2])) 
+constraint forall (i in SS where (program[i] == OPCODES[2])) 
   ((states[i,1] != null) /\ 
   (states[i+1,n] = null) /\
   (forall (j in S2N)(states[i+1,j-1] = states[i,j])));
 
 % DUP
-constraint forall (x in SDS, i in SS where (D^-1(program[i]) == DUP_ENUM[x])) 
-  ((states[i,x] != null) /\
+constraint forall (i in SS where (program[i] in D(DUP_ENUM))) 
+  ((let { var int: x } in D^-1(program[i])) /\
+  (states[i,x] != null) /\
   (states[i+1,1] = states[i,x]) /\
   (states[i,n] = null) /\
   (forall (j in S2N)(states[i+1,j] = states[i,j-1])));
 
 % SWAP
-constraint forall (x in SDS, i in SS, j in S2N  where (SW^-1(program[i]) == SWAP_ENUM[x])) 
+constraint forall (x in SDS,i in SS where (SW^-1(program[i]) == SWAP_ENUM[x])) 
   ((states[i,1] != null) /\
   (states[i, x+1] != null) /\
   (states[i+1,1] = states[i, x+1]) /\
   (states[i+1,x+1] = states[i,1]) /\
-  (if j != x + 1 then states[i+1,j] = states[i,j] endif));
+  (forall (j in S2N) (if j != x + 1 then states[i+1,j] = states[i,j] endif)));
 
 % ZEROARY
 constraint forall (x in SN0, i in SS where (Z^-1(program[i]) == ZEROARYOP[x])) 
@@ -158,6 +158,6 @@ constraint forall (x in SNSTORE, i in SS where (ST^-1(program[i]) == STOROP[x]))
   (forall (j in S3N)(states[i+1,j-2] = states[i,j])));
 
 % COUNT NOP OPERATIONS
-constraint zeros = sum(i in SS)(BA^-1(program[i]) = BASIC_ENUM[1]);
+constraint zeros = sum(i in SS)(program[i] = OPCODES[1]);
 
 solve maximize zeros;

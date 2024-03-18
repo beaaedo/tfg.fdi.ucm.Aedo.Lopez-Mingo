@@ -228,8 +228,6 @@ class SMSgreedy:
         # print("origsol = "+str(self._original_code_with_ids)+";", file=self._f)
         # print("% when empty means not available", file=self._f)
 
-        basic = "BASIC_ENUM = { NOP, POP};"
-
         dups = "DUP_ENUM = {"
         for x in range(self._bs - 1):
             if x == self._bs - 2: 
@@ -353,7 +351,6 @@ class SMSgreedy:
                 print(f"storub =  [ {0} ];", file=self._f)
         dups += "};"
         swaps += "};"
-        print(basic, file=self._f)
         print(dups, file=self._f)
         print(swaps, file=self._f)
         startstack = []

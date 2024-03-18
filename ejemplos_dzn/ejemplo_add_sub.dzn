@@ -41,7 +41,6 @@ storin1 =  [];
 storin2 =  [];
 storlb =  [];
 storub =  [];
-BASIC_ENUM = { NOP, POP};
 DUP_ENUM = { DUP1, DUP2, DUP3, DUP4};
 SWAP_ENUM = { SWAP1, SWAP2, SWAP3, SWAP4};
 startstack = [ s0, s1, s2, null, null ];

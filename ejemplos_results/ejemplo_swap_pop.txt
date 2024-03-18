@@ -6,6 +6,6 @@ states =
  | s4, s3, s2, '.', '.', '.'
  | s4, s3, s2, '.', '.', '.'
  |];
-program = [BA(POP), BA(POP), SW(SWAP2), BA(NOP)];
+program = [POP, POP, SW(SWAP2), NOP];
 ----------
 ==========
