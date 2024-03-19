@@ -151,6 +151,9 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
   (states[i+1,n] = null) /\
   (states[i+1,n-1] = null) /\
   (forall (j in S3N)(states[i+1,j-2] = states[i,j])));
+  
+%MEMORY DEPENDENCIES
+%constraint forall 
 
 % COUNT NOP OPERATIONS
 constraint zeros = sum(i in SS)(program[i] = OPCODES[1]);
