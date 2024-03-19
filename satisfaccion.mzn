@@ -69,6 +69,9 @@ array[SN] of TERM: endstack;
 array[1..0] of TERM: before;
 array[1..0] of TERM: after;
 
+array[SS] of TERM: memory_dependences;
+array[SS] of TERM: store_dependences;
+
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
 enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP); %Crea el enum opcodes sumando todos los enums

@@ -47,3 +47,5 @@ startstack = [ null, null ];
 endstack = [ s3, s3 ];
 before = [  ];
 after = [  ];
+memory_dependences = []
+store_dependences = []

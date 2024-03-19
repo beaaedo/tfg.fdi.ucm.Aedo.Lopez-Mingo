@@ -47,3 +47,5 @@ startstack = [ s0, s1, null, null ];
 endstack = [ s2, s3, null, null ];
 before = [  ];
 after = [  ];
+memory_dependences = []
+store_dependences = []
