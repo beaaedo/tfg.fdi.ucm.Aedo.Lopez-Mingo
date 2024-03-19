@@ -90,7 +90,6 @@ constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == e
 % NOP
 constraint forall (i in SS where (program[i] == OPCODES[1]))
   ((forall (x in i+1..s) (program[x] == OPCODES[1])) /\
-  (if (i!=s) then program[i+1] = OPCODES[1] endif) /\
   (forall (j in SN)(states[i+1,j] = states[i,j])));
 
 % POP
@@ -101,57 +100,51 @@ constraint forall (i in SS where (program[i] == OPCODES[2]))
 
 % DUP
 constraint forall (i in SS where (program[i] in D(DUP_ENUM))) 
-  ((let { var int: x } in D^-1(program[i])) /\
-  (states[i,x] != null) /\
-  (states[i+1,1] = states[i,x]) /\
+  (let { var int: x = D^-1(program[i])} in (states[i,x] != null) /\
+  (states[i+1,1] = states[i,x])/\
   (states[i,n] = null) /\
   (forall (j in S2N)(states[i+1,j] = states[i,j-1])));
 
 % SWAP
-constraint forall (x in SDS,i in SS where (SW^-1(program[i]) == SWAP_ENUM[x])) 
-  ((states[i,1] != null) /\
+constraint forall (i in SS where (program[i] in SW(SWAP_ENUM))) 
+  (let {var int: x = SW^-1(program[i])} in (states[i,1] != null) /\
   (states[i, x+1] != null) /\
   (states[i+1,1] = states[i, x+1]) /\
   (states[i+1,x+1] = states[i,1]) /\
   (forall (j in S2N) (if j != x + 1 then states[i+1,j] = states[i,j] endif)));
 
 % ZEROARY
-constraint forall (x in SN0, i in SS where (Z^-1(program[i]) == ZEROARYOP[x])) 
-  ((states[i+1,1] = zeroout[x]) /\
+constraint forall (i in SS where (program[i] in Z(ZEROARYOP))) 
+  (let {var int: x = Z^-1(program[i])} in (states[i+1,1] = zeroout[x]) /\
   (states[i,n] = null) /\
   (forall (j in S2N)(states[i+1,j] = states[i,j-1])));
 
 % UNARY OP
-constraint forall (x in SN1,i in SS where (U^-1(program[i]) == UNARYOP[x]))
-  ((states[i,1] = unin[x]) /\
+constraint forall (i in SS where (program[i] in U(UNARYOP)))
+  (let {var int: x = U^-1(program[i])} in (states[i,1] = unin[x]) /\
   (states[i+1,1] = unout[x]) /\
   (forall (j in S2N)(states[i+1,j] = states[i,j])));
 
-% BINARY OP NOT COMMUTATIVE
-constraint forall (x in SN2, i in SS where (BI^-1(program[i]) == BINARYOP[x])/\( not bincomm[x])) 
-  ((states[i,1] = binin1[x]) /\
-  (states[i,2] = binin2[x]) /\
-  (states[i+1,1] = binout[x]) /\
-  (states[i+1,n] = null) /\
-  (forall (j in S3N)(states[i+1,j-1] = states[i,j])));
-
-% BINARY OP COMMUTATIVE
-constraint forall (x in SN2, i in SS where ((BI^-1(program[i]) == BINARYOP[x])/\(bincomm[x]))) 
-  (((states[i,1] = binin2[x]) \/ (states[i,2] = binin2[x])) /\
-  ((states[i,1] = binin1[x])\/(states[i,2] = binin1[x])) /\
-  (states[i+1,1] = binout[x]) /\
+% BINARY OP (fusionadas para ahorrar codigo)
+constraint forall (i in SS where (program[i] in BI(BINARYOP))) 
+  (let {var int: x = BI^-1(program[i])} in 
+  if (not bincomm[x]) then (states[i,1] = binin1[x]) /\
+  (states[i,2] = binin2[x])
+  else ((states[i,1] = binin2[x]) \/ (states[i,2] = binin2[x])) /\
+  ((states[i,1] = binin1[x])\/(states[i,2] = binin1[x])) endif
+  /\ (states[i+1,1] = binout[x]) /\
   (states[i+1,n] = null) /\
   (forall (j in S3N)(states[i+1,j-1] = states[i,j])));
 
 % PUSH
-constraint forall (x in SNPUSH, i in SS where (P^-1(program[i]) == PUSHOP[x])) 
-  ((states[i,n] = null) /\
+constraint forall (i in SS where (program[i] in P(PUSHOP))) 
+  (let {var int: x = P^-1(program[i])} in (states[i,n] = null) /\
   (states[i+1,1] = pushout[x]) /\
   (forall (j in S2N)(states[i+1, j] = states[i,j-1])));
 
 % STORE
-constraint forall (x in SNSTORE, i in SS where (ST^-1(program[i]) == STOROP[x])) 
-  ((states[i,1] == storin1[x]) /\
+constraint forall (i in SS where (program[i] in ST(STOROP))) 
+  (let {var int: x = ST^-1(program[i])} in (states[i,1] == storin1[x]) /\
   (states[i,2] == storin2[x]) /\
   (states[i+1,n] = null) /\
   (states[i+1,n-1] = null) /\
