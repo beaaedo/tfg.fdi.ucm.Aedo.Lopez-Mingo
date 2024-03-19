@@ -392,6 +392,9 @@ class SMSgreedy:
         print("before = [ " + make_list(before) + " ];", file=self._f)
         print("after = [ " + make_list(after) + " ];", file=self._f)
 
+        print("memory_dependences = [" + make_list(self._mem_order) + "]", file=self._f)
+        print("store_dependences = [" + make_list(self._sto_order) + "]", file=self._f)
+
 
 if __name__ == "__main__":
     with open(sys.argv[1]) as f:
