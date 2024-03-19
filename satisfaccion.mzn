@@ -11,7 +11,6 @@ TERM: null; %string que representa null
 %Sets que se reusan
 set of int: SS = 1..s;
 set of int: SN = 1..n;
-set of int: SDS = 1..NDUPS_SWAPS;
 set of int: S2N = 2..n;
 set of int: S3N = 3..n;
 set of int: SN0 = 1..N0;
