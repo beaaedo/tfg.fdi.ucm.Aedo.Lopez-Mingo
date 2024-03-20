@@ -1,0 +1,11 @@
+zeros = 0;
+states = 
+[|  s0, '.'
+ |  s1, '.'
+ |  s2,  s1
+ | '.', '.'
+ |];
+program = [U(MLOAD_0), P(PUSH_0), ST(MSTORE_0)];
+----------
+==========
+time = real	0m1.135s

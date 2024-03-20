@@ -7,3 +7,4 @@ states =
 program = [BI(ADD_0), NOP];
 ----------
 ==========
+time = real	0m1.082s

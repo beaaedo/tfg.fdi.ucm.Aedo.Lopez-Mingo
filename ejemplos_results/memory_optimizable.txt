@@ -1,12 +1,13 @@
-zeros = 3;
+zeros = 1;
 states = 
 [|  s0,  s1, '.'
+ |  s3,  s0,  s1
  |  s1, '.', '.'
- | '.', '.', '.'
- | '.', '.', '.'
+ |  s2,  s1, '.'
  | '.', '.', '.'
  | '.', '.', '.'
  |];
-program = [POP, POP, NOP, NOP, NOP];
+program = [P(PUSH_1), ST(MSTORE_1), P(PUSH_0), ST(MSTORE_0), NOP];
 ----------
 ==========
+time = real	0m1.173s

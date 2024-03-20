@@ -48,4 +48,4 @@ endstack = [ null, null ];
 m_dep_n = 1;
 memory_dependences = [|MLOAD_0, MSTORE_0|];
 s_dep_n = 0;
-store_dependences = [||]
+store_dependences = [| |];

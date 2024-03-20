@@ -149,8 +149,8 @@ constraint forall (i in SS where (program[i] in P(PUSHOP)))
 
 % STORE
 constraint forall (i in SS where (program[i] in ST(STOROP))) 
-  (let {var int: x = ST^-1(program[i])} in (states[i,1] == storin1[x]) /\
-  (states[i,2] == storin2[x]) /\
+  (let {var int: x = ST^-1(program[i])} in (states[i,1] = storin1[x]) /\
+  (states[i,2] = storin2[x]) /\
   (states[i+1,n] = null) /\
   (states[i+1,n-1] = null) /\
   (forall (j in S3N)(states[i+1,j-2] = states[i,j])));
@@ -161,5 +161,11 @@ constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,1]
 % COUNT NOP OPERATIONS
 constraint zeros = sum(i in SS)(program[i] = OPCODES[1]);
 
-%solve maximize zeros;
-solve satisfy;
+% Forzar las operaciones que hay definidas en los JSON a aparecer ya que no siempre va a ser lo más óptimo
+constraint forall (x in Z(ZEROARYOP)) (exists (z in 1..s) (program[z] = x));
+constraint forall (x in U(UNARYOP)) (exists (z in 1..s) (program[z] = x));
+constraint forall (x in BI(BINARYOP)) (exists (z in 1..s) (program[z] = x));
+constraint forall (x in ST(STOROP)) (exists (z in 1..s) (program[z] = x));
+constraint forall (x in P(PUSHOP)) (exists (z in 1..s) (program[z] = x));
+
+solve maximize zeros;

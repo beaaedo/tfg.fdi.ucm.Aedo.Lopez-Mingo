@@ -389,11 +389,25 @@ class SMSgreedy:
             elif p[1] in PUSHOP:
                 after += ["P(" + p[1] + ")"]
 
-        print("before = [ " + make_list(before) + " ];", file=self._f)
-        print("after = [ " + make_list(after) + " ];", file=self._f)
+        #print("before = [ " + make_list(before) + " ];", file=self._f)
+        #print("after = [ " + make_list(after) + " ];", file=self._f)
 
-        print("memory_dependences = [" + make_list(self._mem_order) + "]", file=self._f)
-        print("store_dependences = [" + make_list(self._sto_order) + "]", file=self._f)
+        num_mem = len(self._mem_order)
+        if (num_mem == 0):
+            mem_dep = "[| |]"
+        else: 
+            mem_dep = '[' + ', '.join(['|{}|'.format(', '.join(map(str, sublist))) for sublist in self._mem_order]) + ']'
+        
+        num_store = len(self._sto_order)
+        if (num_store == 0):
+            store_dep = "[| |]"
+        else:
+            store_dep = '[' + ', '.join(['|{}|'.format(', '.join(map(str, sublist))) for sublist in self._sto_order]) + ']'
+        
+        print("m_dep_n = " + str(num_mem) + ";", file=self._f)
+        print("memory_dependences = " + mem_dep + ";", file=self._f)
+        print("s_dep_n = " + str(num_store) + ";", file=self._f)
+        print("store_dependences = " + store_dep + ";", file=self._f)
 
 
 if __name__ == "__main__":

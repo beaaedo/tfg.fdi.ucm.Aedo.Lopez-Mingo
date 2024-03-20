@@ -8,3 +8,4 @@ states =
 program = [D(DUP1), D(DUP3), D(DUP2)];
 ----------
 ==========
+time = real	0m1.096s

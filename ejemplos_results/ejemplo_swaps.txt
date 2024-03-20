@@ -9,3 +9,4 @@ states =
 program = [SW(SWAP1), SW(SWAP3), SW(SWAP1), SW(SWAP2)];
 ----------
 ==========
+time = real	0m1.089s

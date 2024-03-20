@@ -10,3 +10,4 @@ states =
 program = [BI(ADD_0), D(DUP1), NOP, NOP, NOP];
 ----------
 ==========
+time = real	0m1.066s
