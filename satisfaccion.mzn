@@ -18,6 +18,7 @@ set of int: SN1 = 1..N1;
 set of int: SN2 = 1..N2;
 set of int: SNPUSH = 1..NPUSH;
 set of int: SNSTORE = 1..NSTORE;
+set of int: MDN = 1..m_dep_n;
 
 enum ZEROARYOP;
 int: N0;
@@ -66,11 +67,13 @@ enum DUP_ENUM;   %Contiene Dups necesarios
 enum SWAP_ENUM;  %Contiene Swaps necesarios
 array[SN] of TERM: startstack;
 array[SN] of TERM: endstack;
-array[1..0] of TERM: before;
-array[1..0] of TERM: after;
+%array[1..0] of TERM: before;
+%array[1..0] of TERM: after;
 
-array[SS] of TERM: memory_dependences;
-array[SS] of TERM: store_dependences;
+int: m_dep_n;
+array[MDN, 1..2] of int: memory_dependences;
+int: s_dep_n;
+array[1..s_dep_n, 1..2] of int: store_dependences;
 
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
@@ -153,9 +156,10 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
   (forall (j in S3N)(states[i+1,j-2] = states[i,j])));
   
 %MEMORY DEPENDENCIES
-%constraint forall 
+constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,1])) (forall (z in 1..i)(program[z] != memory_dependences[i,2]));
 
 % COUNT NOP OPERATIONS
 constraint zeros = sum(i in SS)(program[i] = OPCODES[1]);
 
-solve maximize zeros;
+%solve maximize zeros;
+solve satisfy;
