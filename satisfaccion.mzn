@@ -162,10 +162,6 @@ constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,1]
 constraint zeros = sum(i in SS)(program[i] = OPCODES[1]);
 
 % Forzar las operaciones que hay definidas en los JSON a aparecer ya que no siempre va a ser lo más óptimo
-constraint forall (x in Z(ZEROARYOP)) (exists (z in 1..s) (program[z] = x));
-constraint forall (x in U(UNARYOP)) (exists (z in 1..s) (program[z] = x));
-constraint forall (x in BI(BINARYOP)) (exists (z in 1..s) (program[z] = x));
-constraint forall (x in ST(STOROP)) (exists (z in 1..s) (program[z] = x));
-constraint forall (x in P(PUSHOP)) (exists (z in 1..s) (program[z] = x));
+constraint (forall (x in Z(ZEROARYOP)) (exists (z in 1..s) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in 1..s) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in 1..s) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in 1..s) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in 1..s) (program[z] = x)));
 
 solve maximize zeros;
