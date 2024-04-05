@@ -22,8 +22,7 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         result_file="$results_folder/$base_name.txt"
 
         # Ejecución del código de minizinc
-        execution_time=$({ time $minizinc "$mzn_script" "$dzn_file" -o "$result_file" ; } 2>&1 | grep real)
-        echo "time = $execution_time" >> $result_file
+        timeout -k 1 1 minizinc --solver Gecode --output-time -i "$mzn_script" "$dzn_file" -o "$result_file";
 
         # Devuelve éxito o error dependiendo de si se ha ejecutado bien  mal. Si devuelve ERROR tambien devuelve los contenidos del archivo, mola para debugging.
         if [ $? -eq 0 ]; then

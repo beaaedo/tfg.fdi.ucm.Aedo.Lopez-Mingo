@@ -7,6 +7,7 @@ states =
  |  s3,  s3
  |];
 program = [Z(CALLVALUE_0), U(ISZERO_0), D(DUP1), NOP];
+% time elapsed: 0.14 s
 ----------
 ==========
-time = real	0m1.094s
+% time elapsed: 0.14 s

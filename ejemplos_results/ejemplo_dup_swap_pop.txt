@@ -6,6 +6,7 @@ states =
  | s2, s1,  s1, '.'
  |];
 program = [POP, D(DUP1), SW(SWAP2)];
+% time elapsed: 0.12 s
 ----------
 ==========
-time = real	0m1.080s
+% time elapsed: 0.12 s

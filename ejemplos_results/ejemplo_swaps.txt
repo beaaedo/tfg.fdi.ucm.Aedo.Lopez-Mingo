@@ -7,6 +7,7 @@ states =
  | s2, s3, s0, s1, '.'
  |];
 program = [SW(SWAP1), SW(SWAP3), SW(SWAP1), SW(SWAP2)];
+% time elapsed: 0.25 s
 ----------
 ==========
-time = real	0m1.089s
+% time elapsed: 0.25 s

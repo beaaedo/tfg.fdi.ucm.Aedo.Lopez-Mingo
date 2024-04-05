@@ -8,6 +8,7 @@ states =
  | s2, s3, '.', '.'
  |];
 program = [D(DUP2), D(DUP2), BI(SUB_1), SW(SWAP2), BI(SUB_0)];
+% time elapsed: 0.18 s
 ----------
 ==========
-time = real	0m1.068s
+% time elapsed: 0.18 s

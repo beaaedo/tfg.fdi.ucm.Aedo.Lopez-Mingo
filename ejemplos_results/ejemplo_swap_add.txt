@@ -5,6 +5,7 @@ states =
  | s2, '.', '.'
  |];
 program = [BI(ADD_0), NOP];
+% time elapsed: 0.12 s
 ----------
 ==========
-time = real	0m1.082s
+% time elapsed: 0.12 s

@@ -1,3 +1,15 @@
+zeros = 0;
+states = 
+[| s0, '.', '.'
+ | s5,  s0, '.'
+ | s0,  s5,  s0
+ | s3,  s5,  s0
+ | s0,  s5,  s3
+ | s3,  s5,  s3
+ |];
+program = [P(PUSH_0), D(DUP2), U(ISZERO_0), SW(SWAP2), U(ISZERO_0)];
+% time elapsed: 0.27 s
+----------
 zeros = 2;
 states = 
 [| s0, '.', '.'
@@ -8,6 +20,7 @@ states =
  | s3,  s5,  s3
  |];
 program = [U(ISZERO_0), P(PUSH_0), D(DUP2), NOP, NOP];
+% time elapsed: 0.28 s
 ----------
 ==========
-time = real	0m1.077s
+% time elapsed: 0.28 s

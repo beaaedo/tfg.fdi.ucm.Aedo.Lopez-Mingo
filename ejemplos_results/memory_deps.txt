@@ -6,6 +6,7 @@ states =
  | '.', '.'
  |];
 program = [U(MLOAD_0), P(PUSH_0), ST(MSTORE_0)];
+% time elapsed: 0.13 s
 ----------
 ==========
-time = real	0m1.135s
+% time elapsed: 0.13 s

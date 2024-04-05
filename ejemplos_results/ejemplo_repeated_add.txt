@@ -1,3 +1,39 @@
+zeros = 0;
+states = 
+[| s0,  s1, '.'
+ | s0,  s0,  s1
+ | s0,  s0,  s1
+ | s0,  s1, '.'
+ | s2, '.', '.'
+ | s2,  s2, '.'
+ |];
+program = [D(DUP1), SW(SWAP1), POP, BI(ADD_0), D(DUP1)];
+% time elapsed: 0.15 s
+----------
+zeros = 1;
+states = 
+[| s0,  s1, '.'
+ | s0,  s0,  s1
+ | s0,  s1, '.'
+ | s2, '.', '.'
+ | s2,  s2, '.'
+ | s2,  s2, '.'
+ |];
+program = [D(DUP1), POP, BI(ADD_0), D(DUP1), NOP];
+% time elapsed: 0.15 s
+----------
+zeros = 2;
+states = 
+[| s0,  s1, '.'
+ | s1,  s0, '.'
+ | s2, '.', '.'
+ | s2,  s2, '.'
+ | s2,  s2, '.'
+ | s2,  s2, '.'
+ |];
+program = [SW(SWAP1), BI(ADD_0), D(DUP1), NOP, NOP];
+% time elapsed: 0.15 s
+----------
 zeros = 3;
 states = 
 [| s0,  s1, '.'
@@ -8,6 +44,7 @@ states =
  | s2,  s2, '.'
  |];
 program = [BI(ADD_0), D(DUP1), NOP, NOP, NOP];
+% time elapsed: 0.15 s
 ----------
 ==========
-time = real	0m1.066s
+% time elapsed: 0.15 s

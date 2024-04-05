@@ -1,3 +1,14 @@
+zeros = 0;
+states = 
+[| s0, s1, s2,  s3,  s4, '.'
+ | s1, s0, s2,  s3,  s4, '.'
+ | s0, s2, s3,  s4, '.', '.'
+ | s2, s3, s4, '.', '.', '.'
+ | s4, s3, s2, '.', '.', '.'
+ |];
+program = [SW(SWAP1), POP, POP, SW(SWAP2)];
+% time elapsed: 0.14 s
+----------
 zeros = 1;
 states = 
 [| s0, s1, s2,  s3,  s4, '.'
@@ -7,6 +18,7 @@ states =
  | s4, s3, s2, '.', '.', '.'
  |];
 program = [POP, POP, SW(SWAP2), NOP];
+% time elapsed: 0.14 s
 ----------
 ==========
-time = real	0m1.074s
+% time elapsed: 0.14 s
