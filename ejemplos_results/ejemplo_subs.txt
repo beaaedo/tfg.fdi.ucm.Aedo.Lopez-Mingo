@@ -1,4 +1,6 @@
-zeros = 0;
+value = 5;
+fgas = [3, 3, 3, 3, 3];
+fsize = [1, 1, 1, 1, 1];
 states = 
 [| s0, s1, '.', '.'
  | s1, s0,  s1, '.'
@@ -8,7 +10,7 @@ states =
  | s2, s3, '.', '.'
  |];
 program = [D(DUP2), D(DUP2), BI(SUB_1), SW(SWAP2), BI(SUB_0)];
-% time elapsed: 0.18 s
+% time elapsed: 0.54 s
 ----------
 ==========
-% time elapsed: 0.18 s
+% time elapsed: 0.55 s

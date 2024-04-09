@@ -1,4 +1,6 @@
-zeros = 1;
+value = 3;
+fgas = [2, 3, 3, -2147483646];
+fsize = [1, 1, 1, -2147483646];
 states = 
 [| '.', '.'
  |  s2, '.'
@@ -7,7 +9,7 @@ states =
  |  s3,  s3
  |];
 program = [Z(CALLVALUE_0), U(ISZERO_0), D(DUP1), NOP];
-% time elapsed: 0.14 s
+% time elapsed: 0.54 s
 ----------
 ==========
-% time elapsed: 0.14 s
+% time elapsed: 0.54 s

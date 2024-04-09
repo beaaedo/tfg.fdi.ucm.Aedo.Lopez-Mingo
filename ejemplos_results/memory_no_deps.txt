@@ -1,4 +1,6 @@
-zeros = 0;
+value = 4;
+fgas = [3, 3, 3, 3];
+fsize = [2, 1, 2, 1];
 states = 
 [| '.', '.'
  |  s1, '.'
@@ -7,7 +9,7 @@ states =
  | '.', '.'
  |];
 program = [P(PUSH_0), U(MLOAD_0), P(PUSH_1), ST(MSTORE_0)];
-% time elapsed: 0.16 s
+% time elapsed: 0.69 s
 ----------
 ==========
-% time elapsed: 0.16 s
+% time elapsed: 0.69 s

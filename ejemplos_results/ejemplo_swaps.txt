@@ -1,4 +1,6 @@
-zeros = 0;
+value = 4;
+fgas = [3, 3, 3, 3];
+fsize = [1, 1, 1, 1];
 states = 
 [| s0, s1, s2, s3, '.'
  | s1, s0, s2, s3, '.'
@@ -7,7 +9,7 @@ states =
  | s2, s3, s0, s1, '.'
  |];
 program = [SW(SWAP1), SW(SWAP3), SW(SWAP1), SW(SWAP2)];
-% time elapsed: 0.25 s
+% time elapsed: 0.58 s
 ----------
 ==========
-% time elapsed: 0.25 s
+% time elapsed: 0.58 s

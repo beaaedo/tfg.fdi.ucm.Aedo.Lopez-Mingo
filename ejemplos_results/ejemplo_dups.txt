@@ -1,4 +1,6 @@
-zeros = 0;
+value = 3;
+fgas = [3, 3, 3];
+fsize = [1, 1, 1];
 states = 
 [| s0, s1, '.', '.', '.'
  | s0, s0,  s1, '.', '.'
@@ -6,7 +8,7 @@ states =
  | s0, s1,  s0,  s0,  s1
  |];
 program = [D(DUP1), D(DUP3), D(DUP2)];
-% time elapsed: 0.23 s
+% time elapsed: 0.49 s
 ----------
 ==========
-% time elapsed: 0.23 s
+% time elapsed: 0.49 s

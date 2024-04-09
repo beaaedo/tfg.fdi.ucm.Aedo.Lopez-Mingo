@@ -1,11 +1,13 @@
-zeros = 1;
+value = 1;
+fgas = [3, -2147483646];
+fsize = [1, -2147483646];
 states = 
 [| s0,  s1, '.'
  | s2, '.', '.'
  | s2, '.', '.'
  |];
 program = [BI(ADD_0), NOP];
-% time elapsed: 0.12 s
+% time elapsed: 0.56 s
 ----------
 ==========
-% time elapsed: 0.12 s
+% time elapsed: 0.56 s
