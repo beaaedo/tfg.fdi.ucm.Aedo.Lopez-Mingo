@@ -10,11 +10,11 @@ states =
  | s2,  s2, '.'
  |];
 program = [D(DUP1), SW(SWAP1), POP, BI(ADD_0), D(DUP1)];
-% time elapsed: 0.52 s
+% time elapsed: 0.66 s
 ----------
 value = 4;
-fgas = [3, 2, 3, 3, -2147483646];
-fsize = [1, 1, 1, 1, -2147483646];
+fgas = [3, 2, 3, 3, 0];
+fsize = [1, 1, 1, 1, 1];
 states = 
 [| s0,  s1, '.'
  | s0,  s0,  s1
@@ -24,11 +24,11 @@ states =
  | s2,  s2, '.'
  |];
 program = [D(DUP1), POP, BI(ADD_0), D(DUP1), NOP];
-% time elapsed: 0.53 s
+% time elapsed: 0.67 s
 ----------
 value = 3;
-fgas = [3, 3, 3, -2147483646, 0];
-fsize = [1, 1, 1, -2147483646, 1];
+fgas = [3, 3, 3, 0, 0];
+fsize = [1, 1, 1, 1, 1];
 states = 
 [| s0,  s1, '.'
  | s1,  s0, '.'
@@ -38,11 +38,11 @@ states =
  | s2,  s2, '.'
  |];
 program = [SW(SWAP1), BI(ADD_0), D(DUP1), NOP, NOP];
-% time elapsed: 0.53 s
+% time elapsed: 0.67 s
 ----------
 value = 2;
-fgas = [3, 3, -2147483646, 0, 0];
-fsize = [1, 1, -2147483646, 1, 1];
+fgas = [3, 3, 0, 0, 0];
+fsize = [1, 1, 1, 1, 1];
 states = 
 [| s0,  s1, '.'
  | s2, '.', '.'
@@ -52,7 +52,7 @@ states =
  | s2,  s2, '.'
  |];
 program = [BI(ADD_0), D(DUP1), NOP, NOP, NOP];
-% time elapsed: 0.53 s
+% time elapsed: 0.67 s
 ----------
 ==========
-% time elapsed: 0.53 s
+% time elapsed: 0.67 s
