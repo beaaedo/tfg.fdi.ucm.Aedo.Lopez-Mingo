@@ -107,6 +107,8 @@ class SMSgreedy:
         STOROP = []
         storin1 = []
         storin2 = []
+        storgas = []
+        storsz = []
         storlb = []
         storub = []
         for ins in self._user_instr:
@@ -126,6 +128,8 @@ class SMSgreedy:
                     pushub += [str(self._b0)]
             elif "STORE" in ins["id"]:
                 STOROP += [ins["id"]]
+                storgas += [str(ins["gas"])]
+                storsz += [str(ins["size"])]
                 if isinstance(ins["inpt_sk"][0], int):
                     i = len(constants)
                     if ins["inpt_sk"][0] in constants:
@@ -338,11 +342,15 @@ class SMSgreedy:
             print("storin2 =  [];", file=self._f)
             print("storlb =  [];", file=self._f)
             print(f"storub =  [];", file=self._f)
+            print("storgas = [];", file=self._f)
+            print("storsz = [];", file=self._f)
         else:
             print("NSTORE = " + str(len(STOROP)) + ";", file=self._f)
             print("STOROP = { " + make_list(STOROP) + " };", file=self._f)
             print("storin1 = [" + make_list(storin1) + " ];", file=self._f)
             print("storin2 = [" + make_list(storin2) + " ];", file=self._f)
+            print("storgas = [ " + make_list(storgas) + " ];", file=self._f)
+            print("storsz = [ " + make_list(storsz) + " ];", file=self._f)
             if len(storlb) > 0:
                 print("storlb = [ " + make_list(storlb) + " ];", file=self._f)
                 print("storub = [ " + make_list(storub) + " ];", file=self._f)
