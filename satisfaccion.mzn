@@ -172,7 +172,9 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
 constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,1])) (forall (z in 1..i)(program[z] != memory_dependences[i,2]));
 
 % Contar el valor a minimizar dependiendo de option 
-constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) elseif option = 1 then value = sum(i in SS)(fgas[i]) else value = sum(i in SS)(fsize[i]) endif;
+constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) 
+elseif option = 1 then value = sum(i in SS)(fgas[i]) 
+else value = sum(i in SS)(fsize[i]) endif;
 
 % Forzar las operaciones que hay definidas en los JSON a aparecer ya que no siempre va a ser lo más óptimo
 constraint (forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)));
