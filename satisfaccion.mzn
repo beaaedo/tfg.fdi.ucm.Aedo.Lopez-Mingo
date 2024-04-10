@@ -176,7 +176,37 @@ constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])
 elseif option = 1 then value = sum(i in SS)(fgas[i]) 
 else value = sum(i in SS)(fsize[i]) endif;
 
-% Forzar las operaciones que hay definidas en los JSON a aparecer ya que no siempre va a ser lo más óptimo
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   CONSTRAINTS TOSEM                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Todas las operaciones definidas deben aparecer en program
 constraint (forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)));
+
+% Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
+constraint forall (x in TERM, j in 1..n where 
+  % Condiciones de x en el forall
+  (((exists (e in endstack) (x == e))\/
+  (exists (ui in unin) (x == ui))\/
+  (exists (bi1 in binin1) (x == bi1))\/
+  (exists (bi2 in binin2) (x == bi2))\/
+  (exists (si1 in storin1) (x == si1))\/
+  (exists (si2 in storin2) (x == si2)))/\
+  (not exists(i in 1..n) (x == startstack[i])))) 
+  % Condiciones que debe cumplir
+  ((exists (z in zeroout) (x == z)) \/
+  (exists (u in unout) (x == u)) \/
+  (exists (b in binout) (x == b)) \/
+  (exists (p in pushout) (x == p)));
+
+% La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o SWAPk.
+constraint forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM)) (program[i-1] == sw )));
+
+% Cada operacion definida con coste de gas mayor o igual a 3 deberá utilizarse como máximo una vez.
+constraint (forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 where (j == Z^-1(program[i])))((program[i] == z)/\(zerogas[j] >= 3)) <= 1))/\
+  (forall (u in U(UNARYOP)) (count (i in SS, j in SN1 where (j == U^-1(program[i])))((program[i] == u)/\(ungas[j] >= 3)) <= 1))/\
+  (forall (bi in BI(BINARYOP)) (count (i in SS, j in SN2 where (j == BI^-1(program[i])))((program[i] == bi)/\(bingas[j] >= 3)) <= 1))/\
+  (forall (st in ST(STOROP)) (count (i in SS, j in SNSTORE where (j == ST^-1(program[i])))((program[i] == st)/\(storgas[j] >= 3)) <= 1))/\
+  (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1));
 
 solve minimize value;

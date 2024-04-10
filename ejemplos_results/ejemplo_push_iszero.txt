@@ -4,13 +4,13 @@ fsize = [2, 1, 1, 1, 1];
 states = 
 [| s0, '.', '.'
  | s5,  s0, '.'
- | s0,  s5,  s0
- | s3,  s5,  s0
- | s0,  s5,  s3
+ | s0,  s5, '.'
+ | s3,  s5, '.'
+ | s5,  s3, '.'
  | s3,  s5,  s3
  |];
-program = [P(PUSH_0), D(DUP2), U(ISZERO_0), SW(SWAP2), U(ISZERO_0)];
-% time elapsed: 0.74 s
+program = [P(PUSH_0), SW(SWAP1), U(ISZERO_0), SW(SWAP1), D(DUP2)];
+% time elapsed: 0.16 s
 ----------
 value = 3;
 fgas = [3, 3, 3, 0, 0];
@@ -24,7 +24,7 @@ states =
  | s3,  s5,  s3
  |];
 program = [U(ISZERO_0), P(PUSH_0), D(DUP2), NOP, NOP];
-% time elapsed: 0.74 s
+% time elapsed: 0.16 s
 ----------
 ==========
-% time elapsed: 0.74 s
+% time elapsed: 0.16 s

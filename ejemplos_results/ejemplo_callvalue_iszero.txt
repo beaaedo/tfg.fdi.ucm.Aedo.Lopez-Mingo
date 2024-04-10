@@ -1,2 +1,15 @@
-=====ERROR=====
-% time elapsed: 2.25 s
+value = 3;
+fgas = [2, 3, 3, 0];
+fsize = [1, 1, 1, 1];
+states = 
+[| '.', '.'
+ |  s2, '.'
+ |  s3, '.'
+ |  s3,  s3
+ |  s3,  s3
+ |];
+program = [Z(CALLVALUE_0), U(ISZERO_0), D(DUP1), NOP];
+% time elapsed: 0.14 s
+----------
+==========
+% time elapsed: 0.14 s

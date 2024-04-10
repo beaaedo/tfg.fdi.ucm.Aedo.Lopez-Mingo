@@ -9,7 +9,7 @@ states =
  | '.', '.'
  |];
 program = [P(PUSH_0), U(MLOAD_0), P(PUSH_1), ST(MSTORE_0)];
-% time elapsed: 0.65 s
+% time elapsed: 0.15 s
 ----------
 ==========
-% time elapsed: 0.65 s
+% time elapsed: 0.15 s

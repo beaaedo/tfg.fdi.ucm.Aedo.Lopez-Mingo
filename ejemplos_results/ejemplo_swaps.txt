@@ -9,7 +9,7 @@ states =
  | s2, s3, s0, s1, '.'
  |];
 program = [SW(SWAP1), SW(SWAP3), SW(SWAP1), SW(SWAP2)];
-% time elapsed: 0.69 s
+% time elapsed: 0.14 s
 ----------
 ==========
-% time elapsed: 0.69 s
+% time elapsed: 0.14 s

@@ -10,7 +10,7 @@ states =
  | s2, s3, '.', '.'
  |];
 program = [D(DUP2), D(DUP2), BI(SUB_1), SW(SWAP2), BI(SUB_0)];
-% time elapsed: 1.01 s
+% time elapsed: 0.27 s
 ----------
 ==========
-% time elapsed: 1.03 s
+% time elapsed: 0.27 s
