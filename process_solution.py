@@ -1,7 +1,9 @@
 import re
 import json
 import sys
+import pandas as pd
 from pathlib import Path
+from glob import glob
 from asm_block import AsmBlock, generate_block_from_plain_instructions
 from asm_bytecode import AsmBytecode
 from typing import List, Dict, Any, Tuple
@@ -157,8 +159,18 @@ def run_and_verify_solution(json_path, output_path):
     csv_info["forves_checker"] = is_equivalent
     return csv_info
 
+
+def verify_solution_from_files(json_folder, output_folder, csv_file: str = "evaluation.csv"):
+    csv_rows = []
+    for json_file in glob(json_folder + "/*.json"):
+        json_path = Path(json_file)
+        basename = json_path.name.split(".")[0]
+        output_file = Path(output_folder).joinpath(basename + ".txt")
+        csv_rows.append(run_and_verify_solution(json_file, output_file))
+    pd.DataFrame(csv_rows).to_csv(csv_file)
+
 ### MAIN
 
 if __name__ == "__main__":
-    json_path, output_path = sys.argv[1:]
-    print(run_and_verify_solution(json_path, output_path))
+    json_dir, output_dir = sys.argv[1:]
+    verify_solution_from_files(json_dir, output_dir)

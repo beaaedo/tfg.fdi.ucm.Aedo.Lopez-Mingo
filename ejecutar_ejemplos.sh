@@ -12,6 +12,7 @@ dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion.mzn"
 verification_script="$base_folder/process_solution.py"
+json_folder="$base_folder/ejemplos_json"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
@@ -30,9 +31,6 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         # Devuelve éxito o error dependiendo de si se ha ejecutado bien  mal. Si devuelve ERROR tambien devuelve los contenidos del archivo, mola para debugging.
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
-            # AHC: Comentar esta línea si da problemas
-            python3 "$verification_script" "$json_file" "$result_file"
-            echo ""
 
         else
             echo "Error en la ejecución: $base_name"
@@ -40,3 +38,6 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         fi
     fi 
 done
+
+# AHC: Comentar esta línea si da problemas
+python "$verification_script" "$json_folder" "$results_folder"

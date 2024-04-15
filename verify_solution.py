@@ -93,8 +93,12 @@ def split_bytecode(raw_instruction_str: str) -> List[str]:
 
         # op starts with PUSH
         else:
+            if op == "PUSH0":
+                final_op = "PUSH1"
+                operand = f'0x0'
+
             # Just in case PUSHx instructions are included, we translate them to "PUSH x" name instead
-            if re.fullmatch("PUSH([0-9]+)", op) is not None:
+            elif re.fullmatch("PUSH([0-9]+)", op) is not None:
                 final_op = op
                 operand = f'0x{ops[i + 1]}'
                 i = i + 1
@@ -224,6 +228,7 @@ def compare_forves(previous_block: str, new_solution: str, criteria: str = "size
     if "false" in output:
         return "false"
     elif "parsing error" in output:
+        print(output)
         return "parsing"
     elif "true" in output:
         return "true"

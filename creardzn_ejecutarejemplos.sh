@@ -45,14 +45,11 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         # Devuelve éxito o error dependiendo de si se ha ejecutado bien  mal. Si devuelve ERROR tambien devuelve los contenidos del archivo, mola para debugging.
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
-
-            # AHC: Comentar esta línea si da problemas
-            python "$verification_script" "$json_file" "$result_file"
-            echo ""
-
         else
             echo "Error en la ejecución: $base_name"
             cat "$result_file"
         fi
     fi 
 done
+
+python "$verification_script" "$json_path" "$results_folder"
