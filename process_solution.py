@@ -78,6 +78,18 @@ def find_best_seq(output: str) -> List[str]:
     return []
 
 
+def time_elapsed_from_output(output: str) -> float:
+    rev_lines = reversed(output.splitlines())
+    seq_re = re.compile('% time elapsed: (\d+\.?\d*) s')
+
+    for line in rev_lines:
+        elapsed_time_match = re.match(seq_re, line)
+        if elapsed_time_match is not None:
+            return float(elapsed_time_match.group(1))
+    
+    raise ValueError("Time elapsed not found")
+
+
 def process_msg(msg: str) -> Tuple[List[str], str]:
     if '=====UNKNOWN=====' in msg:
         optimization_outcome = 'no_model'
@@ -91,16 +103,16 @@ def process_msg(msg: str) -> Tuple[List[str], str]:
         optimization_outcome = 'optimal'
 
     seq = find_best_seq(msg)
+    time_elapsed = time_elapsed_from_output(msg)
 
-    return seq, optimization_outcome
+    return seq, optimization_outcome, time_elapsed
 
 
-def process_output_from_minizinc(output, sfs) -> Tuple[List[AsmBytecode], str]:
+def process_output_from_minizinc(output, sfs) -> Tuple[List[AsmBytecode], str, float]:
     # Process minizinc output
-    found_seq, outcome = process_msg(output)
+    found_seq, outcome, time_elapsed = process_msg(output)
     optimized_instrs = asm_from_ids(sfs, found_seq)
-    print(optimized_instrs)
-    return optimized_instrs, outcome
+    return optimized_instrs, outcome, time_elapsed
 
 
 def load_from_minizinc(json_path, output_path):
@@ -139,9 +151,9 @@ def run_and_verify_solution(json_path, output_path):
     # Name corresponds to the 
     block_name = Path(json_path).name.split(".")[0]
     sfs, output = load_from_minizinc(json_path, output_path)
-    optimized_asm_seq, outcome = process_output_from_minizinc(output, sfs)
+    optimized_asm_seq, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
     is_equivalent = verify_solution(sfs, optimized_asm_seq, outcome)
-    csv_info = statistics_from_solution(block_name, optimized_asm_seq, outcome, 10, sfs["original_instrs"], 10)
+    csv_info = statistics_from_solution(block_name, optimized_asm_seq, outcome, time_elapsed, sfs["original_instrs"], 10)
     csv_info["forves_checker"] = is_equivalent
     return csv_info
 
