@@ -13,7 +13,7 @@ dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 python_script="$base_folder/dzn_generation.py"
 mzn_script="$base_folder/satisfaccion.mzn"
-verification_script="$base_folder/verify_solution.py"
+verification_script="$base_folder/process_solution.py"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$dzn_folder"
@@ -47,7 +47,7 @@ for dzn_file in "$dzn_folder"/*.dzn; do
             echo "Ejecutado con éxito: $base_name"
 
             # AHC: Comentar esta línea si da problemas
-            python3 "$verification_script" "$json_file" "$result_file"
+            python "$verification_script" "$json_file" "$result_file"
             echo ""
 
         else

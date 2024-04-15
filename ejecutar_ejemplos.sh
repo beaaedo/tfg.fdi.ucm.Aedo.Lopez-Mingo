@@ -11,7 +11,7 @@ base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion.mzn"
-verification_script="$base_folder/verify_solution.py"
+verification_script="$base_folder/process_solution.py"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
