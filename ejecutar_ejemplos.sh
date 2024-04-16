@@ -12,7 +12,8 @@ json_folder="$base_folder/ejemplos_json"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion.mzn"
-verification_script="$base_folder/verify_solution.py"
+verification_script="$base_folder/process_solution.py"
+json_folder="$base_folder/ejemplos_json"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
@@ -41,3 +42,6 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         fi
     fi 
 done
+
+# AHC: Comentar esta línea si da problemas
+python "$verification_script" "$json_folder" "$results_folder"

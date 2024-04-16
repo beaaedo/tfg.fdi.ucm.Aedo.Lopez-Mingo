@@ -13,7 +13,7 @@ dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 python_script="$base_folder/dzn_generation.py"
 mzn_script="$base_folder/satisfaccion.mzn"
-verification_script="$base_folder/verify_solution.py"
+verification_script="$base_folder/process_solution.py"
 
 # Llamada a los dos scripts
 bash $base_folder/generar_dzn.sh
