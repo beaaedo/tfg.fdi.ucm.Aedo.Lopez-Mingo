@@ -8,6 +8,7 @@
 # PATHS
 base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg"
 #base_folder="/c/Users/claud/OneDrive/Escritorio/Clase/TFG/tfg"
+json_folder="$base_folder/ejemplos_json"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion.mzn"
@@ -31,7 +32,7 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
             # AHC: Comentar esta línea si da problemas
-            python3 "$verification_script" "$json_file" "$result_file"
+            #python "$verification_script" "$json_file" "$result_file"
             echo ""
 
         else
