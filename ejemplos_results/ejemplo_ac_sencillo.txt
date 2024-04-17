@@ -1,0 +1,15 @@
+value = 4;
+fgas = [3, 3, 3, 3];
+fsize = [1, 1, 1, 1];
+states = 
+[| s0,  s1,  s2, '.', '.'
+ | s1,  s0,  s2, '.', '.'
+ | s2,  s0,  s1, '.', '.'
+ | s4,  s1, '.', '.', '.'
+ | s3, '.', '.', '.', '.'
+ |];
+program = [SW(SWAP1), SW(SWAP2), BI(ADD_1), BI(ADD_0)];
+% time elapsed: 0.28 s
+----------
+==========
+% time elapsed: 0.28 s

@@ -73,7 +73,7 @@ class SMSgreedy:
             self._upper_bounds = json_format['upper_bounds']
         else:
             self._upper_bounds = {}
-
+    
     def generate_dzn(self):
         constants = []
         UNARYOP = []
@@ -111,6 +111,34 @@ class SMSgreedy:
         storsz = []
         storlb = []
         storub = []
+        n_ins = 0
+        for ins in self._user_instr:
+            if "ADD" in ins["id"]:
+                for ins_nxt in self._user_instr:
+                    if "ADD" in ins["id"]:
+                        if ins_nxt["outpt_sk"][0] == ins["inpt_sk"][0]:
+                            ins["inpt_sk"].pop(0)
+                            for i in range(0,len(ins_nxt["inpt_sk"])):
+                                ins["inpt_sk"].append(ins_nxt["inpt_sk"][i])
+                            n_ins+=1
+                            self._user_instr.remove(ins_nxt)
+                        elif ins_nxt["outpt_sk"][0] == ins["inpt_sk"][1]:
+                            ins["inpt_sk"].pop(1)
+                            for i in range(0,len(ins_nxt["inpt_sk"])-1):
+                                ins["inpt_sk"].append(ins_nxt["inpt_sk"][i])
+                            n_ins+=1
+                            self._user_instr.remove(ins_nxt)
+        ASSOCIATIVEADDOP = []
+        addin = [[0] * 10 for _ in range(n_ins)]
+        naddin = []
+        addout = []
+        addcomm = []
+        addgas = []
+        addsz = []
+        addlb = []
+        addub = []
+        
+        nadds = 1
         for ins in self._user_instr:
             if "PUSH" in ins["id"]:
                 if " " in ins["id"]:
@@ -185,7 +213,33 @@ class SMSgreedy:
                 else:
                     unlb += [str(1)]
                     unub += [str(self._b0)]
-            elif len(ins["inpt_sk"]) == 2 and len(ins["outpt_sk"]) == 1:
+            elif "ADD" in ins["id"] and len(ins["inpt_sk"]) > 2:
+                ASSOCIATIVEADDOP += [ins["id"]]
+                x = 0
+                for inp in ins["inpt_sk"]:
+                    if isinstance(inp, int):
+                        i = len(constants)
+                        if inp in constants:
+                            i = constants.index(inp)
+                        else:
+                            constants += [inp]
+                        addin[n_ins - nadds][x] = "c" + str(i)
+                    else:
+                        addin[n_ins - nadds][x] = "s" + inp[2:-1]
+                    x = x + 1
+                naddin += str(x)
+                nadds += 1
+                addout += ["s" + ins["outpt_sk"][0][2:-1]]
+                addcomm += [str(ins["commutative"]).lower()]
+                addgas += [str(ins["gas"])]
+                addsz += [str(ins["size"])]
+                if len(self._lower_bounds) > 0:
+                    addlb += [str(self._lower_bounds[ins["id"]] + 1)]
+                    addub += [str(self._upper_bounds[ins["id"]] + 1)]
+                else:
+                    addlb += [str(1)]
+                    addub += [str(self._b0)]
+            elif len(ins["inpt_sk"]) == 2 and len(ins["outpt_sk"]) == 1:   
                 BINARYOP += [ins["id"]]
                 if isinstance(ins["inpt_sk"][0], int):
                     i = len(constants)
@@ -218,6 +272,7 @@ class SMSgreedy:
             else:
                 print(ins["id"], file=self._f)
                 raise Exception("Unsuported operation")
+
         term = "TERM = { \'.\'"
         for v in self._variables:
             term += ", s" + v[2:-1]
@@ -239,7 +294,6 @@ class SMSgreedy:
             else: 
                 dups += " DUP" + str(x + 1) + ","
             
-
         swaps = "SWAP_ENUM = {"
         for x in range(self._bs - 1):
             if x == self._bs -2:
@@ -315,6 +369,43 @@ class SMSgreedy:
             else:
                 print(f"binlb =  [ {0} ];", file=self._f)
                 print(f"binub =  [ {0} ];", file=self._f)
+        if len(ASSOCIATIVEADDOP) == 0:
+            print("NA = 0;", file=self._f)
+            print(r"ASSOCIATIVEADDOP = {};", file=self._f)
+            print("naddin =  [];", file=self._f)
+            print("addin =  [||];", file=self._f)
+            print("addnout = [];", file=self._f)
+            print("addcomm = [];", file=self._f)
+            print("addgas = [];", file=self._f)
+            print("addsz =  [];", file=self._f)
+            print("addlb =  [];", file=self._f)
+            print(f"addub =  [];", file=self._f)
+        else:
+            print("NA = " + str(len(ASSOCIATIVEADDOP)) + ";", file=self._f)
+            print("ASSOCIATIVEADDOP = { " + make_list(ASSOCIATIVEADDOP) + " };", file=self._f)
+            print("naddin = [" + make_list(naddin) + " ];", file=self._f)
+            str_addin = "addin = ["
+            for i, arr in enumerate(addin):
+                str_addin += "|"
+                for j, el in enumerate(arr):
+                    str_addin += " " + str(el)
+                    if j != len(arr) - 1:
+                        str_addin += "," 
+                str_addin += "|"
+                if i != len(addin) - 1:
+                    str_addin += " , "
+            str_addin += " ];"
+            print(str_addin, file=self._f)
+            print("addout = [" + make_list(addout) + " ];", file=self._f)
+            print("addcomm = [" + make_list(addcomm) + " ];", file=self._f)
+            print("addgas = [" + make_list(addgas) + " ];", file=self._f)
+            print("addsz = [" + make_list(addsz) + " ];", file=self._f)
+            if len(addlb) > 0:
+                print("addlb = [ " + make_list(addlb) + " ];", file=self._f)
+                print("addub = [ " + make_list(addub) + " ];", file=self._f)
+            else:
+                print(f"addlb =  [ {0} ];", file=self._f)
+                print(f"addub =  [ {0} ];", file=self._f)
         if len(PUSHOP) == 0:
             print("NPUSH = 0;", file=self._f)
             print(r"PUSHOP = {};", file=self._f)
