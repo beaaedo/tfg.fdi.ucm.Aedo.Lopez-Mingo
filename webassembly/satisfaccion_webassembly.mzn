@@ -108,23 +108,9 @@ constraint forall (i in SS where (program[i] == OPCODES[2]))
   (states[i+1,n] = null) /\
   (forall (j in S2N)(states[i+1,j-1] = states[i,j]))
   /\ fgas[i] == 2 /\ fsize[i] == 1);
+  
+%(set, get, tte hace set y get)
 
-% DUP
-constraint forall (i in SS where (program[i] in D(DUP_ENUM))) 
-  (let { var int: x = D^-1(program[i])} in (states[i,x] != null) /\
-  (states[i+1,1] = states[i,x])/\
-  (states[i,n] = null) /\
-  (forall (j in S2N)(states[i+1,j] = states[i,j-1]))
-  /\ fgas[i] == 3 /\ fsize[i] == 1);
-
-% SWAP
-constraint forall (i in SS where (program[i] in SW(SWAP_ENUM))) 
-  (let {var int: x = SW^-1(program[i])} in (states[i,1] != null) /\
-  (states[i, x+1] != null) /\
-  (states[i+1,1] = states[i, x+1]) /\
-  (states[i+1,x+1] = states[i,1]) /\
-  (forall (j in S2N) (if j != x + 1 then states[i+1,j] = states[i,j] endif))
-  /\ fgas[i] == 3 /\ fsize[i] == 1);
 
 % ZEROARY
 constraint forall (i in SS where (program[i] in Z(ZEROARYOP))) 

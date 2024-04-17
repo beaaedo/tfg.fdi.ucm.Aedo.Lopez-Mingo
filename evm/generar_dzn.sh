@@ -6,7 +6,7 @@
 # 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
 
 # PATHS
-base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg"
+base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg/evm"
 json_folder="$base_folder/ejemplos_json"
 dzn_folder="$base_folder/ejemplos_dzn"
 python_script="$base_folder/dzn_generation.py"
