@@ -1,0 +1,97 @@
+{
+    "init_progr_len": 6,
+    "vars": [
+        "s(2)",
+        "in_1",
+        "local_1",
+        "in_2",
+        "in_4",
+        "in_3",
+        "s(0)",
+        "in_5",
+        "in_0"
+    ],
+    "max_sk_sz": 11,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_4",
+        "in_5"
+    ],
+    "tgt_ws": [
+        "s(2)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.store16_0",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_u_1",
+            "disasm": "i32.load8_u",
+            "opcode": "2d",
+            "inpt_sk": [
+                "in_2"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load16_u_5",
+            "disasm": "i32.load16_u",
+            "opcode": "2f",
+            "inpt_sk": [
+                "in_5"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.store16_0",
+            "i32.load8_u_1"
+        ],
+        [
+            "i32.store16_0",
+            "i32.load16_u_5"
+        ]
+    ],
+    "original_instrs": "i32.store16[1,1] i32.load8_u[0,3] i32.sub local.set[local_index(1)] local.set[local_index(1)] i32.load16_u[5,2]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_1",
+            "in_4"
+        ]
+    ],
+    "rules": "",
+    "block": "folder6_json_51",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

@@ -1,0 +1,81 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "in_1",
+        "local_0",
+        "s(1)",
+        "s(0)",
+        "in_0"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [
+        "in_0",
+        "in_1"
+    ],
+    "tgt_ws": [
+        "in_0"
+    ],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_1",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_1"
+            ],
+            "outpt_sk": [
+                "s(1)",
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store16_2",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "s(1)",
+                "s(0)"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "call[function_index(0)]_1",
+            "i32.store16_2"
+        ]
+    ],
+    "original_instrs": "local.set[local_index(0)] call[function_index(0)] i32.store16[5,0] local.get[local_index(0)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_0",
+            "in_0"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LSET_0",
+        "call[function_index(0)]_1",
+        "i32.store16_2",
+        "LGET_0"
+    ],
+    "block": "folder4_json_67",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": [
+        [
+            "call[function_index(0)]_1",
+            "i32.store16_2"
+        ]
+    ]
+}

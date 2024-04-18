@@ -1,0 +1,69 @@
+{
+    "init_progr_len": 6,
+    "vars": [
+        "local_1",
+        "in_0",
+        "in_1"
+    ],
+    "max_sk_sz": 8,
+    "src_ws": [
+        "in_0",
+        "in_1"
+    ],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_0",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store8_4",
+            "disasm": "i32.store8",
+            "opcode": "3a",
+            "inpt_sk": [
+                "local_1",
+                "in_0"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "call[function_index(0)]_0",
+            "i32.store8_4"
+        ]
+    ],
+    "original_instrs": "call[function_index(0)] local.get[local_index(1)] local.tee[local_index(1)] local.tee[local_index(1)] i32.store8[3,4] local.set[local_index(1)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_1",
+            "in_1"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "call[function_index(0)]_0",
+        "LGET_0",
+        "LTEE_0",
+        "LTEE_0",
+        "i32.store8_4",
+        "LSET_0"
+    ],
+    "block": "folder6_json_96",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

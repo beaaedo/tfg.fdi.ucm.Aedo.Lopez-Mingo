@@ -1,0 +1,40 @@
+{
+    "init_progr_len": 5,
+    "vars": [
+        "local_1",
+        "in_0",
+        "in_1",
+        "local_0"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [
+        "in_0",
+        "in_1"
+    ],
+    "tgt_ws": [],
+    "user_instrs": [],
+    "dependencies": [],
+    "original_instrs": "local.set[local_index(0)] local.get[local_index(0)] local.set[local_index(1)] local.tee[local_index(0)] local.set[local_index(0)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_1"
+        ],
+        [
+            "local_1",
+            "in_0"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LSET_0",
+        "LGET_0",
+        "LSET_1",
+        "LTEE_0",
+        "LSET_0"
+    ],
+    "block": "folder5_json_99",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

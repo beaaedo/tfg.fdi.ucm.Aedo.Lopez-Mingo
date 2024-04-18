@@ -1,0 +1,179 @@
+{
+    "init_progr_len": 10,
+    "vars": [
+        "s(2)",
+        "local_0",
+        "local_1",
+        "s(1)",
+        "s(0)",
+        "s(3)",
+        "in_0"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [
+        "in_0"
+    ],
+    "tgt_ws": [
+        "local_0"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.load8_s_0",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load16_u_1",
+            "disasm": "i32.load16_u",
+            "opcode": "2f",
+            "inpt_sk": [
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.sub_0",
+            "disasm": "i32.sub",
+            "opcode": "6b",
+            "inpt_sk": [
+                "local_0",
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_s_4",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "s(2)"
+            ],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store16_8",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "local_0",
+                "s(3)"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_0"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.load8_s_0",
+            "i32.store16_8"
+        ],
+        [
+            "i32.load16_u_1",
+            "i32.store16_8"
+        ],
+        [
+            "i32.load8_s_4",
+            "i32.store16_8"
+        ]
+    ],
+    "original_instrs": "i32.load8_s[2,2] i32.load16_u[3,5] local.get[local_index(0)] i32.sub i32.load8_s[2,3] local.get[local_index(0)] local.set[local_index(1)] local.get[local_index(0)] i32.store16[1,0] local.get[local_index(0)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_1",
+            "local_0"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.load8_s_0",
+        "i32.load16_u_1",
+        "local.get_0",
+        "i32.sub_0",
+        "i32.load8_s_4",
+        "local.get_0",
+        "LSET_0",
+        "local.get_0",
+        "i32.store16_8",
+        "local.get_0"
+    ],
+    "block": "folder10_json_61",
+    "immediate_dependencies": [
+        [
+            "i32.sub_0",
+            "i32.load8_s_4"
+        ],
+        [
+            "local.get_0",
+            "i32.sub_0"
+        ],
+        [
+            "local.get_0",
+            "i32.store16_8"
+        ]
+    ],
+    "non_immediate_dependencies": [
+        [
+            "i32.load8_s_0",
+            "i32.load16_u_1"
+        ],
+        [
+            "i32.load16_u_1",
+            "i32.sub_0"
+        ],
+        [
+            "i32.load8_s_4",
+            "i32.store16_8"
+        ]
+    ]
+}

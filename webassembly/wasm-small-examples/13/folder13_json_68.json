@@ -1,0 +1,167 @@
+{
+    "init_progr_len": 13,
+    "vars": [
+        "s(2)",
+        "in_1",
+        "local_0",
+        "local_1",
+        "in_6",
+        "in_2",
+        "in_4",
+        "in_3",
+        "s(1)",
+        "s(0)",
+        "in_7",
+        "in_5",
+        "in_0"
+    ],
+    "max_sk_sz": 13,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_4",
+        "in_5",
+        "in_6",
+        "in_7"
+    ],
+    "tgt_ws": [
+        "s(2)",
+        "s(1)"
+    ],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_8",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_5",
+                "in_6"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_1",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store16_7",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "in_3",
+                "in_4"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_9",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "in_7"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load16_s_12",
+            "disasm": "i32.load16_s",
+            "opcode": "2e",
+            "inpt_sk": [
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.load_1",
+            "i32.store16_7"
+        ],
+        [
+            "i32.store16_7",
+            "call[function_index(0)]_8"
+        ],
+        [
+            "call[function_index(0)]_8",
+            "i32.load_9"
+        ],
+        [
+            "call[function_index(0)]_8",
+            "i32.load16_s_12"
+        ]
+    ],
+    "original_instrs": "local.tee[local_index(1)] i32.load[3,5] local.set[local_index(1)] local.set[local_index(1)] local.set[local_index(0)] local.set[local_index(1)] local.get[local_index(1)] i32.store16[3,5] call[function_index(0)] i32.load[3,3] local.tee[local_index(1)] local.get[local_index(1)] i32.load16_s[5,3]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_2"
+        ],
+        [
+            "local_1",
+            "s(1)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LTEE_1",
+        "i32.load_1",
+        "LSET_1",
+        "LSET_1",
+        "LSET_0",
+        "LSET_1",
+        "LGET_1",
+        "i32.store16_7",
+        "call[function_index(0)]_8",
+        "i32.load_9",
+        "LTEE_1",
+        "LGET_1",
+        "i32.load16_s_12"
+    ],
+    "block": "folder13_json_68",
+    "immediate_dependencies": [
+        [
+            "i32.load_9",
+            "i32.load16_s_12"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

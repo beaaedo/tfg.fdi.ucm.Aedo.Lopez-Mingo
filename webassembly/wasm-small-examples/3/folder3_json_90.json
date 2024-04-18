@@ -1,0 +1,85 @@
+{
+    "init_progr_len": 3,
+    "vars": [
+        "local_1",
+        "in_2",
+        "in_0",
+        "in_1"
+    ],
+    "max_sk_sz": 8,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2"
+    ],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "i32.store16_0",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store_2",
+            "disasm": "i32.store",
+            "opcode": "36",
+            "inpt_sk": [
+                "local_1",
+                "in_2"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_1"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.store16_0",
+            "i32.store_2"
+        ]
+    ],
+    "original_instrs": "i32.store16[3,1] local.get[local_index(1)] i32.store[5,0]",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.store16_0",
+        "local.get_0",
+        "i32.store_2"
+    ],
+    "block": "folder3_json_90",
+    "immediate_dependencies": [
+        [
+            "local.get_0",
+            "i32.store_2"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

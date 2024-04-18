@@ -1,0 +1,80 @@
+{
+    "init_progr_len": 3,
+    "vars": [
+        "s(2)",
+        "s(1)",
+        "s(0)"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [],
+    "tgt_ws": [
+        "s(1)",
+        "s(0)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.const_0",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 78,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.const_1",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 85,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load16_s_1",
+            "disasm": "i32.load16_s",
+            "opcode": "2e",
+            "inpt_sk": [
+                "s(2)"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i32.const[85] i32.load16_s[4,3] i32.const[78]",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.const_1",
+        "i32.load16_s_1",
+        "i32.const_0"
+    ],
+    "block": "folder3_json_64",
+    "immediate_dependencies": [
+        [
+            "i32.const_1",
+            "i32.load16_s_1"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

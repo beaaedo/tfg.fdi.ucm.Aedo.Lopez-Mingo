@@ -1,0 +1,171 @@
+{
+    "init_progr_len": 9,
+    "vars": [
+        "s(2)",
+        "in_1",
+        "local_0",
+        "s(1)",
+        "s(0)",
+        "s(3)",
+        "in_0"
+    ],
+    "max_sk_sz": 8,
+    "src_ws": [
+        "in_0",
+        "in_1"
+    ],
+    "tgt_ws": [
+        "in_1"
+    ],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_5",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_u_0",
+            "disasm": "i32.load8_u",
+            "opcode": "2d",
+            "inpt_sk": [
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_1",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_s_2",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.const_0",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 93,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store16_7",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "s(3)",
+                "s(2)"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.load8_u_0",
+            "call[function_index(0)]_5"
+        ],
+        [
+            "call[function_index(0)]_5",
+            "i32.store16_7"
+        ],
+        [
+            "i32.load_1",
+            "call[function_index(0)]_5"
+        ],
+        [
+            "i32.load8_s_2",
+            "call[function_index(0)]_5"
+        ]
+    ],
+    "original_instrs": "i32.load8_u[3,5] i32.load[4,5] i32.load8_s[3,2] i32.const[93] local.set[local_index(0)] call[function_index(0)] local.get[local_index(0)] i32.store16[5,5] local.tee[local_index(0)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_0",
+            "in_1"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.load8_u_0",
+        "i32.load_1",
+        "i32.load8_s_2",
+        "i32.const_0",
+        "LSET_0",
+        "call[function_index(0)]_5",
+        "LGET_0",
+        "i32.store16_7",
+        "LTEE_0"
+    ],
+    "block": "folder9_json_26",
+    "immediate_dependencies": [
+        [
+            "i32.const_0",
+            "i32.store16_7"
+        ]
+    ],
+    "non_immediate_dependencies": [
+        [
+            "i32.load_1",
+            "i32.load8_s_2"
+        ],
+        [
+            "i32.load8_s_2",
+            "i32.store16_7"
+        ],
+        [
+            "i32.load8_u_0",
+            "i32.load_1"
+        ]
+    ]
+}

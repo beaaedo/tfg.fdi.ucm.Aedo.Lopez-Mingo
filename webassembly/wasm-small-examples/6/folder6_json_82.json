@@ -1,0 +1,90 @@
+{
+    "init_progr_len": 6,
+    "vars": [
+        "in_1",
+        "local_0",
+        "local_1",
+        "in_6",
+        "in_2",
+        "in_4",
+        "in_3",
+        "in_7",
+        "in_5",
+        "in_0"
+    ],
+    "max_sk_sz": 13,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_4",
+        "in_5",
+        "in_6",
+        "in_7"
+    ],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_5",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_5",
+                "in_6",
+                "in_7"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store16_0",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.store16_0",
+            "call[function_index(0)]_5"
+        ]
+    ],
+    "original_instrs": "i32.store16[0,4] local.set[local_index(0)] local.set[local_index(1)] local.tee[local_index(1)] local.set[local_index(0)] call[function_index(0)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_4"
+        ],
+        [
+            "local_1",
+            "in_4"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.store16_0",
+        "LSET_0",
+        "LSET_1",
+        "LTEE_1",
+        "LSET_0",
+        "call[function_index(0)]_5"
+    ],
+    "block": "folder6_json_82",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

@@ -1,0 +1,143 @@
+{
+    "init_progr_len": 7,
+    "vars": [
+        "in_1",
+        "local_0",
+        "local_1",
+        "in_2",
+        "in_4",
+        "in_3",
+        "s(1)",
+        "s(0)",
+        "in_0"
+    ],
+    "max_sk_sz": 10,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_4"
+    ],
+    "tgt_ws": [
+        "s(1)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.load16_s_0",
+            "disasm": "i32.load16_s",
+            "opcode": "2e",
+            "inpt_sk": [
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store8_2",
+            "disasm": "i32.store8",
+            "opcode": "3a",
+            "inpt_sk": [
+                "in_1",
+                "in_2"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store8_3",
+            "disasm": "i32.store8",
+            "opcode": "3a",
+            "inpt_sk": [
+                "in_3",
+                "in_4"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load16_u_5",
+            "disasm": "i32.load16_u",
+            "opcode": "2f",
+            "inpt_sk": [
+                "local_0"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_0"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.load16_s_0",
+            "i32.store8_2"
+        ],
+        [
+            "i32.store8_2",
+            "i32.store8_3"
+        ],
+        [
+            "i32.store8_3",
+            "i32.load16_u_5"
+        ]
+    ],
+    "original_instrs": "i32.load16_s[0,2] local.set[local_index(1)] i32.store8[5,2] i32.store8[5,1] local.get[local_index(0)] i32.load16_u[2,4] local.tee[local_index(1)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_1",
+            "s(1)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.load16_s_0",
+        "LSET_0",
+        "i32.store8_2",
+        "i32.store8_3",
+        "local.get_0",
+        "i32.load16_u_5",
+        "LTEE_0"
+    ],
+    "block": "folder7_json_56",
+    "immediate_dependencies": [
+        [
+            "local.get_0",
+            "i32.load16_u_5"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

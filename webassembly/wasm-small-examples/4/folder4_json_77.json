@@ -1,0 +1,95 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "s(2)",
+        "local_0",
+        "s(1)",
+        "s(0)",
+        "in_0"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [
+        "in_0"
+    ],
+    "tgt_ws": [
+        "s(1)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.add_0",
+            "disasm": "i32.add",
+            "opcode": "6a",
+            "inpt_sk": [
+                "s(0)",
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.const_0",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 84,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_s_2",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "s(2)"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i32.const[84] local.tee[local_index(0)] i32.load8_s[4,3] i32.add",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_0",
+            "s(2)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.const_0",
+        "LTEE_0",
+        "i32.load8_s_2",
+        "i32.add_0"
+    ],
+    "block": "folder4_json_77",
+    "immediate_dependencies": [
+        [
+            "i32.const_0",
+            "i32.load8_s_2"
+        ],
+        [
+            "i32.load8_s_2",
+            "i32.add_0"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

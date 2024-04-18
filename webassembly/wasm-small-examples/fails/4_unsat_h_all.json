@@ -1,0 +1,96 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "local_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_0"
+    ],
+    "max_sk_sz": 9,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3"
+    ],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "i32.store16_0",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store_3",
+            "disasm": "i32.store",
+            "opcode": "36",
+            "inpt_sk": [
+                "in_2",
+                "in_3"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "global.set_2",
+            "disasm": "global.set",
+            "opcode": "24",
+            "inpt_sk": [
+                "local_0"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_0"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i32.store16_0",
+            "i32.store_3"
+        ]
+    ],
+    "original_instrs": "i32.store16[0,2] local.get[local_index(0)] global.set[global_index(1)] i32.store[4,0]",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.store16_0",
+        "local.get_0",
+        "global.set_2",
+        "i32.store_3"
+    ],
+    "block": "folder4_json_0",
+    "non_immediate_dependencies": []
+}

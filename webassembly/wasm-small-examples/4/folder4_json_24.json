@@ -1,0 +1,79 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "in_1",
+        "local_0",
+        "local_1",
+        "in_2",
+        "in_4",
+        "in_3",
+        "s(0)",
+        "in_0"
+    ],
+    "max_sk_sz": 10,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_4"
+    ],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "i32.store8_3",
+            "disasm": "i32.store8",
+            "opcode": "3a",
+            "inpt_sk": [
+                "in_3",
+                "in_4"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.sub_0",
+            "disasm": "i32.sub",
+            "opcode": "6b",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i32.sub local.set[local_index(1)] local.set[local_index(0)] i32.store8[2,4]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_2"
+        ],
+        [
+            "local_1",
+            "s(0)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.sub_0",
+        "LSET_1",
+        "LSET_0",
+        "i32.store8_3"
+    ],
+    "block": "folder4_json_24",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

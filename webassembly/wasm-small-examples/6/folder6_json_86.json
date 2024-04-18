@@ -1,0 +1,74 @@
+{
+    "init_progr_len": 6,
+    "vars": [
+        "in_1",
+        "local_0",
+        "in_2",
+        "in_3",
+        "s(1)",
+        "s(0)",
+        "in_0"
+    ],
+    "max_sk_sz": 9,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3"
+    ],
+    "tgt_ws": [
+        "in_3"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.load_0",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load16_s_1",
+            "disasm": "i32.load16_s",
+            "opcode": "2e",
+            "inpt_sk": [
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i32.load[5,3] i32.load16_s[4,1] i32.add i32.add local.set[local_index(0)] local.tee[local_index(0)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_0",
+            "in_3"
+        ]
+    ],
+    "rules": "",
+    "block": "folder6_json_86",
+    "immediate_dependencies": [
+        [
+            "i32.load_0",
+            "i32.load16_s_1"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

@@ -1,0 +1,133 @@
+{
+    "init_progr_len": 13,
+    "vars": [
+        "s(2)",
+        "local_0",
+        "local_1",
+        "s(1)",
+        "s(0)",
+        "s(3)",
+        "in_0"
+    ],
+    "max_sk_sz": 10,
+    "src_ws": [
+        "in_0"
+    ],
+    "tgt_ws": [
+        "local_1",
+        "s(2)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.load8_s_1",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "local_1"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.add_0",
+            "disasm": "i32.add",
+            "opcode": "6a",
+            "inpt_sk": [
+                "s(0)",
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_u_5",
+            "disasm": "i32.load8_u",
+            "opcode": "2d",
+            "inpt_sk": [
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.add_1",
+            "disasm": "i32.add",
+            "opcode": "6a",
+            "inpt_sk": [
+                "s(1)",
+                "local_1"
+            ],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.get[local_index(1)] i32.load8_s[0,5] i32.add local.tee[local_index(0)] local.tee[local_index(0)] i32.load8_u[4,1] local.get[local_index(1)] local.get[local_index(1)] local.get[local_index(0)] local.get[local_index(0)] local.set[local_index(1)] i32.add local.set[local_index(0)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "s(3)"
+        ],
+        [
+            "local_1",
+            "s(1)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LGET_1",
+        "i32.load8_s_1",
+        "i32.add_0",
+        "LTEE_0",
+        "LTEE_0",
+        "i32.load8_u_5",
+        "LGET_1",
+        "LGET_1",
+        "LGET_0",
+        "LGET_0",
+        "LSET_1",
+        "i32.add_1",
+        "LSET_0"
+    ],
+    "block": "folder13_json_45",
+    "immediate_dependencies": [
+        [
+            "i32.add_0",
+            "i32.add_1"
+        ],
+        [
+            "i32.add_0",
+            "i32.load8_u_5"
+        ],
+        [
+            "i32.load8_s_1",
+            "i32.add_0"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

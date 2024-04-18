@@ -1,0 +1,122 @@
+{
+    "init_progr_len": 11,
+    "vars": [
+        "s(2)",
+        "in_1",
+        "local_0",
+        "local_1",
+        "in_2",
+        "in_3",
+        "s(1)",
+        "s(0)",
+        "s(3)",
+        "in_0"
+    ],
+    "max_sk_sz": 9,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3"
+    ],
+    "tgt_ws": [
+        "in_3",
+        "s(3)"
+    ],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_1",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_1",
+                "in_2"
+            ],
+            "outpt_sk": [
+                "s(2)",
+                "s(1)",
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store16_3",
+            "disasm": "i32.store16",
+            "opcode": "3b",
+            "inpt_sk": [
+                "s(2)",
+                "s(1)"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_9",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "in_3"
+            ],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "call[function_index(0)]_1",
+            "i32.store16_3"
+        ],
+        [
+            "i32.store16_3",
+            "i32.load_9"
+        ]
+    ],
+    "original_instrs": "local.set[local_index(1)] call[function_index(0)] local.tee[local_index(0)] i32.store16[3,0] local.set[local_index(0)] local.tee[local_index(0)] local.get[local_index(0)] local.set[local_index(1)] local.tee[local_index(0)] i32.load[4,5] local.get[local_index(0)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_3"
+        ],
+        [
+            "local_1",
+            "in_3"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LSET_1",
+        "call[function_index(0)]_1",
+        "LTEE_0",
+        "i32.store16_3",
+        "LSET_0",
+        "LTEE_0",
+        "LGET_0",
+        "LSET_1",
+        "LTEE_0",
+        "i32.load_9",
+        "LGET_0"
+    ],
+    "block": "folder11_json_5",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": [
+        [
+            "call[function_index(0)]_1",
+            "i32.store16_3"
+        ]
+    ]
+}

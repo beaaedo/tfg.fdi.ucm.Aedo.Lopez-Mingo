@@ -1,0 +1,75 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "local_1",
+        "s(0)",
+        "local_0",
+        "s(1)"
+    ],
+    "max_sk_sz": 6,
+    "src_ws": [],
+    "tgt_ws": [
+        "s(0)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.const_0",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 75,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_3",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i32.const[75] local.tee[local_index(0)] local.tee[local_index(1)] i32.load[1,1]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "s(1)"
+        ],
+        [
+            "local_1",
+            "s(1)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.const_0",
+        "LTEE_0",
+        "LTEE_1",
+        "i32.load_3"
+    ],
+    "block": "folder4_json_75",
+    "immediate_dependencies": [
+        [
+            "i32.const_0",
+            "i32.load_3"
+        ]
+    ],
+    "non_immediate_dependencies": []
+}

@@ -1,0 +1,130 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "s(2)",
+        "s(5)",
+        "s(4)",
+        "s(1)",
+        "s(0)",
+        "s(3)",
+        "in_0"
+    ],
+    "max_sk_sz": 8,
+    "src_ws": [
+        "in_0"
+    ],
+    "tgt_ws": [
+        "s(5)",
+        "s(1)",
+        "s(0)"
+    ],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_0",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_0"
+            ],
+            "outpt_sk": [
+                "s(2)",
+                "s(1)",
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_1",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "s(2)"
+            ],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_s_2",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "s(3)"
+            ],
+            "outpt_sk": [
+                "s(4)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_u_3",
+            "disasm": "i32.load8_u",
+            "opcode": "2d",
+            "inpt_sk": [
+                "s(4)"
+            ],
+            "outpt_sk": [
+                "s(5)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "call[function_index(0)]_0",
+            "i32.load_1"
+        ],
+        [
+            "call[function_index(0)]_0",
+            "i32.load8_s_2"
+        ],
+        [
+            "call[function_index(0)]_0",
+            "i32.load8_u_3"
+        ]
+    ],
+    "original_instrs": "call[function_index(0)] i32.load[5,5] i32.load8_s[2,3] i32.load8_u[2,5]",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "call[function_index(0)]_0",
+        "i32.load_1",
+        "i32.load8_s_2",
+        "i32.load8_u_3"
+    ],
+    "block": "folder4_json_37",
+    "immediate_dependencies": [
+        [
+            "i32.load_1",
+            "i32.load8_s_2"
+        ],
+        [
+            "i32.load8_s_2",
+            "i32.load8_u_3"
+        ]
+    ],
+    "non_immediate_dependencies": [
+        [
+            "call[function_index(0)]_0",
+            "i32.load_1"
+        ]
+    ]
+}

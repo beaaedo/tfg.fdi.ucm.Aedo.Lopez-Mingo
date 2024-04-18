@@ -1,0 +1,55 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "in_2",
+        "in_0",
+        "in_1",
+        "local_0"
+    ],
+    "max_sk_sz": 8,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2"
+    ],
+    "tgt_ws": [
+        "in_2",
+        "in_2"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.store_1",
+            "disasm": "i32.store",
+            "opcode": "36",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.tee[local_index(0)] i32.store[3,2] local.tee[local_index(0)] local.get[local_index(0)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_0",
+            "in_2"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LTEE_0",
+        "i32.store_1",
+        "LTEE_0",
+        "LGET_0"
+    ],
+    "block": "folder4_json_36",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

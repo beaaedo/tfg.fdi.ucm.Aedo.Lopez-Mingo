@@ -1,0 +1,60 @@
+{
+    "init_progr_len": 5,
+    "vars": [
+        "in_1",
+        "local_0",
+        "local_1",
+        "s(0)",
+        "in_0"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [
+        "in_0",
+        "in_1"
+    ],
+    "tgt_ws": [
+        "s(0)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.load_2",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "in_1"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.tee[local_index(0)] local.set[local_index(1)] i32.load[4,3] local.get[local_index(0)] local.set[local_index(0)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_0"
+        ],
+        [
+            "local_1",
+            "in_0"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "LTEE_0",
+        "LSET_1",
+        "i32.load_2",
+        "LGET_0",
+        "LSET_0"
+    ],
+    "block": "folder5_json_67",
+    "immediate_dependencies": [],
+    "non_immediate_dependencies": []
+}

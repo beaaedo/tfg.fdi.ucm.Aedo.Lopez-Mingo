@@ -1,0 +1,209 @@
+{
+    "init_progr_len": 16,
+    "vars": [
+        "s(5)",
+        "s(2)",
+        "s(4)",
+        "in_1",
+        "local_0",
+        "local_1",
+        "in_6",
+        "in_2",
+        "in_4",
+        "in_3",
+        "s(6)",
+        "s(1)",
+        "s(0)",
+        "in_7",
+        "in_5",
+        "s(3)",
+        "in_0"
+    ],
+    "max_sk_sz": 13,
+    "src_ws": [
+        "in_0",
+        "in_1",
+        "in_2",
+        "in_3",
+        "in_4",
+        "in_5",
+        "in_6",
+        "in_7"
+    ],
+    "tgt_ws": [
+        "in_3",
+        "s(5)"
+    ],
+    "user_instrs": [
+        {
+            "id": "call[function_index(0)]_0",
+            "disasm": "call[function_index(0)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_0",
+                "in_1",
+                "in_2"
+            ],
+            "outpt_sk": [
+                "s(2)",
+                "s(1)",
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "call[function_index(1)]_1",
+            "disasm": "call[function_index(1)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "s(2)",
+                "s(1)"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "call[function_index(2)]_8",
+            "disasm": "call[function_index(2)]",
+            "opcode": "10",
+            "inpt_sk": [
+                "in_5",
+                "in_6"
+            ],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.store_9",
+            "disasm": "i32.store",
+            "opcode": "36",
+            "inpt_sk": [
+                "s(3)",
+                "in_7"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.const_0",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(6)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 0,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load8_s_13",
+            "disasm": "i32.load8_s",
+            "opcode": "2c",
+            "inpt_sk": [
+                "s(6)"
+            ],
+            "outpt_sk": [
+                "s(4)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.load_14",
+            "disasm": "i32.load",
+            "opcode": "28",
+            "inpt_sk": [
+                "s(4)"
+            ],
+            "outpt_sk": [
+                "s(5)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "call[function_index(0)]_0",
+            "call[function_index(1)]_1"
+        ],
+        [
+            "call[function_index(1)]_1",
+            "call[function_index(2)]_8"
+        ],
+        [
+            "call[function_index(2)]_8",
+            "i32.store_9"
+        ],
+        [
+            "i32.store_9",
+            "i32.load8_s_13"
+        ],
+        [
+            "i32.store_9",
+            "i32.load_14"
+        ]
+    ],
+    "original_instrs": "call[function_index(0)] call[function_index(1)] local.tee[local_index(1)] local.tee[local_index(1)] local.set[local_index(1)] local.set[local_index(1)] local.tee[local_index(0)] local.set[local_index(0)] call[function_index(2)] i32.store[1,3] local.get[local_index(0)] local.get[local_index(0)] i32.sub i32.load8_s[4,0] i32.load[3,4] local.get[local_index(1)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_0",
+            "in_4"
+        ],
+        [
+            "local_1",
+            "in_3"
+        ]
+    ],
+    "rules": "i32.sub(X,X) -> 0",
+    "block": "folder16_json_86",
+    "immediate_dependencies": [
+        [
+            "i32.load8_s_13",
+            "i32.load_14"
+        ],
+        [
+            "i32.const_0",
+            "i32.load8_s_13"
+        ]
+    ],
+    "non_immediate_dependencies": [
+        [
+            "call[function_index(0)]_0",
+            "call[function_index(1)]_1"
+        ],
+        [
+            "call[function_index(2)]_8",
+            "i32.store_9"
+        ]
+    ]
+}

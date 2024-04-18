@@ -1,0 +1,132 @@
+{
+    "init_progr_len": 7,
+    "vars": [
+        "local_17",
+        "local_10",
+        "s(1)",
+        "local_25",
+        "s(2)",
+        "local_9",
+        "s(0)"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [],
+    "tgt_ws": [
+        "s(2)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i32.shl_0",
+            "disasm": "i32.shl",
+            "opcode": "74",
+            "inpt_sk": [
+                "local_9",
+                "local_17"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.and_0",
+            "disasm": "i32.and",
+            "opcode": "71",
+            "inpt_sk": [
+                "local_25",
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.eqz_0",
+            "disasm": "i32.eqz",
+            "opcode": "45",
+            "inpt_sk": [
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_9"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_1",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_17"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_2",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_25"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.get[local_index(17)] local.get[local_index(9)] local.tee[local_index(10)] i32.shl local.get[local_index(25)] i32.and i32.eqz",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_10",
+            "local_9"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "local.get_1",
+        "local.get_0",
+        "LTEE_0",
+        "i32.shl_0",
+        "local.get_2",
+        "i32.and_0",
+        "i32.eqz_0"
+    ],
+    "block": "function_12_block_62",
+    "non_immediate_dependencies": []
+}
