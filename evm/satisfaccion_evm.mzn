@@ -10,11 +10,11 @@ TERM: null; %string que representa null
 
 %Variables de control para usar unas constraints u otras (0 = no se usa, 1 = si se usa)
 int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
-int: opt1 = 0;
-int: opt2 = 0;
-int: opt3 = 0;
-int: opt4 = 0;
-int: opt5 = 0;
+bool: opt1 = false;
+bool: opt2 = true;
+bool: opt3 = false;
+bool: opt4 = false;
+bool: opt5 = true;
 
 %Sets que se reusan
 set of int: SS = 1..s;
@@ -24,6 +24,7 @@ set of int: S3N = 3..n;
 set of int: SN0 = 1..N0;
 set of int: SN1 = 1..N1;
 set of int: SN2 = 1..N2;
+set of int: SNA = 1..NA;
 set of int: SNPUSH = 1..NPUSH;
 set of int: SNSTORE = 1..NSTORE;
 set of int: MDN = 1..m_dep_n;
@@ -55,6 +56,17 @@ array [SN2] of int: bingas;
 array [SN2] of int: binsz;
 array [SN2] of int: binlb;
 array [SN2] of int: binub;
+
+enum ASSOCIATIVEADDOP;
+int: NA;
+array[SNA] of TERM: naddin;
+array[SNA] of TERM: addin;
+array[SNA] of TERM: addnout;
+array[SNA] of bool: addcomm;
+array[SNA] of int: addgas;
+array[SNA] of int: addsz;
+array[SNA] of int: addlb;
+array[SNA] of int: addub;
 
 enum PUSHOP;
 int: NPUSH;
@@ -188,10 +200,10 @@ else value = sum(i in SS)(fsize[i]) endif;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Todas las operaciones definidas deben aparecer en program
-constraint if opt1 == 1 then ((forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)))) endif;
+constraint if opt1 then ((forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)))) endif;
 
 % Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
-constraint if opt2 == 1 then (forall (x in TERM, j in SN where 
+constraint if opt2 then (forall (x in TERM, j in SN where 
   % Condiciones de x en el forall
   (((exists (e in endstack) (x == e))\/
   (exists (ui in unin) (x == ui))\/
@@ -207,17 +219,17 @@ constraint if opt2 == 1 then (forall (x in TERM, j in SN where
   (exists (p in pushout) (x == p)))) endif;
 
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o SWAPk.
-constraint if opt3 == 1 then (forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM)) (program[i-1] == sw )))) endif;
+constraint if opt3 then (forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM)) (program[i-1] == sw )))) endif;
 
 % Cada operacion definida con coste de gas mayor o igual a 3 deberá utilizarse como máximo una vez.
-constraint if opt4 == 1 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 where (j == Z^-1(program[i])))((program[i] == z)/\(zerogas[j] >= 3)) <= 1))/\
+constraint if opt4 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 where (j == Z^-1(program[i])))((program[i] == z)/\(zerogas[j] >= 3)) <= 1))/\
   (forall (u in U(UNARYOP)) (count (i in SS, j in SN1 where (j == U^-1(program[i])))((program[i] == u)/\(ungas[j] >= 3)) <= 1))/\
   (forall (bi in BI(BINARYOP)) (count (i in SS, j in SN2 where (j == BI^-1(program[i])))((program[i] == bi)/\(bingas[j] >= 3)) <= 1))/\
   (forall (st in ST(STOROP)) (count (i in SS, j in SNSTORE where (j == ST^-1(program[i])))((program[i] == st)/\(storgas[j] >= 3)) <= 1))/\
   (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1))) endif;
   
 % (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es nop, dup, swap o una operacion con output x.
-constraint if opt5 == 1 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])) 
+constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])) 
 ((x != null) 
 /\((program[i-1] == OPCODES[1])
 \/(program[i-1] in D(DUP_ENUM))
