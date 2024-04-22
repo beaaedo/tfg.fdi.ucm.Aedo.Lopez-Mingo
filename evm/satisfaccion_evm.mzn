@@ -7,7 +7,10 @@ int: s; % init_progr_len
 int: n; % max_sk_sz
 int: min;
 TERM: null; %string que representa null
+
+%Variables de control para usar unas constraints u otras 
 int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
+int: opt1 = 0; 
 
 %Sets que se reusan
 set of int: SS = 1..s;
@@ -184,7 +187,7 @@ else value = sum(i in SS)(fsize[i]) endif;
 constraint (forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)));
 
 % Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
-constraint forall (x in TERM, j in 1..n where 
+constraint forall (x in TERM, j in SN where 
   % Condiciones de x en el forall
   (((exists (e in endstack) (x == e))\/
   (exists (ui in unin) (x == ui))\/
@@ -208,5 +211,16 @@ constraint (forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 where (j == Z^-
   (forall (bi in BI(BINARYOP)) (count (i in SS, j in SN2 where (j == BI^-1(program[i])))((program[i] == bi)/\(bingas[j] >= 3)) <= 1))/\
   (forall (st in ST(STOROP)) (count (i in SS, j in SNSTORE where (j == ST^-1(program[i])))((program[i] == st)/\(storgas[j] >= 3)) <= 1))/\
   (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1));
+  
+% (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es nop, dup, swap o una operacion con output x.
+constraint forall (i in 2..s+1 where (x == states[i,1])) 
+((x != null) 
+/\((program[i-1] == OPCODES[1])
+\/(program[i-1] in D(DUP_ENUM))
+\/(program[i-1] in SW(SWAP_ENUM))
+\/((program[i-1] in Z(ZEROARYOP))/\(x == zeroout[Z^-1(program[i-1])]))
+\/((program[i-1] in U(UNARYOP))/\(x == unout[U^-1(program[i-1])]))
+\/((program[i-1] in BI(BINARYOP))/\(x == binout[BI^-1(program[i-1])]))
+\/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))));
 
 solve minimize value;
