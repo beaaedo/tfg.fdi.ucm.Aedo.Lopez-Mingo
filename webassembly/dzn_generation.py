@@ -47,6 +47,8 @@ class SMSgreedy:
         self._final_stack = json_format['tgt_ws']
         self._variables = json_format['vars']
         self._dependencies = json_format['dependencies']
+        self._max_registers_sz = json_format['max_registers_sz']
+        self._register_changes = json_format['register_changes']
         self._rules = json_format['rules']
         #self._mem_order = json_format['memory_dependences']
         #self._sto_order = json_format['storage_dependences']
@@ -258,13 +260,44 @@ class SMSgreedy:
         print("s = " + str(self._b0) + ";", file=self._f)
         print("n = " + str(self._bs) + ";", file=self._f)
         print("ndeps = " + str(len(self._dependencies)) + ";", file=self._f)
+        print("max_registers_sz = " + str(self._max_registers_sz) + ";", file=self._f)
+        print("NR = " + str(len(self._register_changes)) + ";", file=self._f)
+
+        num_regs = len(self._register_changes)
+        if (num_regs == 0):
+            reg = "[| |]"
+        else: 
+            reg = '[' + ', '.join(["|'{}'".format("', '".join(map(str, sublist))) for sublist in self._register_changes]) + '|]'
+        print("registers = " + str(reg) + ";", file=self._f)
 
         num_deps = len(self._dependencies)
         if (num_deps == 0):
             dep = "[| |]"
         else: 
-            dep = '[' + ', '.join(["|'{}'|".format("', '".join(map(str, sublist))) for sublist in self._dependencies]) + ']'
+            dep = '[' + ', '.join(["|'{}'".format("', '".join(map(str, sublist))) for sublist in self._dependencies]) + '|]'
         print("dependencies = " + str(dep) + ";", file=self._f)
+
+        n_ops = len(self._register_changes) + self._max_registers_sz
+        gets = "GET_ENUM = {"
+        sets = "SET_ENUM = {"
+        tees = "TEE_ENUM = {"
+        for x in range(n_ops):
+            if x == n_ops - 1: 
+                gets += " GET" + str(x + 1)
+                sets += " SET" + str(x + 1)
+                tees += " TEE" + str(x + 1)
+            else: 
+                gets += " GET" + str(x + 1) + ","
+                sets += " SET" + str(x + 1) + ","
+                tees += " TEE" + str(x + 1) + ","
+        gets += "};"
+        sets += "};"
+        tees += "};"
+
+        print(gets, file=self._f)
+        print(sets, file=self._f)
+        print(tees, file=self._f)
+
         # print("min = " + str(self._min_length) + ";", file=self._f)
         # print("origsol = "+str(self._original_code_with_ids)+";", file=self._f)
         # print("% when empty means not available", file=self._f)
