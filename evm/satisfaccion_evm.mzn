@@ -203,14 +203,14 @@ constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])
 constraint if opt1 then ((forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)))) endif;
 
 % Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
-constraint forall (e in endstack, ui in unin, bi1 in binin1, bi2 in binin2, si1 in storin1, si2 in storin2, a in addin) 
+constraint if opt2 then (forall (e in endstack, ui in unin, bi1 in binin1, bi2 in binin2, si1 in storin1, si2 in storin2, a in addin where (a != null)) 
   (((e in zeroout)\/(e in unout)\/(e in binout)\/(e in pushout)\/(e in addout))/\
   ((ui in zeroout)\/(ui in unout)\/(ui in binout)\/(ui in pushout)\/(ui in addout))/\
   ((bi1 in zeroout)\/(bi1 in unout)\/(bi1 in binout)\/(bi1 in pushout)\/(bi1 in addout))/\
   ((bi2 in zeroout)\/(bi2 in unout)\/(bi2 in binout)\/(bi2 in pushout)\/(bi2 in addout))/\
   ((si1 in zeroout)\/(si1 in unout)\/(si1 in binout)\/(si1 in pushout)\/(si1 in addout))/\
   ((si2 in zeroout)\/(si2 in unout)\/(si2 in binout)\/(si2 in pushout)\/(si2 in addout))/\
-  ((a in zeroout)\/(a in unout)\/(a in binout)\/(a in pushout)\/(a in addout)));
+  ((a in zeroout)\/(a in unout)\/(a in binout)\/(a in pushout)\/(a in addout)))) endif;
 
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o SWAPk.
 constraint if opt3 then (forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM))         (program[i-1] == sw )))) endif;
@@ -223,17 +223,23 @@ constraint if opt4 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 w
   (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1))) endif;
   
 % (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es nop, dup, swap o una operacion con output x.
-%constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])) 
-  %((x != null) 
-  %/\((program[i-1] == OPCODES[1])
-  %\/(program[i-1] in D(DUP_ENUM))
-  %\/(program[i-1] in SW(SWAP_ENUM))
-  %\/((program[i-1] in Z(ZEROARYOP))/\(x == zeroout[Z^-1(program[i-1])]))
-  %\/((program[i-1] in U(UNARYOP))/\(x == unout[U^-1(program[i-1])]))
-  %\/((program[i-1] in BI(BINARYOP))/\(x == binout[BI^-1(program[i-1])]))
-  %\/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))))) endif;
+constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1]) /\ (x != null)) 
+  (((program[i-1] == OPCODES[1])
+  \/(program[i-1] in D(DUP_ENUM))
+  \/(program[i-1] in SW(SWAP_ENUM))
+  \/((program[i-1] in Z(ZEROARYOP))/\(x == zeroout[Z^-1(program[i-1])]))
+  \/((program[i-1] in U(UNARYOP))/\(x == unout[U^-1(program[i-1])]))
+  \/((program[i-1] in BI(BINARYOP))/\(x == binout[BI^-1(program[i-1])]))
+  \/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))
+  \/((program[i-1] in A(ASSOCIATIVEADDOP))/\(x == addout[A^-1(program[i-1])]))))) endif;
 
-%(NO TOSEM) Asociatividad
+%(NO TOSEM) Asociatividad -- de momento no conmutativa
 
+constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
+  (let {var int: z = A^-1(program[i])} in (forall (k in 1..naddin[z])(addin[z,k] == states[i,k]))/\
+  (states[i+1,1] == addout[z])/\
+  (forall(l in 2..n-(naddin[z]-1)) (states[i+1,l] == states[i,l+(naddin[z]-1)]))/\
+  (forall(p in n-(naddin[z]-2)..n)(states[i+1,p] == null))
+  /\ fgas[i] == addgas[z] /\ fsize[i] == addsz[z]);
 
 solve minimize value;
