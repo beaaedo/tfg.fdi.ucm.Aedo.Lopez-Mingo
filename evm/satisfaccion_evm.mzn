@@ -10,10 +10,10 @@ TERM: null; %string que representa null
 
 %Variables de control para usar unas constraints u otras (0 = no se usa, 1 = si se usa)
 int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
-bool: opt1 = false;
+bool: opt1 = true;
 bool: opt2 = true;
-bool: opt3 = false;
-bool: opt4 = false;
+bool: opt3 = true;
+bool: opt4 = true;
 bool: opt5 = true;
 
 %Sets que se reusan
@@ -59,9 +59,9 @@ array [SN2] of int: binub;
 
 enum ASSOCIATIVEADDOP;
 int: NA;
-array[SNA] of TERM: naddin;
-array[SNA] of TERM: addin;
-array[SNA] of TERM: addnout;
+array[SNA] of int: naddin;
+array[SNA, 1..10] of TERM: addin;
+array[SNA] of TERM: addout;
 array[SNA] of bool: addcomm;
 array[SNA] of int: addgas;
 array[SNA] of int: addsz;
@@ -99,7 +99,7 @@ array[1..s_dep_n, 1..2] of int: store_dependences;
 
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
-enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP); %Crea el enum opcodes sumando todos los enums
+enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP); %Crea el enum opcodes sumando todos los enums
 
 % VARIABLES
 % matriz s + 1 x n, s+1 pilas
@@ -192,8 +192,8 @@ constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,1]
 
 % Contar el valor a minimizar dependiendo de option 
 constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) 
-elseif option = 1 then value = sum(i in SS)(fgas[i]) 
-else value = sum(i in SS)(fsize[i]) endif;
+  elseif option = 1 then value = sum(i in SS)(fgas[i])
+  else value = sum(i in SS)(fsize[i]) endif;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                   CONSTRAINTS TOSEM                   %
@@ -203,23 +203,17 @@ else value = sum(i in SS)(fsize[i]) endif;
 constraint if opt1 then ((forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)))) endif;
 
 % Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
-constraint if opt2 then (forall (x in TERM, j in SN where 
-  % Condiciones de x en el forall
-  (((exists (e in endstack) (x == e))\/
-  (exists (ui in unin) (x == ui))\/
-  (exists (bi1 in binin1) (x == bi1))\/
-  (exists (bi2 in binin2) (x == bi2))\/
-  (exists (si1 in storin1) (x == si1))\/
-  (exists (si2 in storin2) (x == si2)))/\
-  (not exists(i in 1..n) (x == startstack[i])))) 
-  % Condiciones que debe cumplir
-  ((exists (z in zeroout) (x == z)) \/
-  (exists (u in unout) (x == u)) \/
-  (exists (b in binout) (x == b)) \/
-  (exists (p in pushout) (x == p)))) endif;
+constraint forall (e in endstack, ui in unin, bi1 in binin1, bi2 in binin2, si1 in storin1, si2 in storin2, a in addin) 
+  (((e in zeroout)\/(e in unout)\/(e in binout)\/(e in pushout)\/(e in addout))/\
+  ((ui in zeroout)\/(ui in unout)\/(ui in binout)\/(ui in pushout)\/(ui in addout))/\
+  ((bi1 in zeroout)\/(bi1 in unout)\/(bi1 in binout)\/(bi1 in pushout)\/(bi1 in addout))/\
+  ((bi2 in zeroout)\/(bi2 in unout)\/(bi2 in binout)\/(bi2 in pushout)\/(bi2 in addout))/\
+  ((si1 in zeroout)\/(si1 in unout)\/(si1 in binout)\/(si1 in pushout)\/(si1 in addout))/\
+  ((si2 in zeroout)\/(si2 in unout)\/(si2 in binout)\/(si2 in pushout)\/(si2 in addout))/\
+  ((a in zeroout)\/(a in unout)\/(a in binout)\/(a in pushout)\/(a in addout)));
 
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o SWAPk.
-constraint if opt3 then (forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM)) (program[i-1] == sw )))) endif;
+constraint if opt3 then (forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM))         (program[i-1] == sw )))) endif;
 
 % Cada operacion definida con coste de gas mayor o igual a 3 deberá utilizarse como máximo una vez.
 constraint if opt4 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 where (j == Z^-1(program[i])))((program[i] == z)/\(zerogas[j] >= 3)) <= 1))/\
@@ -229,14 +223,17 @@ constraint if opt4 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 w
   (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1))) endif;
   
 % (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es nop, dup, swap o una operacion con output x.
-constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])) 
-((x != null) 
-/\((program[i-1] == OPCODES[1])
-\/(program[i-1] in D(DUP_ENUM))
-\/(program[i-1] in SW(SWAP_ENUM))
-\/((program[i-1] in Z(ZEROARYOP))/\(x == zeroout[Z^-1(program[i-1])]))
-\/((program[i-1] in U(UNARYOP))/\(x == unout[U^-1(program[i-1])]))
-\/((program[i-1] in BI(BINARYOP))/\(x == binout[BI^-1(program[i-1])]))
-\/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))))) endif;
+%constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])) 
+  %((x != null) 
+  %/\((program[i-1] == OPCODES[1])
+  %\/(program[i-1] in D(DUP_ENUM))
+  %\/(program[i-1] in SW(SWAP_ENUM))
+  %\/((program[i-1] in Z(ZEROARYOP))/\(x == zeroout[Z^-1(program[i-1])]))
+  %\/((program[i-1] in U(UNARYOP))/\(x == unout[U^-1(program[i-1])]))
+  %\/((program[i-1] in BI(BINARYOP))/\(x == binout[BI^-1(program[i-1])]))
+  %\/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))))) endif;
+
+%(NO TOSEM) Asociatividad
+
 
 solve minimize value;

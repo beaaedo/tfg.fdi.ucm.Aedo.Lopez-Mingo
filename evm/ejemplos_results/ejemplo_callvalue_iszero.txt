@@ -9,7 +9,7 @@ states =
  |  s3,  s3
  |];
 program = [Z(CALLVALUE_0), U(ISZERO_0), D(DUP1), NOP];
-% time elapsed: 0.13 s
+% time elapsed: 0.44 s
 ----------
 ==========
-% time elapsed: 0.13 s
+% time elapsed: 0.44 s

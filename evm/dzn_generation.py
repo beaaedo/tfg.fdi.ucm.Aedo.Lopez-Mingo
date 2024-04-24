@@ -129,7 +129,7 @@ class SMSgreedy:
                             n_ins+=1
                             self._user_instr.remove(ins_nxt)
         ASSOCIATIVEADDOP = []
-        addin = [[0] * 10 for _ in range(n_ins)]
+        addin = [["null"] * 10 for _ in range(n_ins)]
         naddin = []
         addout = []
         addcomm = []
@@ -374,7 +374,7 @@ class SMSgreedy:
             print(r"ASSOCIATIVEADDOP = {};", file=self._f)
             print("naddin =  [];", file=self._f)
             print("addin =  [||];", file=self._f)
-            print("addnout = [];", file=self._f)
+            print("addout = [];", file=self._f)
             print("addcomm = [];", file=self._f)
             print("addgas = [];", file=self._f)
             print("addsz =  [];", file=self._f)
@@ -394,7 +394,7 @@ class SMSgreedy:
                 str_addin += "|"
                 if i != len(addin) - 1:
                     str_addin += " , "
-            str_addin += " ];"
+            str_addin += "];"
             print(str_addin, file=self._f)
             print("addout = [" + make_list(addout) + " ];", file=self._f)
             print("addcomm = [" + make_list(addcomm) + " ];", file=self._f)

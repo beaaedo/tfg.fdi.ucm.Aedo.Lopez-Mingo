@@ -7,7 +7,7 @@ states =
  | s2, '.', '.'
  |];
 program = [BI(ADD_0), NOP];
-% time elapsed: 0.12 s
+% time elapsed: 0.75 s
 ----------
 ==========
-% time elapsed: 0.12 s
+% time elapsed: 0.75 s

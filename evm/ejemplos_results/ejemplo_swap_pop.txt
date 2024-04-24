@@ -9,7 +9,7 @@ states =
  | s4, s3, s2, '.', '.', '.'
  |];
 program = [POP, POP, SW(SWAP2), NOP];
-% time elapsed: 0.26 s
+% time elapsed: 0.85 s
 ----------
 ==========
-% time elapsed: 0.26 s
+% time elapsed: 0.85 s

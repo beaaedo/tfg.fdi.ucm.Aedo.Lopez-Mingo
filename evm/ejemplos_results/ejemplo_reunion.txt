@@ -9,7 +9,7 @@ states =
  | s2,  s1, '.'
  |];
 program = [POP, P(PUSH_0), D(DUP2), BI(GT_0)];
-% time elapsed: 0.16 s
+% time elapsed: 0.88 s
 ----------
 ==========
-% time elapsed: 0.16 s
+% time elapsed: 0.88 s

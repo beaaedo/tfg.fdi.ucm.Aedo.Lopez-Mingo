@@ -10,7 +10,7 @@ states =
  | s3,  s5,  s3
  |];
 program = [P(PUSH_0), SW(SWAP1), U(ISZERO_0), SW(SWAP1), D(DUP2)];
-% time elapsed: 0.15 s
+% time elapsed: 0.84 s
 ----------
 value = 3;
 fgas = [3, 3, 3, 0, 0];
@@ -24,7 +24,7 @@ states =
  | s3,  s5,  s3
  |];
 program = [U(ISZERO_0), P(PUSH_0), D(DUP2), NOP, NOP];
-% time elapsed: 0.15 s
+% time elapsed: 0.85 s
 ----------
 ==========
-% time elapsed: 0.15 s
+% time elapsed: 0.85 s
