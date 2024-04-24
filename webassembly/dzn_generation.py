@@ -47,6 +47,8 @@ class SMSgreedy:
         self._final_stack = json_format['tgt_ws']
         self._variables = json_format['vars']
         self._dependencies = json_format['dependencies']
+        self._max_registers_sz = json_format['max_registers_sz']
+        self._register_changes = json_format['register_changes']
         self._rules = json_format['rules']
         #self._mem_order = json_format['memory_dependences']
         #self._sto_order = json_format['storage_dependences']
@@ -114,11 +116,11 @@ class SMSgreedy:
 
         for ins in self._user_instr:
             if len(ins["inpt_sk"]) == 0 and len(ins["outpt_sk"]) == 1:
-                ZEROARYOP += [ins["id"]]
-                zeout += [ins["outpt_sk"][0]]
+                ZEROARYOP += ["'" + ins["id"] + "'"]
+                zeout += ["'" + ins["outpt_sk"][0] + "'"]
                 zegas += [str(ins["gas"])]
                 zesz += [str(ins["size"])]
-                zestor += [str(ins["storage"])]
+                zestor += [str(ins["storage"]).lower()]
                 if len(self._lower_bounds) > 0:
                     zelb += [str(self._lower_bounds[ins["id"]] + 1)]
                     zeub += [str(self._upper_bounds[ins["id"]] + 1)]
@@ -126,7 +128,7 @@ class SMSgreedy:
                     zelb += [str(1)]
                     zeub += [str(self._b0)]
             elif len(ins["inpt_sk"]) == 1 and len(ins["outpt_sk"]) == 1:
-                UNARYOP += [ins["id"]]
+                UNARYOP += ["'" + ins["id"] + "'"]
                 if isinstance(ins["inpt_sk"][0], int):
                     i = len(constants)
                     if ins["inpt_sk"][0] in constants:
@@ -135,11 +137,11 @@ class SMSgreedy:
                         constants += [ins["inpt_sk"][0]]
                     unin += ["c" + str(i)]
                 else:
-                    unin += [ins["inpt_sk"][0]]
-                unout += [ins["outpt_sk"][0]]
+                    unin += ["'" + ins["inpt_sk"][0] + "'"]
+                unout += ["'" + ins["outpt_sk"][0] + "'"]
                 ungas += [str(ins["gas"])]
                 unsz += [str(ins["size"])]
-                unstor += [str(ins["storage"])]
+                unstor += [str(ins["storage"]).lower()]
                 if len(self._lower_bounds) > 0:
                     unlb += [str(self._lower_bounds[ins["id"]] + 1)]
                     unub += [str(self._upper_bounds[ins["id"]] + 1)]
@@ -147,7 +149,7 @@ class SMSgreedy:
                     unlb += [str(1)]
                     unub += [str(self._b0)]
             elif len(ins["inpt_sk"]) == 2 and len(ins["outpt_sk"]) == 1:   
-                BINARYOP += [ins["id"]]
+                BINARYOP += ["'" + ins["id"] + "'"]
                 if isinstance(ins["inpt_sk"][0], int):
                     i = len(constants)
                     if ins["inpt_sk"][0] in constants:
@@ -156,7 +158,7 @@ class SMSgreedy:
                         constants += [ins["inpt_sk"][0]]
                     binin1 += ["c" + str(i)]
                 else:
-                    binin1 += [ins["inpt_sk"][0]]
+                    binin1 += ["'" + ins["inpt_sk"][0] + "'"]
                 if isinstance(ins["inpt_sk"][1], int):
                     i = len(constants)
                     if ins["inpt_sk"][1] in constants:
@@ -165,12 +167,12 @@ class SMSgreedy:
                         constants += [ins["inpt_sk"][1]]
                     binin2 += ["c" + str(i)]
                 else:
-                    binin2 += [ins["inpt_sk"][1]]
-                binout += [ins["outpt_sk"][0]]
+                    binin2 += ["'" + ins["inpt_sk"][1] + "'"]
+                binout += ["'" + ins["outpt_sk"][0] + "'"]
                 bincomm += [str(ins["commutative"]).lower()]
                 bingas += [str(ins["gas"])]
                 binsz += [str(ins["size"])]
-                binstor += [str(ins["storage"])]
+                binstor += [str(ins["storage"]).lower()]
                 if len(self._lower_bounds) > 0:
                     binlb += [str(self._lower_bounds[ins["id"]] + 1)]
                     binub += [str(self._upper_bounds[ins["id"]] + 1)]
@@ -178,7 +180,7 @@ class SMSgreedy:
                     binlb += [str(1)]
                     binub += [str(self._b0)]
             elif len(ins["inpt_sk"]) == 3 and len(ins["outpt_sk"]) == 3:   
-                TERNARYOP += [ins["id"]]
+                TERNARYOP += ["'" + ins["id"] + "'"]
                 if isinstance(ins["inpt_sk"][0], int):
                     i = len(constants)
                     if ins["inpt_sk"][0] in constants:
@@ -187,7 +189,7 @@ class SMSgreedy:
                         constants += [ins["inpt_sk"][0]]
                     terin1 += ["c" + str(i)]
                 else:
-                    terin1 += [ins["inpt_sk"][0]]
+                    terin1 += ["'" + ins["inpt_sk"][0] + "'"]
                 if isinstance(ins["inpt_sk"][1], int):
                     i = len(constants)
                     if ins["inpt_sk"][1] in constants:
@@ -196,7 +198,7 @@ class SMSgreedy:
                         constants += [ins["inpt_sk"][1]]
                     terin2 += ["c" + str(i)]
                 else:
-                    terin2 += [ins["inpt_sk"][1]]
+                    terin2 += ["'" + ins["inpt_sk"][1] + "'"]
                 if isinstance(ins["inpt_sk"][2], int):
                     i = len(constants)
                     if ins["inpt_sk"][3] in constants:
@@ -205,7 +207,7 @@ class SMSgreedy:
                         constants += [ins["inpt_sk"][2]]
                     terin3 += ["c" + str(i)]
                 else:
-                    terin3 += [ins["inpt_sk"][2]]
+                    terin3 += ["'" + ins["inpt_sk"][2] + "'"]
                 if isinstance(ins["outpt_sk"][0], int):
                     i = len(constants)
                     if ins["outpt_sk"][0] in constants:
@@ -214,7 +216,7 @@ class SMSgreedy:
                         constants += [ins["outpt_sk"][0]]
                     terout1 += ["c" + str(i)]
                 else:
-                    terout1 += [ins["outpt_sk"][0]]
+                    terout1 += ["'" + ins["outpt_sk"][0] + "'"]
                 if isinstance(ins["outpt_sk"][1], int):
                     i = len(constants)
                     if ins["outpt_sk"][1] in constants:
@@ -223,7 +225,7 @@ class SMSgreedy:
                         constants += [ins["outpt_sk"][1]]
                     terout2 += ["c" + str(i)]
                 else:
-                    terout2 += [ins["outpt_sk"][1]]
+                    terout2 += ["'" + ins["outpt_sk"][1] + "'"]
                 if isinstance(ins["outpt_sk"][2], int):
                     i = len(constants)
                     if ins["outpt_sk"][3] in constants:
@@ -232,11 +234,11 @@ class SMSgreedy:
                         constants += [ins["outpt_sk"][2]]
                     terout3 += ["c" + str(i)]
                 else:
-                    terout3 += [ins["outpt_sk"][2]]
+                    terout3 += ["'" + ins["outpt_sk"][2] + "'"]
                 tercomm += [str(ins["commutative"]).lower()]
                 tergas += [str(ins["gas"])]
                 tersz += [str(ins["size"])]
-                terstor += [str(ins["storage"])]
+                terstor += [str(ins["storage"]).lower()]
                 if len(self._lower_bounds) > 0:
                     terlb += [str(self._lower_bounds[ins["id"]] + 1)]
                     terub += [str(self._upper_bounds[ins["id"]] + 1)]
@@ -249,7 +251,7 @@ class SMSgreedy:
 
         term = "TERM = { \'.\'"
         for v in self._variables:
-            term += ", s" + v[2:-1]
+            term += ", '" + v + "'"
         for v in range(len(constants)):
             term += ", c" + str(v)
         term += "};"
@@ -257,25 +259,48 @@ class SMSgreedy:
         print("null = \'.\';", file=self._f)
         print("s = " + str(self._b0) + ";", file=self._f)
         print("n = " + str(self._bs) + ";", file=self._f)
-        print("dependencies = " + str(self._dependencies) + ";", file=self._f)
-        print("rules = " + str(self._rules) + ";", file=self._f)
+        print("ndeps = " + str(len(self._dependencies)) + ";", file=self._f)
+        print("max_registers_sz = " + str(self._max_registers_sz) + ";", file=self._f)
+        print("NR = " + str(len(self._register_changes)) + ";", file=self._f)
+
+        num_regs = len(self._register_changes)
+        if (num_regs == 0):
+            reg = "[| |]"
+        else: 
+            reg = '[' + ', '.join(["|'{}'".format("', '".join(map(str, sublist))) for sublist in self._register_changes]) + '|]'
+        print("registers = " + str(reg) + ";", file=self._f)
+
+        num_deps = len(self._dependencies)
+        if (num_deps == 0):
+            dep = "[| |]"
+        else: 
+            dep = '[' + ', '.join(["|'{}'".format("', '".join(map(str, sublist))) for sublist in self._dependencies]) + '|]'
+        print("dependencies = " + str(dep) + ";", file=self._f)
+
+        n_ops = len(self._register_changes) + self._max_registers_sz
+        gets = "GET_ENUM = {"
+        sets = "SET_ENUM = {"
+        tees = "TEE_ENUM = {"
+        for x in range(n_ops):
+            if x == n_ops - 1: 
+                gets += " GET" + str(x + 1)
+                sets += " SET" + str(x + 1)
+                tees += " TEE" + str(x + 1)
+            else: 
+                gets += " GET" + str(x + 1) + ","
+                sets += " SET" + str(x + 1) + ","
+                tees += " TEE" + str(x + 1) + ","
+        gets += "};"
+        sets += "};"
+        tees += "};"
+
+        print(gets, file=self._f)
+        print(sets, file=self._f)
+        print(tees, file=self._f)
+
         # print("min = " + str(self._min_length) + ";", file=self._f)
         # print("origsol = "+str(self._original_code_with_ids)+";", file=self._f)
         # print("% when empty means not available", file=self._f)
-
-        dups = "DUP_ENUM = {"
-        for x in range(self._bs - 1):
-            if x == self._bs - 2: 
-                dups += " DUP" + str(x + 1)
-            else: 
-                dups += " DUP" + str(x + 1) + ","
-            
-        swaps = "SWAP_ENUM = {"
-        for x in range(self._bs - 1):
-            if x == self._bs -2:
-                swaps += " SWAP" + str(x + 1)
-            else:
-                swaps += " SWAP" + str(x + 1) + ","
 
         if len(ZEROARYOP) == 0:
             print("N0 = 0;", file=self._f)
@@ -385,13 +410,10 @@ class SMSgreedy:
             else:
                 print(f"terlb =  [ {0} ];", file=self._f)
                 print(f"terub =  [ {0} ];", file=self._f)
-        dups += "};"
-        swaps += "};"
-        print(dups, file=self._f)
-        print(swaps, file=self._f)
+
         startstack = []
         for v in self._initial_stack:
-            startstack += ["s" + v[2:-1]]
+            startstack += ["'" + v + "'"]
         if len(self._initial_stack) < self._bs:
             for i in range(self._bs - len(self._initial_stack)):
                 startstack += ["null"]
@@ -399,7 +421,7 @@ class SMSgreedy:
 
         endstack = []
         for v in self._final_stack:
-            endstack += ["s" + v[2:-1]]
+            endstack += ["'" + v + "'"]
         if len(self._final_stack) < self._bs:
             for i in range(self._bs - len(self._final_stack)):
                 endstack += ["null"]
