@@ -75,179 +75,76 @@ class SMSgreedy:
     
     def generate_dzn(self):
         constants = []
-        UNARYOP = []
-        unin = []
-        unout = []
-        ungas = []
-        unsz = []
-        unlb = []
-        unub = []
-        unstor = []
-        ZEROARYOP = []
-        zeout = []
-        zegas = []
-        zesz = []
-        zelb = []
-        zeub = []
-        zestor = []
-        BINARYOP = []
-        binin1 = []
-        binin2 = []
-        binout = []
-        bincomm = []
-        bingas = []
-        binsz = []
-        binlb = []
-        binub = []
-        binstor = []
-        TERNARYOP = []
-        terin1 = []
-        terin2 = []
-        terin3 = []
-        terout1 = []
-        terout2 = []
-        terout3 = []
-        tercomm = []
-        tergas = []
-        tersz = []
-        terlb = []
-        terub = []
-        terstor = []
+        
+        in_ops = []
+        out_ops = []
+
+        OP = []
+        in1 = []
+        in2 = []
+        in3 = []
+        out1 = []
+        out2 = []
+        out3 = []
+        comm = []
+        gas = []
+        sz = []
+        lb = []
+        ub = []
+        stor = []
 
         for ins in self._user_instr:
-            if len(ins["inpt_sk"]) == 0 and len(ins["outpt_sk"]) == 1:
-                ZEROARYOP += ["'" + ins["id"] + "'"]
-                zeout += ["'" + ins["outpt_sk"][0] + "'"]
-                zegas += [str(ins["gas"])]
-                zesz += [str(ins["size"])]
-                zestor += [str(ins["storage"]).lower()]
-                if len(self._lower_bounds) > 0:
-                    zelb += [str(self._lower_bounds[ins["id"]] + 1)]
-                    zeub += [str(self._upper_bounds[ins["id"]] + 1)]
-                else:
-                    zelb += [str(1)]
-                    zeub += [str(self._b0)]
-            elif len(ins["inpt_sk"]) == 1 and len(ins["outpt_sk"]) == 1:
-                UNARYOP += ["'" + ins["id"] + "'"]
-                if isinstance(ins["inpt_sk"][0], int):
-                    i = len(constants)
-                    if ins["inpt_sk"][0] in constants:
-                        i = constants.index(ins["inpt_sk"][0])
-                    else:
-                        constants += [ins["inpt_sk"][0]]
-                    unin += ["c" + str(i)]
-                else:
-                    unin += ["'" + ins["inpt_sk"][0] + "'"]
-                unout += ["'" + ins["outpt_sk"][0] + "'"]
-                ungas += [str(ins["gas"])]
-                unsz += [str(ins["size"])]
-                unstor += [str(ins["storage"]).lower()]
-                if len(self._lower_bounds) > 0:
-                    unlb += [str(self._lower_bounds[ins["id"]] + 1)]
-                    unub += [str(self._upper_bounds[ins["id"]] + 1)]
-                else:
-                    unlb += [str(1)]
-                    unub += [str(self._b0)]
-            elif len(ins["inpt_sk"]) == 2 and len(ins["outpt_sk"]) == 1:   
-                BINARYOP += ["'" + ins["id"] + "'"]
-                if isinstance(ins["inpt_sk"][0], int):
-                    i = len(constants)
-                    if ins["inpt_sk"][0] in constants:
-                        i = constants.index(ins["inpt_sk"][0])
-                    else:
-                        constants += [ins["inpt_sk"][0]]
-                    binin1 += ["c" + str(i)]
-                else:
-                    binin1 += ["'" + ins["inpt_sk"][0] + "'"]
-                if isinstance(ins["inpt_sk"][1], int):
-                    i = len(constants)
-                    if ins["inpt_sk"][1] in constants:
-                        i = constants.index(ins["inpt_sk"][1])
-                    else:
-                        constants += [ins["inpt_sk"][1]]
-                    binin2 += ["c" + str(i)]
-                else:
-                    binin2 += ["'" + ins["inpt_sk"][1] + "'"]
-                binout += ["'" + ins["outpt_sk"][0] + "'"]
-                bincomm += [str(ins["commutative"]).lower()]
-                bingas += [str(ins["gas"])]
-                binsz += [str(ins["size"])]
-                binstor += [str(ins["storage"]).lower()]
-                if len(self._lower_bounds) > 0:
-                    binlb += [str(self._lower_bounds[ins["id"]] + 1)]
-                    binub += [str(self._upper_bounds[ins["id"]] + 1)]
-                else:
-                    binlb += [str(1)]
-                    binub += [str(self._b0)]
-            elif len(ins["inpt_sk"]) == 3 and len(ins["outpt_sk"]) == 3:   
-                TERNARYOP += ["'" + ins["id"] + "'"]
-                if isinstance(ins["inpt_sk"][0], int):
-                    i = len(constants)
-                    if ins["inpt_sk"][0] in constants:
-                        i = constants.index(ins["inpt_sk"][0])
-                    else:
-                        constants += [ins["inpt_sk"][0]]
-                    terin1 += ["c" + str(i)]
-                else:
-                    terin1 += ["'" + ins["inpt_sk"][0] + "'"]
-                if isinstance(ins["inpt_sk"][1], int):
-                    i = len(constants)
-                    if ins["inpt_sk"][1] in constants:
-                        i = constants.index(ins["inpt_sk"][1])
-                    else:
-                        constants += [ins["inpt_sk"][1]]
-                    terin2 += ["c" + str(i)]
-                else:
-                    terin2 += ["'" + ins["inpt_sk"][1] + "'"]
-                if isinstance(ins["inpt_sk"][2], int):
-                    i = len(constants)
-                    if ins["inpt_sk"][3] in constants:
-                        i = constants.index(ins["inpt_sk"][2])
-                    else:
-                        constants += [ins["inpt_sk"][2]]
-                    terin3 += ["c" + str(i)]
-                else:
-                    terin3 += ["'" + ins["inpt_sk"][2] + "'"]
-                if isinstance(ins["outpt_sk"][0], int):
-                    i = len(constants)
-                    if ins["outpt_sk"][0] in constants:
-                        i = constants.index(ins["outpt_sk"][0])
-                    else:
-                        constants += [ins["outpt_sk"][0]]
-                    terout1 += ["c" + str(i)]
-                else:
-                    terout1 += ["'" + ins["outpt_sk"][0] + "'"]
-                if isinstance(ins["outpt_sk"][1], int):
-                    i = len(constants)
-                    if ins["outpt_sk"][1] in constants:
-                        i = constants.index(ins["outpt_sk"][1])
-                    else:
-                        constants += [ins["outpt_sk"][1]]
-                    terout2 += ["c" + str(i)]
-                else:
-                    terout2 += ["'" + ins["outpt_sk"][1] + "'"]
-                if isinstance(ins["outpt_sk"][2], int):
-                    i = len(constants)
-                    if ins["outpt_sk"][3] in constants:
-                        i = constants.index(ins["outpt_sk"][2])
-                    else:
-                        constants += [ins["outpt_sk"][2]]
-                    terout3 += ["c" + str(i)]
-                else:
-                    terout3 += ["'" + ins["outpt_sk"][2] + "'"]
-                tercomm += [str(ins["commutative"]).lower()]
-                tergas += [str(ins["gas"])]
-                tersz += [str(ins["size"])]
-                terstor += [str(ins["storage"]).lower()]
-                if len(self._lower_bounds) > 0:
-                    terlb += [str(self._lower_bounds[ins["id"]] + 1)]
-                    terub += [str(self._upper_bounds[ins["id"]] + 1)]
-                else:
-                    terlb += [str(1)]
-                    terub += [str(self._b0)]
+            n_in = len(ins["inpt_sk"])
+            n_out = len(ins["outpt_sk"])
+
+            in_ops += [n_in]
+            out_ops += [n_out]
+
+            comm_op = "false"
+
+            if (n_in > 0):
+                in1 += ["'" + ins["inpt_sk"][0] + "'"]
             else:
+                in1 += ["'.'"]
+            if (n_in > 1):
+                in2 += ["'" + ins["inpt_sk"][1] + "'"]
+                comm_op = str(ins["commutative"]).lower()
+            else:
+                in2 += ["'.'"]
+            if (n_in > 2):
+                in3 += ["'" + ins["inpt_sk"][2] + "'"]
+            else:
+                in3 += ["'.'"]
+
+            if (n_out > 0):
+                out1 += ["'" + ins["outpt_sk"][0] + "'"]
+            else:
+                out1 += ["'.'"]
+            if (n_out > 1):
+                out2 += ["'" + ins["outpt_sk"][1] + "'"]
+            else:
+                out2 += ["'.'"]
+            if (n_out > 2):
+                out3 += ["'" + ins["outpt_sk"][2] + "'"]
+            else:
+                out3 += ["'.'"]
+            
+            if (n_in > 3) or (n_out > 3):
                 print(ins["id"], file=self._f)
                 raise Exception("Unsuported operation")
+            
+            comm += [comm_op]
+            gas += [str(ins["gas"])]
+            sz += [str(ins["size"])]
+            stor += [str(ins["storage"]).lower()]
+            if len(self._lower_bounds) > 0:
+                lb += [str(self._lower_bounds[ins["id"]] + 1)]
+                ub += [str(self._upper_bounds[ins["id"]] + 1)]
+            else:
+                lb += [str(1)]
+                ub += [str(self._b0)]
+            
+            OP += ["'" + ins["id"] + "'"]
 
         term = "TERM = { \'.\'"
         for v in self._variables:
@@ -302,114 +199,44 @@ class SMSgreedy:
         # print("origsol = "+str(self._original_code_with_ids)+";", file=self._f)
         # print("% when empty means not available", file=self._f)
 
-        if len(ZEROARYOP) == 0:
-            print("N0 = 0;", file=self._f)
-            print(r"ZEROARYOP = {};", file=self._f)
-            print("zeroout = [];", file=self._f)
-            print("zerogas = [];", file=self._f)
-            print("zerosz =  [];", file=self._f)
-            print("zerostor =  [];", file=self._f)
-            print("zerolb =  [];", file=self._f)
-            print(f"zeroub =  [];", file=self._f)
+        if len(OP) == 0:
+            print("N = 0;", file=self._f)
+            print(r"OP = {};", file=self._f)
+            print("in_ops =  [];", file=self._f)
+            print("out_ops =  [];", file=self._f)
+            print("in1 =  [];", file=self._f)
+            print("in2 =  [];", file=self._f)
+            print("in3 =  [];", file=self._f)
+            print("out1 = [];", file=self._f)
+            print("out2 = [];", file=self._f)
+            print("out3 = [];", file=self._f)
+            print("comm = [];", file=self._f)
+            print("gas = [];", file=self._f)
+            print("sz =  [];", file=self._f)
+            print("stor =  [];", file=self._f)
+            print("lb =  [];", file=self._f)
+            print(f"ub =  [];", file=self._f)
         else:
-            print("N0 = " + str(len(ZEROARYOP)) + ";", file=self._f)
-            print("ZEROARYOP = { " + make_list(ZEROARYOP) + " };", file=self._f)
-            print("zeroout = [ " + make_list(zeout) + " ];", file=self._f)
-            print("zerogas = [ " + make_list(zegas) + " ];", file=self._f)
-            print("zerosz = [ " + make_list(zesz) + " ];", file=self._f)
-            print("zerostor = [ " + make_list(zestor) + " ];", file=self._f)
-            if len(zelb) > 0:
-                print("zerolb = [ " + make_list(zelb) + " ];", file=self._f)
-                print("zeroub = [ " + make_list(zeub) + " ];", file=self._f)
+            print("N = " + str(len(OP)) + ";", file=self._f)
+            print("OP = { " + make_list(OP) + " };", file=self._f)
+            print("in_ops = [" + make_list(in_ops) + " ];", file=self._f)
+            print("out_ops = [" + make_list(out_ops) + " ];", file=self._f)
+            print("in1 = [" + make_list(in1) + " ];", file=self._f)
+            print("in2 = [" + make_list(in2) + " ];", file=self._f)
+            print("in3 = [" + make_list(in3) + " ];", file=self._f)
+            print("out1 = [" + make_list(out1) + " ];", file=self._f)
+            print("out2 = [" + make_list(out2) + " ];", file=self._f)
+            print("out3 = [" + make_list(out3) + " ];", file=self._f)
+            print("comm = [" + make_list(comm) + " ];", file=self._f)
+            print("gas = [" + make_list(gas) + " ];", file=self._f)
+            print("sz = [" + make_list(sz) + " ];", file=self._f)
+            print("stor = [" + make_list(stor) + " ];", file=self._f)
+            if len(lb) > 0:
+                print("lb = [ " + make_list(lb) + " ];", file=self._f)
+                print("ub = [ " + make_list(ub) + " ];", file=self._f)
             else:
-                print(f"zerolb =  [ {0} ];", file=self._f)
-                print(f"zeroub =  [ {0} ];", file=self._f)
-        if len(UNARYOP) == 0:
-            print("N1 = 0;", file=self._f)
-            print(r"UNARYOP = {};", file=self._f)
-            print("unin =  [];", file=self._f)
-            print("unout = [];", file=self._f)
-            print("ungas = [];", file=self._f)
-            print("unsz =  [];", file=self._f)
-            print("unstor =  [];", file=self._f)
-            print("unlb =  [];", file=self._f)
-            print(f"unub =  [];", file=self._f)
-        else:
-            print("N1 = " + str(len(UNARYOP)) + ";", file=self._f)
-            print("UNARYOP = { " + make_list(UNARYOP) + " };", file=self._f)
-            print("unin = [ " + make_list(unin) + " ];", file=self._f)
-            print("unout = [ " + make_list(unout) + " ];", file=self._f)
-            print("ungas = [ " + make_list(ungas) + " ];", file=self._f)
-            print("unsz = [ " + make_list(unsz) + " ];", file=self._f)
-            print("unstor = [ " + make_list(unstor) + " ];", file=self._f)
-            if len(unlb) > 0:
-                print("unlb = [ " + make_list(unlb) + " ];", file=self._f)
-                print("unub = [ " + make_list(unub) + " ];", file=self._f)
-            else:
-                print(f"unlb =  [ {0} ];", file=self._f)
-                print(f"unub =  [ {0} ];", file=self._f)
-        if len(BINARYOP) == 0:
-            print("N2 = 0;", file=self._f)
-            print(r"BINARYOP = {};", file=self._f)
-            print("binin1 =  [];", file=self._f)
-            print("binin2 =  [];", file=self._f)
-            print("binout = [];", file=self._f)
-            print("bincomm = [];", file=self._f)
-            print("bingas = [];", file=self._f)
-            print("binsz =  [];", file=self._f)
-            print("binstor =  [];", file=self._f)
-            print("binlb =  [];", file=self._f)
-            print(f"binub =  [];", file=self._f)
-        else:
-            print("N2 = " + str(len(BINARYOP)) + ";", file=self._f)
-            print("BINARYOP = { " + make_list(BINARYOP) + " };", file=self._f)
-            print("binin1 = [" + make_list(binin1) + " ];", file=self._f)
-            print("binin2 = [" + make_list(binin2) + " ];", file=self._f)
-            print("binout = [" + make_list(binout) + " ];", file=self._f)
-            print("bincomm = [" + make_list(bincomm) + " ];", file=self._f)
-            print("bingas = [" + make_list(bingas) + " ];", file=self._f)
-            print("binsz = [" + make_list(binsz) + " ];", file=self._f)
-            print("binstor = [" + make_list(binstor) + " ];", file=self._f)
-            if len(binlb) > 0:
-                print("binlb = [ " + make_list(binlb) + " ];", file=self._f)
-                print("binub = [ " + make_list(binub) + " ];", file=self._f)
-            else:
-                print(f"binlb =  [ {0} ];", file=self._f)
-                print(f"binub =  [ {0} ];", file=self._f)
-        if len(TERNARYOP) == 0:
-            print("N3 = 0;", file=self._f)
-            print(r"TERNARYOP = {};", file=self._f)
-            print("terin1 =  [];", file=self._f)
-            print("terin2 =  [];", file=self._f)
-            print("terin3 =  [];", file=self._f)
-            print("terout1 = [];", file=self._f)
-            print("terout2 = [];", file=self._f)
-            print("terout3 = [];", file=self._f)
-            print("tercomm = [];", file=self._f)
-            print("tergas = [];", file=self._f)
-            print("tersz =  [];", file=self._f)
-            print("terstor =  [];", file=self._f)
-            print("terlb =  [];", file=self._f)
-            print(f"terub =  [];", file=self._f)
-        else:
-            print("N3 = " + str(len(TERNARYOP)) + ";", file=self._f)
-            print("TERNARYOP = { " + make_list(TERNARYOP) + " };", file=self._f)
-            print("terin1 = [" + make_list(terin1) + " ];", file=self._f)
-            print("terin2 = [" + make_list(terin2) + " ];", file=self._f)
-            print("terin3 = [" + make_list(terin3) + " ];", file=self._f)
-            print("terout1 = [" + make_list(terout1) + " ];", file=self._f)
-            print("terout2 = [" + make_list(terout2) + " ];", file=self._f)
-            print("terout3 = [" + make_list(terout3) + " ];", file=self._f)
-            print("tercomm = [" + make_list(tercomm) + " ];", file=self._f)
-            print("tergas = [" + make_list(tergas) + " ];", file=self._f)
-            print("tersz = [" + make_list(tersz) + " ];", file=self._f)
-            print("terstor = [" + make_list(terstor) + " ];", file=self._f)
-            if len(terlb) > 0:
-                print("terlb = [ " + make_list(terlb) + " ];", file=self._f)
-                print("terub = [ " + make_list(terub) + " ];", file=self._f)
-            else:
-                print(f"terlb =  [ {0} ];", file=self._f)
-                print(f"terub =  [ {0} ];", file=self._f)
+                print(f"lb =  [ {0} ];", file=self._f)
+                print(f"ub =  [ {0} ];", file=self._f)
 
         startstack = []
         for v in self._initial_stack:
