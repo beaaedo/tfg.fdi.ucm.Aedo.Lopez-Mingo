@@ -1,0 +1,168 @@
+{
+    "init_progr_len": 14,
+    "vars": [
+        "s(2)",
+        "local_1",
+        "s(0)",
+        "local_2",
+        "local_0",
+        "s(1)",
+        "local_3",
+        "s(3)"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "i64.load32_u_3",
+            "disasm": "i64.load32_u",
+            "opcode": "35",
+            "inpt_sk": [
+                "local_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.add_0",
+            "disasm": "i64.add",
+            "opcode": "7c",
+            "inpt_sk": [
+                "local_1",
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.store32_9",
+            "disasm": "i64.store32",
+            "opcode": "3e",
+            "inpt_sk": [
+                "s(1)",
+                "local_0"
+            ],
+            "outpt_sk": [],
+            "push": false,
+            "commutative": false,
+            "storage": true,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.const_0",
+            "disasm": "i64.const",
+            "opcode": "42",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 32,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.shr_u_0",
+            "disasm": "i64.shr_u",
+            "opcode": "88",
+            "inpt_sk": [
+                "s(3)",
+                "s(1)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_0"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_1",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_1"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [
+        [
+            "i64.load32_u_3",
+            "i64.store32_9"
+        ]
+    ],
+    "original_instrs": "local.get[local_index(0)] local.set[local_index(3)] local.get[local_index(3)] i64.load32_u[0,0] local.get[local_index(1)] i64.add local.set[local_index(2)] local.get[local_index(3)] local.get[local_index(2)] i64.store32[0,0] local.get[local_index(2)] i64.const[32] i64.shr_u local.set[local_index(2)]",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_2",
+            "s(2)"
+        ],
+        [
+            "local_3",
+            "local_0"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "local.get_0",
+        "LSET_1",
+        "LGET_1",
+        "i64.load32_u_3",
+        "local.get_1",
+        "i64.add_0",
+        "LSET_0",
+        "LGET_1",
+        "LGET_0",
+        "i64.store32_9",
+        "LGET_0",
+        "i64.const_0",
+        "i64.shr_u_0",
+        "LSET_0"
+    ],
+    "block": "function_17_block_0",
+    "non_immediate_dependencies": [
+        [
+            "i64.load32_u_3",
+            "i64.add_0"
+        ]
+    ]
+}

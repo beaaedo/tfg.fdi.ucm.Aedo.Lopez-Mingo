@@ -1,0 +1,55 @@
+{
+    "init_progr_len": 2,
+    "vars": [
+        "local_2",
+        "s(0)"
+    ],
+    "max_sk_sz": 6,
+    "src_ws": [],
+    "tgt_ws": [
+        "s(0)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i64.eqz_0",
+            "disasm": "i64.eqz",
+            "opcode": "50",
+            "inpt_sk": [
+                "local_2"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_2"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.get[local_index(2)] i64.eqz",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "local.get_0",
+        "i64.eqz_0"
+    ],
+    "block": "function_17_block_2",
+    "non_immediate_dependencies": []
+}

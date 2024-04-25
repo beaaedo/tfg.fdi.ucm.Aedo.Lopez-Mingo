@@ -1,0 +1,43 @@
+{
+    "init_progr_len": 2,
+    "vars": [
+        "s(0)",
+        "local_5"
+    ],
+    "max_sk_sz": 6,
+    "src_ws": [],
+    "tgt_ws": [],
+    "user_instrs": [
+        {
+            "id": "i32.const_0",
+            "disasm": "i32.const",
+            "opcode": "41",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 192,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i32.const[192] local.set[local_index(5)]",
+    "max_registers_sz": 4,
+    "register_changes": [
+        [
+            "local_5",
+            "s(0)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i32.const_0",
+        "LSET_0"
+    ],
+    "block": "function_18_block_2",
+    "non_immediate_dependencies": []
+}

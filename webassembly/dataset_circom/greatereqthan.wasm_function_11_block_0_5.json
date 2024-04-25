@@ -1,0 +1,91 @@
+{
+    "init_progr_len": 4,
+    "vars": [
+        "s(2)",
+        "s(0)",
+        "local_3",
+        "s(1)"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [],
+    "tgt_ws": [
+        "s(1)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i64.const_0",
+            "disasm": "i64.const",
+            "opcode": "42",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 32,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.shr_u_0",
+            "disasm": "i64.shr_u",
+            "opcode": "88",
+            "inpt_sk": [
+                "s(2)",
+                "local_3"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i32.wrap_i64_0",
+            "disasm": "i32.wrap_i64",
+            "opcode": "a7",
+            "inpt_sk": [
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_3"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.get[local_index(3)] i64.const[32] i64.shr_u i32.wrap_i64",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "local.get_0",
+        "i64.const_0",
+        "i64.shr_u_0",
+        "i32.wrap_i64_0"
+    ],
+    "block": "function_11_block_0_5",
+    "non_immediate_dependencies": []
+}
