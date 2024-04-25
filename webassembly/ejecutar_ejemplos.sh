@@ -12,7 +12,7 @@ json_folder="$base_folder/wasm-small-examples"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion_webassembly.mzn"
-#verification_script="$base_folder/process_solution.py"
+verification_script="$base_folder/process_solution.py"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
@@ -38,7 +38,7 @@ find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
             # AHC: Comentar esta línea si da problemas
-            #python "$verification_script" "$json_file" "$result_file"
+            python "$verification_script" "$json_file" "$result_file"
             echo ""
 
         else
