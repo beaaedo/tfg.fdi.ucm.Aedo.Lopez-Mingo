@@ -6,39 +6,35 @@
 # 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
 
 # PATHS
-base_folder="/Users/beaaedo/Desktop/tfg/codigo/webassembly"
+base_folder="/home/alejandro/tfg_minizinc/tfg/webassembly"
 #base_folder="/c/Users/claud/OneDrive/Escritorio/Clase/TFG/tfg"
-json_folder="$base_folder/wasm-small-examples"
-dzn_folder="$base_folder/ejemplos_dzn"
+json_folder="$base_folder/wasm-small-examples/16"
+dzn_folder="$base_folder/ejemplos_dzn/subset"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion_webassembly.mzn"
 verification_script="$base_folder/process_solution.py"
+minizinc="/home/alejandro/tfg_minizinc/MiniZincIDE-2.8.3-bundle-linux-x86_64/bin/minizinc"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
 
-find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
+for dzn_file in "$dzn_folder"/*.dzn; do
     # Comprobar si existe el archivo
     if [ -e "$dzn_file" ]; then
         # Almacenar el nombre del dzn sin el ".dzn" para crear un archivo de texto con cada resultado
         base_name=$(basename "$dzn_file" .dzn)
         result_file="$results_folder/$base_name.txt"
+        json_file="$json_folder/$base_name.json"
+        echo "Ejecutando " "$dzn_file"
 
         # Ejecución del código de minizinc
-        gtimeout -k 1 1 minizinc --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file";
-
-        parent_dir=$(basename "$(dirname "$dzn_file")")
-        
-        subdirectory="$results_folder/$parent_dir"
-        mkdir -p "$subdirectory"
-
-        mv "$result_file" "$subdirectory"
-
+        "$minizinc" --time-limit 10000 --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file";
+        echo 
         # Devuelve éxito o error dependiendo de si se ha ejecutado bien  mal. Si devuelve ERROR tambien devuelve los contenidos del archivo, mola para debugging.
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
             # AHC: Comentar esta línea si da problemas
-            python "$verification_script" "$json_file" "$result_file"
+            #python "$verification_script" "$json_file" "$result_file"
             echo ""
 
         else
@@ -47,6 +43,5 @@ find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
         fi
     fi 
 done
-
 # AHC: Comentar esta línea si da problemas
-#python "$verification_script" "$json_folder" "$results_folder"
+python3 "$verification_script" "$json_folder" "$results_folder"

@@ -6,14 +6,7 @@
 # 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
 
 # PATHS
- base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg/evm"
-#base_folder="/c/Users/claud/OneDrive/Escritorio/Clase/TFG/tfg"
-json_folder="$base_folder/ejemplos_json"
-dzn_folder="$base_folder/ejemplos_dzn"
-results_folder="$base_folder/ejemplos_results"
-python_script="$base_folder/dzn_generation.py"
-mzn_script="$base_folder/satisfaccion.mzn"
-verification_script="$base_folder/process_solution.py"
+ base_folder="/home/alejandro/tfg_minizinc/tfg/webassembly"
 
 # Llamada a los dos scripts
 bash $base_folder/generar_dzn.sh

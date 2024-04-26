@@ -6,7 +6,7 @@
 # 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
 
 # PATHS
-base_folder="/Users/beaaedo/Desktop/tfg/codigo/webassembly"
+base_folder="/home/alejandro/tfg_minizinc/tfg/webassembly"
 json_folder="$base_folder/wasm-small-examples"
 dzn_folder="$base_folder/ejemplos_dzn"
 python_script="$base_folder/dzn_generation.py"
