@@ -6,10 +6,11 @@
 # 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
 
 # PATHS
-base_folder="/Users/beaaedo/Desktop/tfg/codigo/webassembly"
-json_folder="$base_folder/wasm-small-examples"
+base_folder="/Users/beaaedo/Desktop/tfg"
+json_folder="$base_folder/codigo/webassembly/wasm-small-examples"
 dzn_folder="$base_folder/ejemplos_dzn"
-python_script="$base_folder/dzn_generation.py"
+#dzn_folder="$base_folder/binaries"
+python_script="$base_folder/codigo/webassembly/dzn_generation.py"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$dzn_folder"
@@ -18,13 +19,8 @@ mkdir -p "$dzn_folder"
 find "$json_folder" -type f -name "*.json" | while IFS= read -r json_file; do
     if [ -e "$json_file" ]; then 
         python3 "$python_script" "$json_file" 
-        parent_dir=$(basename "$(dirname "$json_file")")
-        
-        subdirectory="$dzn_folder/$parent_dir"
-        mkdir -p "$subdirectory"
-
         chmod 777 "${json_file%.json}.dzn"
-        mv "${json_file%.json}.dzn" "$subdirectory"
+        mv "${json_file%.json}.dzn" "$dzn_folder"
     fi
 done
 

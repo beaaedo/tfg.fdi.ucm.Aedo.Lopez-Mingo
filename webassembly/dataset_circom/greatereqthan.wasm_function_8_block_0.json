@@ -1,0 +1,108 @@
+{
+    "init_progr_len": 5,
+    "vars": [
+        "s(0)",
+        "s(2)",
+        "local_0",
+        "local_1",
+        "s(1)"
+    ],
+    "max_sk_sz": 7,
+    "src_ws": [],
+    "tgt_ws": [
+        "s(2)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i64.eq_0",
+            "disasm": "i64.eq",
+            "opcode": "51",
+            "inpt_sk": [
+                "s(1)",
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.load_1",
+            "disasm": "i64.load",
+            "opcode": "29",
+            "inpt_sk": [
+                "local_0"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.load_3",
+            "disasm": "i64.load",
+            "opcode": "29",
+            "inpt_sk": [
+                "local_1"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_0"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_1",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_1"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "local.get[local_index(0)] i64.load[3,24] local.get[local_index(1)] i64.load[3,24] i64.eq",
+    "max_registers_sz": 3,
+    "register_changes": [],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "local.get_0",
+        "i64.load_1",
+        "local.get_1",
+        "i64.load_3",
+        "i64.eq_0"
+    ],
+    "block": "function_8_block_0",
+    "non_immediate_dependencies": []
+}

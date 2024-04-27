@@ -1,0 +1,246 @@
+{
+    "init_progr_len": 20,
+    "vars": [
+        "s(6)",
+        "s(4)",
+        "s(1)",
+        "s(0)",
+        "local_9",
+        "local_2",
+        "s(3)",
+        "in_0",
+        "local_7",
+        "s(2)",
+        "s(5)",
+        "local_3",
+        "in_1",
+        "s(7)",
+        "s(8)"
+    ],
+    "max_sk_sz": 8,
+    "src_ws": [
+        "in_0",
+        "in_1"
+    ],
+    "tgt_ws": [
+        "s(6)",
+        "s(2)"
+    ],
+    "user_instrs": [
+        {
+            "id": "i64.const_0",
+            "disasm": "i64.const",
+            "opcode": "42",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(7)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 32,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.mul_0",
+            "disasm": "i64.mul",
+            "opcode": "7e",
+            "inpt_sk": [
+                "local_9",
+                "local_7"
+            ],
+            "outpt_sk": [
+                "s(4)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.const_1",
+            "disasm": "i64.const",
+            "opcode": "42",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "s(8)"
+            ],
+            "push": true,
+            "commutative": false,
+            "storage": false,
+            "value": 4294967295,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.add_0",
+            "disasm": "i64.add",
+            "opcode": "7c",
+            "inpt_sk": [
+                "in_0",
+                "in_1"
+            ],
+            "outpt_sk": [
+                "s(0)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.and_0",
+            "disasm": "i64.and",
+            "opcode": "83",
+            "inpt_sk": [
+                "s(8)",
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(3)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.add_1",
+            "disasm": "i64.add",
+            "opcode": "7c",
+            "inpt_sk": [
+                "s(4)",
+                "s(3)"
+            ],
+            "outpt_sk": [
+                "s(5)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.shr_u_0",
+            "disasm": "i64.shr_u",
+            "opcode": "88",
+            "inpt_sk": [
+                "s(7)",
+                "s(5)"
+            ],
+            "outpt_sk": [
+                "s(6)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.shr_u_1",
+            "disasm": "i64.shr_u",
+            "opcode": "88",
+            "inpt_sk": [
+                "s(7)",
+                "s(0)"
+            ],
+            "outpt_sk": [
+                "s(1)"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "i64.add_2",
+            "disasm": "i64.add",
+            "opcode": "7c",
+            "inpt_sk": [
+                "s(1)",
+                "local_3"
+            ],
+            "outpt_sk": [
+                "s(2)"
+            ],
+            "push": false,
+            "commutative": true,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_0",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_7"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        },
+        {
+            "id": "local.get_1",
+            "disasm": "local.get",
+            "opcode": "20",
+            "inpt_sk": [],
+            "outpt_sk": [
+                "local_9"
+            ],
+            "push": false,
+            "commutative": false,
+            "storage": false,
+            "gas": 1,
+            "size": 1
+        }
+    ],
+    "dependencies": [],
+    "original_instrs": "i64.add local.set[local_index(2)] local.get[local_index(3)] local.get[local_index(2)] i64.const[32] i64.shr_u i64.add local.set[local_index(3)] local.get[local_index(2)] i64.const[4294967295] i64.and local.get[local_index(7)] local.get[local_index(9)] i64.mul i64.add local.set[local_index(2)] local.get[local_index(3)] local.get[local_index(2)] i64.const[32] i64.shr_u",
+    "max_registers_sz": 5,
+    "register_changes": [
+        [
+            "local_2",
+            "s(5)"
+        ],
+        [
+            "local_3",
+            "s(2)"
+        ]
+    ],
+    "rules": "",
+    "original_instrs_with_ids": [
+        "i64.add_0",
+        "LSET_0",
+        "LGET_1",
+        "LGET_0",
+        "i64.const_0",
+        "i64.shr_u_1",
+        "i64.add_2",
+        "LSET_1",
+        "LGET_0",
+        "i64.const_1",
+        "i64.and_0",
+        "local.get_0",
+        "local.get_1",
+        "i64.mul_0",
+        "i64.add_1",
+        "LSET_0",
+        "LGET_1",
+        "LGET_0",
+        "i64.const_0",
+        "i64.shr_u_0"
+    ],
+    "block": "function_14_block_0_13",
+    "non_immediate_dependencies": []
+}
