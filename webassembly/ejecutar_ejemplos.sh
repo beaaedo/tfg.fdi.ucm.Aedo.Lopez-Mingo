@@ -38,7 +38,7 @@ find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
             # AHC: Comentar esta línea si da problemas
-            python "$verification_script" "$json_file" "$result_file"
+            # python "$verification_script" "$json_file" "$result_file"
             echo ""
 
         else
@@ -49,4 +49,4 @@ find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
 done
 
 # AHC: Comentar esta línea si da problemas
-#python "$verification_script" "$json_folder" "$results_folder"
+python "$verification_script" "$json_folder" "$results_folder"
