@@ -237,10 +237,13 @@ constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])
 %(NO TOSEM) Asociatividad -- de momento no conmutativa
 
 constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
-  (let {var int: z = A^-1(program[i])} in (forall (k in 1..naddin[z])(addin[z,k] == states[i,k]))/\
+  (let {var int: z = A^-1(program[i]); var int: w = naddin[z]} in 
+  (if addcomm[z] then 
+  (forall (k in TERM) (sum(j in 1..w)(states[i,j] == k) == sum(j in 1..w)(addin[z,j] == k))) 
+  else (forall (k in 1..w)(addin[z,k] == states[i,k])) endif)/\
   (states[i+1,1] == addout[z])/\
-  (forall(l in 2..n-(naddin[z]-1)) (states[i+1,l] == states[i,l+(naddin[z]-1)]))/\
-  (forall(p in n-(naddin[z]-2)..n)(states[i+1,p] == null))
+  (forall(j in 2..n-(w-1)) (states[i+1,j] == states[i,j+(w-1)]))/\
+  (forall(j in n-(w-2)..n)(states[i+1,j] == null))
   /\ fgas[i] == addgas[z] /\ fsize[i] == addsz[z]);
 
 solve minimize value;

@@ -49,6 +49,11 @@ class SMSgreedy:
         self._current_cost = json_format['current_cost']
         self._mem_order = json_format['memory_dependences']
         self._sto_order = json_format['storage_dependences']
+        if 'order_tgt_ws' in json_format:
+            self._order_final_stack = json_format['order_tgt_ws']
+            self._liberalize = True
+        else:
+            self._liberalize = False
         if 'min_length' in json_format:
             self._min_length = json_format['min_length']
         else:
@@ -467,6 +472,23 @@ class SMSgreedy:
             for i in range(self._bs - len(self._final_stack)):
                 endstack += ["null"]
         print("endstack = [ " + make_list(endstack) + " ];", file=self._f)
+
+        oder_tgt = []
+        auxorder = []
+        for v in self._order_final_stack:
+            if v[0] == 's':
+                auxorder += ["s" + v[2:-1]]
+            else:
+                auxorder += [v]
+    
+        if (len(self._order_final_stack) == 0 or self._liberalize == False):
+            order_tgt = "[| |]"
+        else:
+            order_tgt = '[' + ', '.join(['|{}|'.format(', '.join(map(str, sublist))) for sublist in auxorder]) + ']'
+
+
+        print("lib = " + str(self._liberalize).lower() + ";", file=self._f)
+        print("order_output = " + order_tgt + ";", file=self._f)
 
         before = []
         after = []
