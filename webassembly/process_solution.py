@@ -12,9 +12,9 @@ from symbolic_execution import check_execution_from_ids
 def mzn_id_to_instr_id(mzn_id: str) -> str:
     if mzn_id == 'POP' or mzn_id == 'NOP':
         return mzn_id
-    other_op_match = re.match(re.compile('.+\((.+)\)'), mzn_id)
-    if other_op_match is not None:
-        op = other_op_match.group(1)
+    matches = re.findall(re.compile('[a-zA-Z]+\((.+)\)'), mzn_id)
+    if len(matches) > 0:
+        op = matches[0]
         
         # PUSH tags and other opcodes with spaces must be treated separately,
         # as they start and end with ' symbol
@@ -27,7 +27,7 @@ def mzn_id_to_instr_id(mzn_id: str) -> str:
 
 def find_best_seq(output: str) -> List[str]:
     rev_lines = reversed(output.splitlines())
-    seq_re = re.compile('program = \[(.*)]')
+    seq_re = re.compile('program = \[(.*)];')
     for line in rev_lines:
         solution_mzn = re.match(seq_re, line)
         if solution_mzn is not None:
@@ -90,7 +90,6 @@ def load_from_minizinc(json_path, output_path):
 
 def verify_solution(sfs: Dict, instr_ids: List[str], outcome: str) -> Tuple[bool, str]:
     if "optimal" in outcome:
-        print(instr_ids, outcome)
         verification_output = check_execution_from_ids(sfs, instr_ids)
     else:
         # If there is no block to check with, then it is true
@@ -161,7 +160,6 @@ def verify_solution_from_files(json_folder, output_folder, csv_file: str = "eval
         basename = output_path.name.split(".")[0]
         json_file = Path(json_folder).joinpath(basename + ".json")
         csv_rows.append(run_and_verify_solution(json_file, output_file))
-    print(csv_rows, json_folder, output_folder)
     pd.DataFrame(csv_rows).to_csv(csv_file)
 
 ### MAIN

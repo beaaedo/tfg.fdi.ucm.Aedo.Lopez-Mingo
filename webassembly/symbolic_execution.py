@@ -11,7 +11,7 @@ instr_T = Dict[str, Any]
 const_re = re.compile('\[(.*)]')
 access_re = re.compile('_index\((.*)\)')
 
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 
 def idx_from_access(access: str) -> int:
