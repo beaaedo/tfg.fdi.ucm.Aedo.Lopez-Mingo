@@ -31,11 +31,7 @@ for dzn_file in "$dzn_folder"/*.dzn; do
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
             # AHC: Comentar esta línea si da problemas
-<<<<<<< HEAD
             # python "$verification_script" "$json_file" "$result_file"
-=======
-            #python "$verification_script" "$json_file" "$result_file"
->>>>>>> 2811d5a37bff0fc168f2d86b6e249bb5181a74c7
             echo ""
 
         else
