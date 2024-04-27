@@ -115,9 +115,10 @@ def extract_idx_from_id(instr_id: str) -> int:
     return int(instr_id[3:])
 
 
-def execute_instr_id(instr_id: str, cstack: List[var_T], clocals: List[var_T], user_instr: List[instr_T]):
+def execute_instr_id(instr_id: str, cstack: List[var_T], clocals: List[var_T], user_instr: List[instr_T]) -> Tuple[bool, str]:
     """
-    Executes the instr id according to user_instr
+    Executes the instr id according to user_instr. Returns a bool indicating the execution has succeed or not, and the reason
+    why it fails (if any)
     """
     if DEBUG_MODE:
         print(instr_id, cstack, clocals)
@@ -155,22 +156,25 @@ def execute_instr_id(instr_id: str, cstack: List[var_T], clocals: List[var_T], u
 
         if instr["commutative"]:
             input_vars = instr['inpt_sk']
-            assert len(input_vars) == 2, 'Commutative instructions with #args != 2'
+            if len(input_vars) != 2:
+                return False, 'Commutative instructions with #args != 2'
             # We consume the elements
             s0, s1 = cstack.pop(0), cstack.pop(0)
-            assert (s0 == input_vars[0] and s1 == input_vars[1]) or (s0 == input_vars[1] and s1 == input_vars[0]), \
-                f"Args don't match in commutative instr {instr_id}"
+            if (s0 != input_vars[0] or s1 != input_vars[1]) and (s0 != input_vars[1] or s1 != input_vars[0]):
+                return False, f"Args don't match in commutative instr {instr_id}"
 
         else:
             # We consume the elements
             for input_var in instr['inpt_sk']:
-                assert cstack[0] == input_var, f"Args don't match in non-commutative instr {instr_id}"
+                if cstack[0] != input_var:
+                    return False, f"Args don't match in non-commutative instr {instr_id}"
                 cstack.pop(0)
 
         # We introduce the new elements
         for output_var in reversed(instr['outpt_sk']):
             cstack.insert(0, output_var)
-
+    
+    return True, ""
 
 def check_deps(instr_ids: List[id_T], dependencies: List[Tuple[id_T, id_T]]) -> bool:
     """
@@ -251,7 +255,7 @@ def symbolic_execution_from_sfs(sfs: Dict) -> List[id_T]:
     return final_instr_ids
 
 
-def check_execution_from_ids(sfs: Dict, instr_ids: List[id_T]) -> bool:
+def check_execution_from_ids(sfs: Dict, instr_ids: List[id_T]) -> Tuple[bool,str]:
     """
     Given a SFS and a sequence of ids, checks the ids indeed represent a valid solution
     """
@@ -268,21 +272,30 @@ def check_execution_from_ids(sfs: Dict, instr_ids: List[id_T]) -> bool:
     flocal_list = [local_repr[1] for local_repr in local_changes]
 
     for instr_id in instr_ids:
-        execute_instr_id(instr_id, cstack, clocals_list, user_instr)
+        correct, reason = execute_instr_id(instr_id, cstack, clocals_list, user_instr)
+        if not correct:
+            return correct, reason
 
     if DEBUG_MODE and 'original_instrs_with_ids' in sfs:
         print('Len initial', len(sfs['original_instrs_with_ids']))
         print('Len final', len(instr_ids))
 
-    assert cstack == fstack, 'Ids - Stack do not match'
+    if cstack != fstack: 
+        return False, 'Ids - Stack do not match'
+    
     # Check only relevant locals
-    assert clocals_list[:len(flocal_list)] == flocal_list, 'Ids - Locals do not match'
-    assert check_deps(instr_ids, dependencies), 'Dependencies are not coherent'
+    if clocals_list[:len(flocal_list)] != flocal_list:
+        return False, 'Ids - Locals do not match'
+    
+    if not check_deps(instr_ids, dependencies): 
+        return False, 'Dependencies are not coherent'
+    
     for instr in user_instr:
         if any(instr_name in instr["disasm"] for instr_name in ["call", "global.set", "store", "memory"]):
-            assert instr_ids.count(instr["id"]) == 1, "Mem operation used more than once"
+            if instr_ids.count(instr["id"]) != 1:
+                return False, "Mem operation used more than once"
 
-    return True
+    return True, ""
 
 
 if __name__ == "__main__":

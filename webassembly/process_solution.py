@@ -88,13 +88,13 @@ def load_from_minizinc(json_path, output_path):
 
     return sfs, output
 
-def verify_solution(sfs: Dict, instr_ids: List[str], outcome: str) -> str:
+def verify_solution(sfs: Dict, instr_ids: List[str], outcome: str) -> Tuple[bool, str]:
     if "optimal" in outcome:
         print(instr_ids, outcome)
         verification_output = check_execution_from_ids(sfs, instr_ids)
     else:
         # If there is no block to check with, then it is true
-        verification_output = True
+        verification_output = True, ""
 
     return verification_output
 
@@ -123,13 +123,13 @@ def generate_statistics_info(original_block: List[str], optimized_block: List[st
 
 
 def generate_statistics_info(original_block: List[str], optimized_block: List[str], outcome: str, solver_time: float,
-                             tout: int, initial_bound: int, block_name: str, is_correct: bool) -> Dict:
+                             tout: int, initial_bound: int, block_name: str, is_correct: bool, reason: str) -> Dict:
 
     statistics_row = {"block_id": block_name,  "previous_solution": ' '.join(original_block), "timeout": tout,
                       "solver_time_in_sec": round(solver_time, 3), "outcome": outcome,
                       "initial_n_instrs": initial_bound, "model_found": False, "shown_optimal": False,
                       "initial_length": len(original_block), "saved_length": 0,
-                      "checker": is_correct}
+                      "checker": is_correct, "reason": reason}
 
     # The solver has returned a valid model
     if outcome in ["optimal", "non_optimal"]:
@@ -148,9 +148,9 @@ def run_and_verify_solution(json_path, output_path):
     block_name = Path(json_path).name.split(".")[0]
     sfs, output = load_from_minizinc(json_path, output_path)
     instr_ids, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
-    is_equivalent = verify_solution(sfs, instr_ids, outcome)
+    is_equivalent, reason = verify_solution(sfs, instr_ids, outcome)
     original_instrs = sfs["original_instrs"].split(' ')
-    csv_info = generate_statistics_info(original_instrs, instr_ids, outcome, time_elapsed, 10, len(original_instrs), block_name, is_equivalent)
+    csv_info = generate_statistics_info(original_instrs, instr_ids, outcome, time_elapsed, 10, len(original_instrs), block_name, is_equivalent, reason)
     return csv_info
 
 
