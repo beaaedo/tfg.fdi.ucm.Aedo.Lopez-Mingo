@@ -17,7 +17,7 @@ verification_script="$base_folder/process_solution.py"
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
 
-find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
+for dzn_file in "$dzn_folder"/*.dzn; do
     # Comprobar si existe el archivo
     if [ -e "$dzn_file" ]; then
         # Almacenar el nombre del dzn sin el ".dzn" para crear un archivo de texto con cada resultado
@@ -27,18 +27,11 @@ find "$dzn_folder" -type f -name "*.dzn" | while IFS= read -r dzn_file; do
         # Ejecución del código de minizinc
         gtimeout -k 1 1 minizinc --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file";
 
-        parent_dir=$(basename "$(dirname "$dzn_file")")
-        
-        subdirectory="$results_folder/$parent_dir"
-        mkdir -p "$subdirectory"
-
-        mv "$result_file" "$subdirectory"
-
         # Devuelve éxito o error dependiendo de si se ha ejecutado bien  mal. Si devuelve ERROR tambien devuelve los contenidos del archivo, mola para debugging.
         if [ $? -eq 0 ]; then
             echo "Ejecutado con éxito: $base_name"
             # AHC: Comentar esta línea si da problemas
-            python "$verification_script" "$json_file" "$result_file"
+            #python "$verification_script" "$json_file" "$result_file"
             echo ""
 
         else

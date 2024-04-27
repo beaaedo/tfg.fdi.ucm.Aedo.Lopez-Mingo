@@ -18,13 +18,8 @@ mkdir -p "$dzn_folder"
 find "$json_folder" -type f -name "*.json" | while IFS= read -r json_file; do
     if [ -e "$json_file" ]; then 
         python3 "$python_script" "$json_file" 
-        parent_dir=$(basename "$(dirname "$json_file")")
-        
-        subdirectory="$dzn_folder/$parent_dir"
-        mkdir -p "$subdirectory"
-
         chmod 777 "${json_file%.json}.dzn"
-        mv "${json_file%.json}.dzn" "$subdirectory"
+        mv "${json_file%.json}.dzn" "$dzn_folder"
     fi
 done
 
