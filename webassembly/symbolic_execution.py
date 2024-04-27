@@ -129,13 +129,13 @@ def execute_instr_id(instr_id: str, cstack: List[var_T], clocals: List[var_T], u
 
     # load.get: get the value from the corresponding local
     elif 'GET' in instr_id:
-        idx = extract_idx_from_id(instr_id)
+        idx = extract_idx_from_id(instr_id) - 1 
         local_val = clocals[idx]
         cstack.insert(0, local_val)
 
     # load.set: store the value in the corresponding local
     elif 'SET' in instr_id:
-        idx = extract_idx_from_id(instr_id)
+        idx = extract_idx_from_id(instr_id) - 1
 
         if idx >= len(clocals):
             clocals.append('')
@@ -144,7 +144,7 @@ def execute_instr_id(instr_id: str, cstack: List[var_T], clocals: List[var_T], u
 
     # load.tee: store the value in the corresponding local without consuming the top of the stack
     elif 'TEE' in instr_id:
-        idx = extract_idx_from_id(instr_id)
+        idx = extract_idx_from_id(instr_id) - 1
 
         if idx >= len(clocals):
             clocals.append('')
