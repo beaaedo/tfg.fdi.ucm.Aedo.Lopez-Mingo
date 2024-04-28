@@ -1,6 +1,6 @@
 TERM = { '.', s0, s1, s2, s3, s4, s5};
 null = '.';
-s = 8;
+s = 6;
 n = 6;
 min = 5;
 N0 = 0;
@@ -57,7 +57,3 @@ DUP_ENUM = { DUP1, DUP2, DUP3, DUP4, DUP5};
 SWAP_ENUM = { SWAP1, SWAP2, SWAP3, SWAP4, SWAP5};
 startstack = [ s0, s1, s2, null, null, null ];
 endstack = [ s3, s5, null, null, null, null ];
-m_dep_n = 0;
-memory_dependences = [| |];
-s_dep_n = 0;
-store_dependences = [| |];

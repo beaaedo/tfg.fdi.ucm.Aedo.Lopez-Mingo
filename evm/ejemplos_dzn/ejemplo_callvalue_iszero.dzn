@@ -57,7 +57,3 @@ DUP_ENUM = { DUP1};
 SWAP_ENUM = { SWAP1};
 startstack = [ null, null ];
 endstack = [ s3, s3 ];
-m_dep_n = 0;
-memory_dependences = [| |];
-s_dep_n = 0;
-store_dependences = [| |];

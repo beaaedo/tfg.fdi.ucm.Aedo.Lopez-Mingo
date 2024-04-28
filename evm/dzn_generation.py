@@ -473,18 +473,14 @@ class SMSgreedy:
                 endstack += ["null"]
         print("endstack = [ " + make_list(endstack) + " ];", file=self._f)
 
-        oder_tgt = []
-        auxorder = []
-        for v in self._order_final_stack:
-            if v[0] == 's':
-                auxorder += ["s" + v[2:-1]]
-            else:
-                auxorder += [v]
-    
+        order_tgt = "[|"
         if (len(self._order_final_stack) == 0 or self._liberalize == False):
-            order_tgt = "[| |]"
+            order_tgt += " |]"
         else:
-            order_tgt = '[' + ', '.join(['|{}|'.format(', '.join(map(str, sublist))) for sublist in auxorder]) + ']'
+            for sublist in self._order_final_stack:
+                order_tgt += " s" + str(sublist[0][2:-1]) + ", s" + str(sublist[1][2:-1]) + ", " + str(sublist[2]) + " |"
+            
+            order_tgt += "];"
 
 
         print("lib = " + str(self._liberalize).lower() + ";", file=self._f)
