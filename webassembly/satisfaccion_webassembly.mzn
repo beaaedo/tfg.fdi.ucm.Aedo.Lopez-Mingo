@@ -46,7 +46,7 @@ array[SN] of TERM: endstack;
 %array[1..0] of TERM: after;
 
 int: ndeps;
-array[DN, 1..2] of int: dependencies;
+array[DN, 1..2] of OP: dependencies;
 
 int: max_registers_sz;
 int: NR;
@@ -107,12 +107,10 @@ constraint forall (i in SS where (program[i] in G(GET_ENUM)))
 % TEEX
 constraint forall (i in SS where (program[i] in TEE(TEE_ENUM))) 
   (let {var int: x = TEE^-1(program[i])} in  
-  (register_states[i,x] != null) /\ 
   (states[i,1] != null) /\ 
   (register_states[i+1,x] = states[i,1]) /\
-  (states[i+1,1] = register_states[i,x]) /\
   (forall (j in RN where (j != x)) (register_states[i+1,j] == register_states[i,j])) /\
-  (forall (j in S2N)(states[i+1,j] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
+  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
 
 % Asegura que, dependiendo de la cantidad de parámetros de entrada sean iguales a los del array al antes de la operación - CONMUTATIVAS
 constraint forall (i in SS where (program[i] in O(OP))) 
@@ -144,8 +142,8 @@ constraint forall (i in SS where (program[i] in O(OP)))
 % Estado de los registros después de una operación NO de memoria
 constraint forall (i in SS where (program[i] in O(OP))) (forall (j in RN) (register_states[i+1,j] == register_states[i,j]));
   
-% MEMORY DEPENDENCIES
-constraint forall (i in DN, j in SS where (program[j] = dependencies[i,1])) (forall (z in 1..j)(program[z] != dependencies[i,2]));
+% DEPENDENCIES
+constraint forall (i in DN, j in SS where (program[j] = O(dependencies[i,1]))) (forall (z in 1..j)(program[z] !=  O(dependencies[i,2])));
  
 % Contar el valor a minimizar dependiendo de option 
 constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) 

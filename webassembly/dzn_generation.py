@@ -168,12 +168,11 @@ class SMSgreedy:
         print("registers = " + str(reg) + ";", file=self._f)
         
         num_deps = len(self._dependencies)
-        if (num_deps == 0):
+        if num_deps == 0:
             dep = "[| |]"
-        else: 
-            dep = '[' + ', '.join(["|'{}'".format("', '".join(map(str, sublist))) for sublist in self._dependencies]) + '|]'
+        else:
+            dep = '[|' + '| '.join(["'{}'{}".format("', '".join(map(str, sublist)), ',' if index < num_deps - 1 else '') for index, sublist in enumerate(self._dependencies)]) + '|]'
         print("dependencies = " + str(dep) + ";", file=self._f)
-
 
         n_ops = len(self._register_changes) + self._max_registers_sz
         gets = "GET_ENUM = {"
