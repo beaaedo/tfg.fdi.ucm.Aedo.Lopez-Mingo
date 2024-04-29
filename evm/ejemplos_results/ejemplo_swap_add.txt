@@ -1,3 +1,14 @@
+value = 2;
+fgas = [3, 3];
+fsize = [1, 1];
+states = 
+[| s0,  s1, '.'
+ | s1,  s0, '.'
+ | s2, '.', '.'
+ |];
+program = [SW(SWAP1), BI(ADD_0)];
+% time elapsed: 0.40 s
+----------
 value = 1;
 fgas = [3, 0];
 fsize = [1, 1];
@@ -7,7 +18,8 @@ states =
  | s2, '.', '.'
  |];
 program = [BI(ADD_0), NOP];
-% time elapsed: 0.75 s
+% time elapsed: 0.40 s
 ----------
 ==========
-% time elapsed: 0.75 s
+% time elapsed: 0.40 s
+% [value > 0]

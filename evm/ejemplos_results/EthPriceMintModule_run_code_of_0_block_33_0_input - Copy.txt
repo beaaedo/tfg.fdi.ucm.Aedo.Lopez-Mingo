@@ -1,0 +1,16 @@
+value = 4;
+fgas = [3, 2, 3, 3];
+fsize = [3, 1, 1, 1];
+states = 
+[| '.', '.', '.'
+ |  s3, '.', '.'
+ |  s4,  s3, '.'
+ |  s4,  s4,  s3
+ |  s5,  s4,  s3
+ |];
+program = [P('PUSH [tag]_0'), Z(CALLVALUE_0), D(DUP1), U(ISZERO_0)];
+% time elapsed: 0.67 s
+----------
+==========
+% time elapsed: 0.67 s
+% [value > 3]

@@ -9,7 +9,8 @@ states =
  | s3, '.', '.', '.', '.'
  |];
 program = [BI(ADD_0), SW(SWAP1), BI(SUB_0), NOP];
-% time elapsed: 0.48 s
+% time elapsed: 0.47 s
 ----------
 ==========
-% time elapsed: 0.48 s
+% time elapsed: 0.47 s
+% [value > 2]

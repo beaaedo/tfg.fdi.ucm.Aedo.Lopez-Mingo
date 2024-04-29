@@ -473,19 +473,6 @@ class SMSgreedy:
                 endstack += ["null"]
         print("endstack = [ " + make_list(endstack) + " ];", file=self._f)
 
-        order_tgt = "[|"
-        if (len(self._order_final_stack) == 0 or self._liberalize == False):
-            order_tgt += " |]"
-        else:
-            for sublist in self._order_final_stack:
-                order_tgt += " s" + str(sublist[0][2:-1]) + ", s" + str(sublist[1][2:-1]) + ", " + str(sublist[2]) + " |"
-            
-            order_tgt += "];"
-
-
-        print("lib = " + str(self._liberalize).lower() + ";", file=self._f)
-        print("order_output = " + order_tgt + ";", file=self._f)
-
         before = []
         after = []
         for p in self._mem_order + self._sto_order:
@@ -525,6 +512,24 @@ class SMSgreedy:
         print("memory_dependences = " + mem_dep + ";", file=self._f)
         print("s_dep_n = " + str(num_store) + ";", file=self._f)
         print("store_dependences = " + store_dep + ";", file=self._f)
+
+        order_tgt = "[|"
+        order_dis = []
+        if (self._liberalize == False):
+            order_tgt += " |]"
+        elif(len(self._order_final_stack) == 0):
+            order_tgt += " |]"
+        else:
+            for sublist in self._order_final_stack:
+                order_tgt += " s" + str(sublist[0][2:-1]) + ", s" + str(sublist[1][2:-1]) + " |"
+                order_dis += [sublist[2]]         
+            order_tgt += "]"
+        
+        order_dis_p = "[" + make_list(order_dis) + "]"
+        print("lib = " + str(self._liberalize).lower() + ";", file=self._f)
+        print("nlib = " + str(len(order_dis)) + ";", file=self._f)
+        print("lib_elem = " + order_tgt + ";", file=self._f)
+        print("lib_dis = " + order_dis_p + ";", file=self._f)
 
 
 if __name__ == "__main__":

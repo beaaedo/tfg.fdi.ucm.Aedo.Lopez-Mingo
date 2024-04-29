@@ -1,15 +1,2 @@
-value = 4;
-fgas = [2, 3, 3, 3];
-fsize = [1, 2, 1, 1];
-states = 
-[| s0,  s1, '.'
- | s1, '.', '.'
- | s3,  s1, '.'
- | s1,  s3,  s1
- | s2,  s1, '.'
- |];
-program = [POP, P(PUSH_0), D(DUP2), BI(GT_0)];
-% time elapsed: 0.88 s
-----------
-==========
-% time elapsed: 0.88 s
+=====UNSATISFIABLE=====
+% time elapsed: 0.44 s

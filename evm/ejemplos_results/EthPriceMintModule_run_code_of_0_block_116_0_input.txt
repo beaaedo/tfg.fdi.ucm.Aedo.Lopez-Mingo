@@ -1,0 +1,33 @@
+value = 6;
+fgas = [3, 3, 3, 3, 3, 3];
+fsize = [1, 1, 1, 1, 1, 1];
+states = 
+[| s0, s1, '.', '.', '.', '.'
+ | s1, s0,  s1, '.', '.', '.'
+ | s1, s0,  s1, '.', '.', '.'
+ | s6, s0,  s1, '.', '.', '.'
+ | s6, s6,  s0,  s1, '.', '.'
+ | s1, s6,  s6,  s0,  s1, '.'
+ | s5, s6,  s6,  s0,  s1, '.'
+ |];
+program = [D(DUP2), SW(SWAP2), U(MLOAD_0), D(DUP1), D(DUP4), U(ADD_0)];
+% time elapsed: 0.89 s
+----------
+value = 5;
+fgas = [3, 3, 3, 3, 3, 0];
+fsize = [1, 1, 1, 1, 1, 1];
+states = 
+[| s0, s1, '.', '.', '.', '.'
+ | s1, s0,  s1, '.', '.', '.'
+ | s6, s0,  s1, '.', '.', '.'
+ | s6, s6,  s0,  s1, '.', '.'
+ | s1, s6,  s6,  s0,  s1, '.'
+ | s5, s6,  s6,  s0,  s1, '.'
+ | s5, s6,  s6,  s0,  s1, '.'
+ |];
+program = [D(DUP2), U(MLOAD_0), D(DUP1), D(DUP4), U(ADD_0), NOP];
+% time elapsed: 0.90 s
+----------
+==========
+% time elapsed: 0.90 s
+% [value > 4]

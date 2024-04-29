@@ -1,0 +1,18 @@
+value = 6;
+fgas = [2, 2, 3, 3, 3, 3];
+fsize = [1, 1, 2, 3, 3, 3];
+states = 
+[|  s0, '.', '.', '.', '.'
+ | '.', '.', '.', '.', '.'
+ |  s6, '.', '.', '.', '.'
+ |  s9,  s6, '.', '.', '.'
+ |  s5,  s9,  s6, '.', '.'
+ |  s7,  s5,  s9,  s6, '.'
+ |  s8,  s7,  s5,  s9,  s6
+ |];
+program = [POP, Z(CALLDATASIZE_0), P(PUSH_0), P('PUSH [tag]_0'), P('PUSH [tag]_1'), P('PUSH [tag]_2')];
+% time elapsed: 0.91 s
+----------
+==========
+% time elapsed: 0.92 s
+% [value > 5]

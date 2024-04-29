@@ -97,6 +97,12 @@ array[MDN, 1..2] of int: memory_dependences;
 int: s_dep_n;
 array[1..s_dep_n, 1..2] of int: store_dependences;
 
+%Liberalizacion de pila
+bool: lib;
+int: nlib;
+array[1..nlib,1..2] of TERM: lib_elem;
+array[1..nlib] of int: lib_dis; 
+
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
 enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP); %Crea el enum opcodes sumando todos los enums
@@ -114,7 +120,14 @@ array[SS] of var OPCODES: program;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % INITIAL AND FINAL STACKS
-constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
+constraint forall (i in SN) (states[1,i] == startstack[i]);
+constraint forall (i in SN) (if lib == false then (states[s+1,i] == endstack[i]) endif);
+
+% LIBERALIZACION DE PILA DE SALIDA
+constraint if lib == true then forall (i in TERM) (sum(j in SN)(endstack[j] == i) == sum(j in SN)(states[s+1,j] == i)) endif;
+constraint if nlib != 0 then forall (i in 1..nlib) (forall (a in SN, b in SN 
+where (states[s+1,a] == lib_elem[i,1])/\(states[s+1,b] == lib_elem[i,2]))
+((a + lib_dis[i]) <= b))endif;
 
 % NOP
 constraint forall (i in SS where (program[i] == OPCODES[1]))
@@ -234,7 +247,7 @@ constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])
   \/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))
   \/((program[i-1] in A(ASSOCIATIVEADDOP))/\(x == addout[A^-1(program[i-1])]))))) endif;
 
-%(NO TOSEM) Asociatividad -- de momento no conmutativa
+%(NO TOSEM) Asociatividad
 
 constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
   (let {var int: z = A^-1(program[i]); var int: w = naddin[z]} in 
@@ -245,5 +258,7 @@ constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
   (forall(j in 2..n-(w-1)) (states[i+1,j] == states[i,j+(w-1)]))/\
   (forall(j in n-(w-2)..n)(states[i+1,j] == null))
   /\ fgas[i] == addgas[z] /\ fsize[i] == addsz[z]);
+  
+
 
 solve minimize value;

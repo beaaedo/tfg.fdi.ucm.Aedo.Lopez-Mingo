@@ -1,0 +1,18 @@
+value = 6;
+fgas = [3, 5, 3, 3, 3, 3];
+fsize = [1, 1, 1, 1, 2, 3];
+states = 
+[| s0, s1, '.', '.', '.', '.'
+ | s1, s0,  s1, '.', '.', '.'
+ | s7, s1,  s0,  s1, '.', '.'
+ | s6, s0,  s1, '.', '.', '.'
+ | s8, s0,  s1, '.', '.', '.'
+ | s9, s8,  s0,  s1, '.', '.'
+ | s5, s9,  s8,  s0,  s1, '.'
+ |];
+program = [D(DUP2), Z(SELFBALANCE_0), BI(LT_0), U(ISZERO_0), P(PUSH_0), P('PUSH [tag]_0')];
+% time elapsed: 0.85 s
+----------
+==========
+% time elapsed: 0.85 s
+% [value > 5]

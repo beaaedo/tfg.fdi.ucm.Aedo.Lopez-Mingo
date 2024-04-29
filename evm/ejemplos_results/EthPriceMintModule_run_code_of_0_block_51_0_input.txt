@@ -1,0 +1,18 @@
+value = 6;
+fgas = [3, 3, 3, 3, 3, 3];
+fsize = [2, 1, 1, 1, 1, 1];
+states = 
+[|  s0, '.', '.'
+ | s10,  s0, '.'
+ |  s7,  s0, '.'
+ |  s7,  s7,  s0
+ |  s0,  s7,  s7
+ |  s8,  s7, '.'
+ |  s7,  s8, '.'
+ |];
+program = [P(PUSH_0), U(MLOAD_0), D(DUP1), SW(SWAP2), BI(SUB_0), SW(SWAP1)];
+% time elapsed: 0.78 s
+----------
+==========
+% time elapsed: 0.79 s
+% [value > 5]

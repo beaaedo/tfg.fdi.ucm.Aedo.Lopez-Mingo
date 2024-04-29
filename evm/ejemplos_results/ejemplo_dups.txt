@@ -7,8 +7,9 @@ states =
  | s1, s0,  s0,  s1, '.'
  | s0, s1,  s0,  s0,  s1
  |];
-program = [D(DUP1), D(DUP3), D(DUP2)];
-% time elapsed: 0.41 s
+program = [D(DUP1), D(DUP3), D(DUP3)];
+% time elapsed: 0.35 s
 ----------
 ==========
-% time elapsed: 0.41 s
+% time elapsed: 0.35 s
+% [value > 2]

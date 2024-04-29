@@ -1,0 +1,14 @@
+value = 2;
+fgas = [2, 3];
+fsize = [1, 2];
+states = 
+[| '.', '.'
+ |  s2, '.'
+ |  s3,  s2
+ |];
+program = [Z(RETURNDATASIZE_0), P(PUSH_0)];
+% time elapsed: 0.40 s
+----------
+==========
+% time elapsed: 0.40 s
+% [value > 1]
