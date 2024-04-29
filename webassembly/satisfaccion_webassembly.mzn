@@ -112,12 +112,13 @@ constraint forall (i in SS where (program[i] in TEE(TEE_ENUM)))
   (forall (j in RN where (j != x)) (register_states[i+1,j] == register_states[i,j])) /\
   (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
 
-% Asegura que, dependiendo de la cantidad de parámetros de entrada sean iguales a los del array al antes de la operación - CONMUTATIVAS
+% PARAMETROS ENTRADA - CONMUTATIVAS
 constraint forall (i in SS where (program[i] in O(OP))) 
   (let {var int: x = O^-1(program[i])} in 
-  if ((in_ops[x] == 2) /\ (comm[x])) then (((states[i,1] = in2[x]) /\ (states[i,2] = in1[x])) \/ ((states[i,1] = in1[x]) /\ (states[i,2] = in2[x])) /\ (fgas[i] = gas[x]) /\ (fsize[i] == gas[x])) endif);
+  if ((in_ops[x] == 2) /\ (comm[x])) then (((states[i,1] = in2[x]) /\ (states[i,2] = in1[x])) \/ 
+    ((states[i,1] = in1[x]) /\ (states[i,2] = in2[x])) /\ (fgas[i] = gas[x]) /\ (fsize[i] == gas[x])) endif);
 
-% Asegura que, dependiendo de la cantidad de parámetros de entrada sean iguales a los del array al antes de la operación - NO CONMUTATIVAS
+% PARAMETROS ENTRADA - NO CONMUTATIVAS
 constraint forall (i in SS where (program[i] in O(OP))) 
   (let {var int: x = O^-1(program[i])} in 
   (fgas[i] == gas[x]) /\ (fsize[i] == gas[x]) /\ 
@@ -129,14 +130,18 @@ constraint forall (i in SS where (program[i] in O(OP)))
 constraint forall (i in SS where (program[i] in O(OP))) 
   (let {var int: x = O^-1(program[i])} in 
   (if (out_ops[x] == 1) then (states[i+1,1] = out1[x])/\(states[i,n] = null) endif) /\
-  (if (out_ops[x] == 2) then ((states[i+1,1] = out1[x])/\(states[i+1,2] = out2[x])/\(states[i,n] = null)/\(states[i,n-1] = null)) endif) /\
-  (if (out_ops[x] == 3) then ((states[i+1,1] = out1[x])/\(states[i+1,2] = out2[x])/\(states[i+1,3] = out3[x])/\(states[i,n] = null)/\(states[i,n-1] = null)/\(states[i,n-2] = null)) endif));
+  (if (out_ops[x] == 2) then ((states[i+1,1] = out1[x])/\(states[i+1,2] = out2[x]) /\ (states[i,n] = null)/\(states[i,n-1] = null)) endif) /\
+  (if (out_ops[x] == 3) then ((states[i+1,1] = out1[x])/\(states[i+1,2] = out2[x])/\(states[i+1,3] = out3[x])/\ (states[i,n] = null)/\(states[i,n-1] = null)/\(states[i,n-2] = null)) endif));
   
 % Estado de los terms después de una operación  
 constraint forall (i in SS where (program[i] in O(OP))) 
   (let {var int: x = O^-1(program[i])} in 
-  (if (out_ops[x] > in_ops[x]) then ((forall (j in out_ops[x]+1..n)(states[i+1,j] = states[i,j-(out_ops[x] - in_ops[x])])) /\ (forall (j in (n - (out_ops[x] - in_ops[x]))..n) (states[i,j] = null))) endif) /\ 
-  (if (out_ops[x] < in_ops[x]) then ((forall (j in out_ops[x]+1..n-in_ops[x])(states[i+1,j] = states[i,j+(in_ops[x] - out_ops[x])])) /\ (forall (j in (n-in_ops[x])..n) (states[i+1,j] = null))) endif) /\
+  (if (out_ops[x] > in_ops[x]) then (
+    (forall (j in out_ops[x]+1..n)(states[i+1,j] = states[i,j-(out_ops[x] - in_ops[x])])) /\ 
+    (forall (j in (n - (out_ops[x] - in_ops[x]))..n) (states[i,j] = null))) endif) /\ 
+  (if (out_ops[x] < in_ops[x]) then (
+    (forall (j in out_ops[x]+1..n-in_ops[x])(states[i+1,j] = states[i,j+(in_ops[x] - out_ops[x])])) /\ 
+    (forall (j in (n-in_ops[x])..n) (states[i+1,j] = null))) endif) /\
   (if (out_ops[x] == in_ops[x]) then (forall (j in out_ops[x]+1..n)(states[i+1,j] = states[i,j])) endif));
   
 % Estado de los registros después de una operación NO de memoria
