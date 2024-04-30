@@ -14,7 +14,7 @@ bool: opt1 = true;
 bool: opt2 = true;
 bool: opt3 = true;
 bool: opt4 = true;
-bool: opt5 = true;
+bool: opt5 = false;
 
 %Sets que se reusan
 set of int: SS = 1..s;
@@ -236,9 +236,10 @@ constraint if opt4 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 w
   (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1))/\
   (forall (a in A(ASSOCIATIVEADDOP)) (count (i in SS, j in SNA where (j == A^-1(program[i])))((program[i] == a)/\(addgas[j] >= 3)) <= 1))) endif;
   
-% (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es nop, dup, swap o una operacion con output x.
+% (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es pop, nop, dup, swap, store o una operacion con output x.
 constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1]) /\ (x != null)) 
   (((program[i-1] == OPCODES[1])
+  \/(program[i-1] == OPCODES[2])
   \/(program[i-1] in D(DUP_ENUM))
   \/(program[i-1] in SW(SWAP_ENUM))
   \/(program[i-1] in ST(STOROP))

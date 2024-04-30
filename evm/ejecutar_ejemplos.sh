@@ -9,6 +9,8 @@
 #base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg/evm"
 base_folder="/c/Users/claud/OneDrive/Escritorio/Clase/TFG/tfg/evm"
 json_folder="$base_folder/ejemplos_json"
+#json_folder="$base_folder/ejemplos_json_grande"
+#json_folder="$base_folder/ejemplos_json_stack_deps"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion_evm.mzn"
