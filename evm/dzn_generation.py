@@ -116,23 +116,7 @@ class SMSgreedy:
         storsz = []
         storlb = []
         storub = []
-        n_ins = 0
-        for ins in self._user_instr:
-            if "ADD" in ins["id"]:
-                for ins_nxt in self._user_instr:
-                    if "ADD" in ins["id"]:
-                        if ins_nxt["outpt_sk"][0] == ins["inpt_sk"][0]:
-                            ins["inpt_sk"].pop(0)
-                            for i in range(0,len(ins_nxt["inpt_sk"])):
-                                ins["inpt_sk"].append(ins_nxt["inpt_sk"][i])
-                            n_ins+=1
-                            self._user_instr.remove(ins_nxt)
-                        elif ins_nxt["outpt_sk"][0] == ins["inpt_sk"][1]:
-                            ins["inpt_sk"].pop(1)
-                            for i in range(0,len(ins_nxt["inpt_sk"])-1):
-                                ins["inpt_sk"].append(ins_nxt["inpt_sk"][i])
-                            n_ins+=1
-                            self._user_instr.remove(ins_nxt)
+        n_ins = self.asociatividad()
         ASSOCIATIVEADDOP = []
         addin = [["null"] * 10 for _ in range(n_ins)]
         naddin = []
@@ -500,13 +484,19 @@ class SMSgreedy:
         if (num_mem == 0):
             mem_dep = "[| |]"
         else: 
-            mem_dep = '[' + ', '.join(['|{}|'.format(', '.join(map(str, sublist))) for sublist in self._mem_order]) + ']'
+            mem_dep = "[|"
+            for sublist in self._mem_order:
+                mem_dep += make_list(sublist) + "|"
+            mem_dep += "]"
         
         num_store = len(self._sto_order)
         if (num_store == 0):
             store_dep = "[| |]"
         else:
-            store_dep = '[' + ', '.join(['|{}|'.format(', '.join(map(str, sublist))) for sublist in self._sto_order]) + ']'
+            store_dep = "[|"
+            for sublist in self._sto_order:
+                store_dep += make_list(sublist) + "|"
+            store_dep += "]"
         
         print("m_dep_n = " + str(num_mem) + ";", file=self._f)
         print("memory_dependences = " + mem_dep + ";", file=self._f)
@@ -531,6 +521,27 @@ class SMSgreedy:
         print("lib_elem = " + order_tgt + ";", file=self._f)
         print("lib_dis = " + order_dis_p + ";", file=self._f)
 
+    def asociatividad(self):
+        num = 0
+        for ins in self._user_instr:
+            if len(ins["inpt_sk"]) >= 2:
+                if ins["commutative"]:
+                    for ins2 in self._user_instr:
+                        if len(ins2["inpt_sk"]) >= 2 and ins2 != ins and ins2["commutative"]:
+                            if ins2["outpt_sk"][0] == ins["inpt_sk"][0]:
+                                if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
+                                    num += 1
+                                ins["inpt_sk"].pop(0)
+                                ins["inpt_sk"].extend(ins2["inpt_sk"])
+                                self._user_instr.remove(ins2)
+                            elif ins2["outpt_sk"][0] == ins["inpt_sk"][1]:
+                                if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
+                                    num += 1
+                                ins["inpt_sk"].pop(1)
+                                ins["inpt_sk"].extend(ins2["inpt_sk"])
+                                self._user_instr.remove(ins2)
+        return num
+        
 
 if __name__ == "__main__":
     with open(sys.argv[1]) as f:
