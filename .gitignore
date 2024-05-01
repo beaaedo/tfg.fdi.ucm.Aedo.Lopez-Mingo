@@ -6,3 +6,4 @@
 /evm/ejemplos_json
 /evm/ejemplos_json_stack_deps
 /evm/ejemplos_dzn
+*.dzn
