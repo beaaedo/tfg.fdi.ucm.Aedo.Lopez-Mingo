@@ -7,9 +7,9 @@
 
 # PATHS
 base_folder="/Users/beaaedo/Desktop/tfg"
-json_folder="$base_folder/codigo/webassembly/wasm-small-examples"
-dzn_folder="$base_folder/ejemplos_dzn"
-#dzn_folder="$base_folder/binaries"
+#json_folder="$base_folder/ejemplos_json"
+json_folder="$base_folder/codigo/webassembly/dataset_circom"
+dzn_folder="$base_folder/dataset_dzn"
 python_script="$base_folder/codigo/webassembly/dzn_generation.py"
 
 # Crear las carpetas que van a ser necesarias

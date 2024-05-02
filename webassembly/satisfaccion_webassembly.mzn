@@ -19,6 +19,7 @@ set of int: SNO = 1..N;
 set of int: DN = 1..ndeps;
 set of int: NR1 = 1..(NR+1);
 set of int: RN = 1..(NR+max_registers_sz);
+set of int: NRM = NR+1..(NR+max_registers_sz);
 
 array [SNO] of int: in_ops;
 array [SNO] of int: out_ops;
@@ -73,7 +74,7 @@ constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == e
 
 % INITIAL AND FINAL REGISTERS
 constraint forall (i in 1..NR) ((register_states[1,i] == registers[i,1])/\(register_states[s+1,i] == registers[i,2]));
-constraint forall (i in (NR+1)..(NR + max_registers_sz)) ((register_states[1,i] = null) /\ (register_states[s+1,i] = null));
+constraint forall (i in NRM) (register_states[1,i] = null);
 
 % NOP
 constraint forall (i in SS where (program[i] == OPCODES[1]))
@@ -96,6 +97,10 @@ constraint forall (i in SS where (program[i] in S(SET_ENUM)))
   (forall (j in RN where (j != x)) (register_states[i+1,j] == register_states[i,j])) /\
   (forall (j in S1N)(states[i+1,j] = states[i,j+1])) /\ fgas[i] == 1 /\ fsize[i] == 1);
   
+constraint forall (i in SS, x in NRM where (program[i] = OPCODES[2 + x])) 
+  ((exists (j in 1..i) (program[j] = OPCODES[x + 1])) /\ 
+  (not exists (j in 1..s where (j != i)) (program[j] = OPCODES[x + 2])));
+  
 % GETX
 constraint forall (i in SS where (program[i] in G(GET_ENUM))) 
   (let {var int: x = G^-1(program[i])} in (states[i,n] = null) /\
@@ -106,11 +111,15 @@ constraint forall (i in SS where (program[i] in G(GET_ENUM)))
 
 % TEEX
 constraint forall (i in SS where (program[i] in TEE(TEE_ENUM))) 
-  (let {var int: x = TEE^-1(program[i])} in  
+  (let {var int: x = TEE^-1(program[i])} in   
   (states[i,1] != null) /\ 
   (register_states[i+1,x] = states[i,1]) /\
   (forall (j in RN where (j != x)) (register_states[i+1,j] == register_states[i,j])) /\
   (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
+  
+constraint forall (i in SS, x in NRM where (program[i] = OPCODES[2 + 2 * (NR + max_registers_sz) + x])) 
+  ((exists (j in 1..i) (program[j] = OPCODES[x + 2 * (NR + max_registers_sz) + 1])) /\ 
+  (not exists (j in 1..s where (j != i)) (program[j] = OPCODES[2 + 2 * (NR + max_registers_sz) + x])));  
 
 % PARAMETROS ENTRADA - CONMUTATIVAS
 constraint forall (i in SS where (program[i] in O(OP))) 
