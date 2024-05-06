@@ -2,6 +2,7 @@ import re
 import json
 import sys
 import pandas as pd
+import os
 from pathlib import Path
 from glob import glob
 from typing import List, Dict, Any, Tuple
@@ -158,7 +159,8 @@ def verify_solution_from_files(json_folder, output_folder, csv_file: str = "eval
     csv_rows = []
     for output_file in glob(output_folder + "/*.txt"):
         output_path = Path(output_file)
-        basename = output_path.name.split(".")[0]
+        basename, _ = os.path.splitext(output_path.name)
+        #basename = output_path.name.split(".")[0]
         json_file = Path(json_folder).joinpath(basename + ".json")
         csv_rows.append(run_and_verify_solution(json_file, output_file))
     pd.DataFrame(csv_rows).to_csv(csv_file)

@@ -20,30 +20,36 @@ json_folder="$base_folder/ejemplos_json"
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
 
-for dzn_file in "$dzn_folder"/*.dzn; do
-    # Comprobar si existe el archivo
-    if [ -e "$dzn_file" ]; then
-        # Almacenar el nombre del dzn sin el ".dzn" para crear un archivo de texto con cada resultado
-        base_name=$(basename "$dzn_file" .dzn)
-        result_file="$results_folder/$base_name.txt"
-        json_file="$json_folder/$base_name.json"
+solve_with_minizinc() {
+    dzn_file="$1"
+    result_folder="$2"
+    minizinc="$3"
+    mzn_script="$4"
 
-        # Ejecución del código de minizinc
-        timeout -k 1 1 minizinc --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file";
+    # Almacenar el nombre del dzn sin el .dzn para crear un archivo de texto con cada resultado
+    base_name=$(basename "$dzn_file" .dzn)
+    result_file="$result_folder/$base_name.txt"
+    
+    # Ejecución del código de minizinc
+    timeout 300s "$minizinc" --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file"
+    
+    # Devuelve éxito o error dependiendo de si se ha ejecutado bien mal. Si devuelve ERROR también devuelve los contenidos del archivo, mola para debugging.
+    if [ $? -eq 0 ]; then
+        echo "Ejecutado con éxito: $base_name"
+        echo ""
 
-        # Devuelve éxito o error dependiendo de si se ha ejecutado bien  mal. Si devuelve ERROR tambien devuelve los contenidos del archivo, mola para debugging.
-        if [ $? -eq 0 ]; then
-            echo "Ejecutado con éxito: $base_name"
-            # AHC: Comentar esta línea si da problemas
-            #python "$verification_script" "$json_file" "$result_file"
-            echo ""
+    else
+        echo "Error en la ejecución: $base_name"
+        cat "$result_file"
+    fi
+}
 
-        else
-            echo "Error en la ejecución: $base_name"
-            cat "$result_file"
-        fi
-    fi 
-done
+# Export the function so it's accessible to parallel
+export -f solve_with_minizinc
+
+# Run MiniZinc solver concurrently on multiple CPU cores
+find "$dzn_folder" -type f -name "*.dzn" | parallel -j 128 solve_with_minizinc {} "$results_folder"  "$minizinc" "$mzn_script"
 
 # AHC: Comentar esta línea si da problemas
 python "$verification_script" "$json_folder" "$results_folder"
+
