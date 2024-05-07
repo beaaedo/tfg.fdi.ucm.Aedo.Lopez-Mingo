@@ -1,2 +1,0 @@
-=====ERROR=====
-% time elapsed: 1.05 s

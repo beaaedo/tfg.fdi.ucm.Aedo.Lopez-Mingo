@@ -217,13 +217,13 @@ constraint if opt1 then ((forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[
 
 % Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
 constraint if opt2 then (forall (e in endstack, ui in unin, bi1 in binin1, bi2 in binin2, si1 in storin1, si2 in storin2, a in addin where (a != null)) 
-  (((e in zeroout)\/(e in unout)\/(e in binout)\/(e in pushout)\/(e in addout))/\
-  ((ui in zeroout)\/(ui in unout)\/(ui in binout)\/(ui in pushout)\/(ui in addout))/\
-  ((bi1 in zeroout)\/(bi1 in unout)\/(bi1 in binout)\/(bi1 in pushout)\/(bi1 in addout))/\
-  ((bi2 in zeroout)\/(bi2 in unout)\/(bi2 in binout)\/(bi2 in pushout)\/(bi2 in addout))/\
-  ((si1 in zeroout)\/(si1 in unout)\/(si1 in binout)\/(si1 in pushout)\/(si1 in addout))/\
-  ((si2 in zeroout)\/(si2 in unout)\/(si2 in binout)\/(si2 in pushout)\/(si2 in addout))/\
-  ((a in zeroout)\/(a in unout)\/(a in binout)\/(a in pushout)\/(a in addout)))) endif;
+  (((e in zeroout)\/(e in unout)\/(e in binout)\/(e in pushout)\/(e in addout)\/ (e in startstack))/\
+  ((ui in zeroout)\/(ui in unout)\/(ui in binout)\/(ui in pushout)\/(ui in addout)\/ (ui in startstack))/\
+  ((bi1 in zeroout)\/(bi1 in unout)\/(bi1 in binout)\/(bi1 in pushout)\/(bi1 in addout)\/ (bi1 in startstack))/\
+  ((bi2 in zeroout)\/(bi2 in unout)\/(bi2 in binout)\/(bi2 in pushout)\/(bi2 in addout)\/ (bi2 in startstack))/\
+  ((si1 in zeroout)\/(si1 in unout)\/(si1 in binout)\/(si1 in pushout)\/(si1 in addout)\/ (si1 in startstack))/\
+  ((si2 in zeroout)\/(si2 in unout)\/(si2 in binout)\/(si2 in pushout)\/(si2 in addout)\/ (si2 in startstack))/\
+  ((a in zeroout)\/(a in unout)\/(a in binout)\/(a in pushout)\/(a in addout)\/ (a in startstack)))) endif;
 
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o SWAPk.
 constraint if opt3 then (forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (sw in SW(SWAP_ENUM))         (program[i-1] == sw )))) endif;
