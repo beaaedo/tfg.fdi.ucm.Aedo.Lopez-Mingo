@@ -14,7 +14,7 @@ bool: opt1 = true;
 bool: opt2 = true;
 bool: opt3 = true;
 bool: opt4 = true;
-bool: opt5 = false;
+bool: opt5 = true;
 
 %Sets que se reusan
 set of int: SS = 1..s;
