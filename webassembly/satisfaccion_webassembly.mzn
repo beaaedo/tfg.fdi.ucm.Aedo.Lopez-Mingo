@@ -169,13 +169,26 @@ else value = sum(i in SS)(fsize[i]) endif;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Todas las operaciones definidas deben aparecer en program
-constraint (forall (x in O(OP)) (exists (z in SS) (program[z] = x)));
-  
-% Cada operacion definida con coste de gas mayor o igual a 3 deberá utilizarse como máximo una vez.
-constraint forall (o in O(OP)) (count (i in SS, j in SNO where (j == O^-1(program[i])))((program[i] == o)/\(gas[j] >= 3)) <= 1);
+constraint (forall (x in O(OP)) (count (z in SS) (program[z] = x) = 1));
 
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o GETk.
 constraint forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (g in G(GET_ENUM)) (program[i-1] == g)));
+
+% Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
+constraint forall (e in endstack, i1 in in1,i2 in  in2, i3 in in3 where (i1 != null)/\(i2 != null)/\(i3 != null)) 
+  (((e in out1)\/(e in out2)\/(e in out3)\/(e in register_states))/\
+  ((i1 in out1)\/(i1 in out2)\/(i1 in out3)\/(i1 in register_states))/\
+  ((i2 in out1)\/(i2 in out2)\/(i2 in out3)\/(i2 in register_states))/\
+  ((i3 in out1)\/(i3 in out2)\/(i3 in out3)\/(i3 in register_states)));
+  
+% (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es pop, nop, dup, swap, store o una operacion con output x.
+constraint forall (i in 2..s+1, x in TERM where (x == states[i,1]) /\ (x != null)) 
+  (((program[i-1] == OPCODES[1])
+  \/(program[i-1] == OPCODES[2])
+  \/(program[i-1] in S(SET_ENUM))
+  \/(program[i-1] in G(GET_ENUM))
+  \/(program[i-1] in TEE(TEE_ENUM)
+  \/((program[i-1] in O(OP))/\(x == out1[O^-1(program[i-1])])))));
 
 %olve minimize value;
 solve minimize value;
