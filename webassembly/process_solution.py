@@ -145,8 +145,9 @@ def generate_statistics_info(original_block: List[str], optimized_block: List[st
 
 def run_and_verify_solution(json_path, output_path):
     # Name corresponds to the 
-    block_name = Path(json_path).name.split(".")[0]
-    print(json_path)
+    pathn = Path(json_path)
+    block_name, _ = os.path.splitext(pathn.name)
+    print(block_name)
     sfs, output = load_from_minizinc(json_path, output_path)
     instr_ids, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
     is_equivalent, reason = verify_solution(sfs, instr_ids, outcome)
