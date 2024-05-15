@@ -5,12 +5,12 @@ var_T = str
 instr_T = Dict 
 id_T = str
 
-DEBUG_MODE=True
+DEBUG_MODE=False
 
 class SymbolicChecker:
 
-    def __init__(self, final_stack_fixed:bool = True) -> None:
-        self.fixed_stack = final_stack_fixed
+    def __init__(self, stack_deps:bool = True) -> None:
+        self.fixed_stack = not stack_deps
 
     def execute_instr_id(self, instr_id: str, cstack: List[var_T], user_instr: Dict[id_T, instr_T]) -> Tuple[bool, str]:
         """
@@ -77,8 +77,15 @@ class SymbolicChecker:
         
         return True, ""
 
+    def check_target_stack_deps(self, cstack: List[var_T], stack_deps: List[Tuple[var_T, var_T, int]]) -> Tuple[bool, str]:
+        for dep in stack_deps:
+            pos1 = cstack.index(dep[0])
+            pos2 = cstack.index(dep[1])
+            if pos1 + dep[2] > pos2:
+                return False, f"Stack dependency {dep} is not satisfied"
+        return True, ""
 
-    def verify_output_minizinc(self, sfs: Dict, seq_ids: List[id_T], fixed_final_stack: bool=True) -> Tuple[bool, str]:
+    def verify_output_minizinc(self, sfs: Dict, seq_ids: List[id_T]) -> Tuple[bool, str]:
         user_instr: Dict[instr_T, instr_T] = {instr["id"]: instr for instr in sfs['user_instrs']}
         dependencies: List[Tuple[id_T, id_T]] = [*sfs['memory_dependences'], *sfs["storage_dependences"]]
 
@@ -93,7 +100,7 @@ class SymbolicChecker:
 
         # assert ensure_ids_are_unique(user_instr), 'Ids are not unique'
         # assert ensure_stack_vars_are_unique(user_instr), 'Stack vars are not unique'
-        if fixed_final_stack:
+        if self.fixed_stack:
             if cstack != fstack:
                 return False, f"Final stack after symbolic execution do not match. \
                 Expected: {fstack}. Computed: {cstack}"
@@ -104,7 +111,17 @@ class SymbolicChecker:
             if sorted_cstack != sorted_fstack:
                 return False, f"Final stack does not contain the elements expected: \
                 Expected: {fstack}. Computed: {cstack}"
-        
+
+            if 'order_tgt_ws' not in sfs:
+                return False, "The JSON file does not contain the field 'order_tgt_ws'\
+                    and the option --stack-deps is activated"
+
+            stack_deps = sfs['order_tgt_ws']
+            correct, reason = self.check_target_stack_deps(cstack, stack_deps)
+            if not correct:
+                return False, reason
+
+
         correct, reason = self.check_deps(seq_ids, dependencies)
         if not correct:
             return False, reason
