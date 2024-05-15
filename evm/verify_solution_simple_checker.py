@@ -7,19 +7,10 @@ id_T = str
 
 DEBUG_MODE=True
 
-def flattened_expression(instr_id: str, user_instrs: Dict[id_T, instr_T], name: str):
-    current_instr = user_instrs[instr_id]
-    # If the field disasm matches, we flattened the expressions
-    if current_instr["disasm"] == name:
-        [instr for instr in user_instrs if instr['id'] == instr_id][0]
-
-    instr = [instr for instr in user_instrs if instr['id'] == instr_id][0]
-
 class SymbolicChecker:
 
-    def __init__(self) -> None:
-        self.flattened = False 
-        self.fixed_stack = True
+    def __init__(self, final_stack_fixed:bool = True) -> None:
+        self.fixed_stack = final_stack_fixed
 
     def execute_instr_id(self, instr_id: str, cstack: List[var_T], user_instr: Dict[id_T, instr_T]) -> Tuple[bool, str]:
         """
@@ -39,7 +30,10 @@ class SymbolicChecker:
             cstack[0], cstack[idx] = cstack[idx], cstack[0]
 
         else:
-            instr = user_instr[instr_id]
+            instr = user_instr.get(instr_id, None)
+
+            if instr is None:
+                return False, f"Instr id {instr_id} does not appear in the list of instructions"
 
             if instr["commutative"]:
                 # We sort the elements to check if they match
