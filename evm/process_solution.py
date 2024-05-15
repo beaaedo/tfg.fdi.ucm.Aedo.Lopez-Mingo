@@ -7,7 +7,8 @@ from glob import glob
 from asm_block import AsmBlock, generate_block_from_plain_instructions
 from asm_bytecode import AsmBytecode
 from typing import List, Dict, Any, Tuple
-from verify_solution import verify_output_minizinc
+# from verify_solution import verify_output_minizinc
+from verify_solution_simple_checker import SymbolicChecker
 from evm_statistics import generate_statistics_info
 
 ### Methods to transform a sequence of ids to AsmBytecode
@@ -110,11 +111,11 @@ def process_msg(msg: str) -> Tuple[List[str], str]:
     return seq, optimization_outcome, time_elapsed
 
 
-def process_output_from_minizinc(output, sfs) -> Tuple[List[AsmBytecode], str, float]:
+def process_output_from_minizinc(output, sfs) -> Tuple[List[AsmBytecode], List[str], str, float]:
     # Process minizinc output
     found_seq, outcome, time_elapsed = process_msg(output)
     optimized_instrs = asm_from_ids(sfs, found_seq)
-    return optimized_instrs, outcome, time_elapsed
+    return optimized_instrs, found_seq, outcome, time_elapsed
 
 
 def load_from_minizinc(json_path, output_path):
@@ -126,16 +127,14 @@ def load_from_minizinc(json_path, output_path):
 
     return sfs, output
 
-def verify_solution(sfs: Dict, optimized_asm_seq: List[AsmBytecode], outcome: str) -> str:
+def verify_solution(sfs: Dict, optimized_ids: List[str], outcome: str) -> Tuple[bool, str]:
     if "optimal" in outcome:
-        plain_seq =  ' '.join(bytecode.to_plain() for bytecode in optimized_asm_seq)
-        print(plain_seq)
-        verification_output = verify_output_minizinc(sfs["original_instrs"], plain_seq)
+        verification_output, reason = SymbolicChecker().verify_output_minizinc(sfs, optimized_ids)
     else:
         # If there is no block to check with, then it is true
-        verification_output = "true"
+        verification_output, reason = True, ""
 
-    return verification_output
+    return verification_output, reason
 
 
 def statistics_from_solution(block_name: str, optimized_asm: List[AsmBytecode], outcome: str, solver_time: float, original_instrs: str, tout: int) -> Dict:
@@ -153,19 +152,20 @@ def run_and_verify_solution(json_path, output_path):
     # Name corresponds to the 
     block_name = Path(json_path).name.split(".")[0]
     sfs, output = load_from_minizinc(json_path, output_path)
-    optimized_asm_seq, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
-    is_equivalent = verify_solution(sfs, optimized_asm_seq, outcome)
+    optimized_asm_seq, seq_ids, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
+    is_equivalent, reason = verify_solution(sfs, seq_ids, outcome)
     csv_info = statistics_from_solution(block_name, optimized_asm_seq, outcome, time_elapsed, sfs["original_instrs"], 10)
-    csv_info["forves_checker"] = is_equivalent
+    csv_info["checker"] = is_equivalent
+    csv_info["reason"] = reason
     return csv_info
 
 
 def verify_solution_from_files(json_folder, output_folder, csv_file: str = "evaluation.csv"):
     csv_rows = []
-    for json_file in glob(json_folder + "/*.json"):
-        json_path = Path(json_file)
-        basename = json_path.name.split(".")[0]
-        output_file = Path(output_folder).joinpath(basename + ".txt")
+    for output_file in glob(output_folder + "/*.txt"):
+        output_path = Path(output_file)
+        basename = output_path.name.split(".")[0]
+        json_file = Path(json_folder).joinpath(basename + ".json")
         csv_rows.append(run_and_verify_solution(json_file, output_file))
     pd.DataFrame(csv_rows).to_csv(csv_file)
 
