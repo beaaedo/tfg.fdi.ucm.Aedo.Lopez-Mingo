@@ -1,41 +1,50 @@
 import re
 import json
 import sys
+import argparse
 import pandas as pd
 from pathlib import Path
 from glob import glob
 from asm_block import AsmBlock, generate_block_from_plain_instructions
 from asm_bytecode import AsmBytecode
 from typing import List, Dict, Any, Tuple
-from verify_solution import verify_output_minizinc
+# from verify_solution import verify_output_minizinc
+from dzn_generation import asociatividad
+from verify_solution_simple_checker import SymbolicChecker
 from evm_statistics import generate_statistics_info
 
 ### Methods to transform a sequence of ids to AsmBytecode
 
-def id_to_asm_bytecode(uf_instrs: Dict[str, Dict[str, Any]], instr_id: str) -> AsmBytecode:
+def id_to_asm_bytecode(uf_instrs: Dict[str, Dict[str, Any]], instr_id: str) -> List[AsmBytecode]:
     # AsmBytecode(-1, -1, -1, , )
     if instr_id in uf_instrs:
         associated_instr = uf_instrs[instr_id]
 
         # Special case: reconstructing PUSH0 (see sfs_generator/parser_asm.py)
         if associated_instr["disasm"] == "PUSH0":
-            return AsmBytecode(-1, -1, -1, "PUSH", "0")
+            return [AsmBytecode(-1, -1, -1, "PUSH", "0")]
+        
         # Special PUSH cases that were transformed to decimal are analyzed separately
         elif associated_instr['disasm'] == "PUSH" or associated_instr['disasm'] == "PUSH data" \
                 or associated_instr['disasm'] == "PUSHIMMUTABLE":
             value = hex(int(associated_instr['value'][0]))[2:]
-            return AsmBytecode(-1, -1, -1, associated_instr['disasm'], value)
+            return [AsmBytecode(-1, -1, -1, associated_instr['disasm'], value)]
+        
+        # Commutative instructions
+        elif "PUSH" not in associated_instr["disasm"] and len(associated_instr["disasm"].split(' ')) > 1:
+            return [AsmBytecode(-1, -1, -1, disasm_name, None) for disasm_name in associated_instr["disasm"].split(' ')]
+                                
         else:
-            return AsmBytecode(-1, -1, -1, associated_instr['disasm'],
-                               None if 'value' not in associated_instr else str(associated_instr['value'][0]))
+            return [AsmBytecode(-1, -1, -1, associated_instr['disasm'], 
+                                None if 'value' not in associated_instr else str(associated_instr['value'][0]))]
 
     else:
         # The id is the instruction itself
-        return AsmBytecode(-1, -1, -1, instr_id, None)
+        return [AsmBytecode(-1, -1, -1, instr_id, None)]
 
 
 def id_seq_to_asm_bytecode(uf_instrs: Dict[str, Dict[str, Any]], id_seq: List[str]) -> List[AsmBytecode]:
-    return [id_to_asm_bytecode(uf_instrs, instr_id) for instr_id in id_seq if instr_id != 'NOP']
+    return [asm_bytecode for instr_id in id_seq if instr_id != 'NOP' for asm_bytecode in id_to_asm_bytecode(uf_instrs, instr_id)]
 
 
 def asm_from_ids(sms, id_seq: List[str]) -> List[AsmBytecode]:
@@ -110,11 +119,11 @@ def process_msg(msg: str) -> Tuple[List[str], str]:
     return seq, optimization_outcome, time_elapsed
 
 
-def process_output_from_minizinc(output, sfs) -> Tuple[List[AsmBytecode], str, float]:
+def process_output_from_minizinc(output, sfs) -> Tuple[List[AsmBytecode], List[str], str, float]:
     # Process minizinc output
     found_seq, outcome, time_elapsed = process_msg(output)
     optimized_instrs = asm_from_ids(sfs, found_seq)
-    return optimized_instrs, outcome, time_elapsed
+    return optimized_instrs, found_seq, outcome, time_elapsed
 
 
 def load_from_minizinc(json_path, output_path):
@@ -126,16 +135,14 @@ def load_from_minizinc(json_path, output_path):
 
     return sfs, output
 
-def verify_solution(sfs: Dict, optimized_asm_seq: List[AsmBytecode], outcome: str) -> str:
+def verify_solution(sfs: Dict, optimized_ids: List[str], outcome: str, stack_deps: bool) -> Tuple[bool, str]:
     if "optimal" in outcome:
-        plain_seq =  ' '.join(bytecode.to_plain() for bytecode in optimized_asm_seq)
-        print(plain_seq)
-        verification_output = verify_output_minizinc(sfs["original_instrs"], plain_seq)
+        verification_output, reason = SymbolicChecker(stack_deps).verify_output_minizinc(sfs, optimized_ids)
     else:
         # If there is no block to check with, then it is true
-        verification_output = "true"
+        verification_output, reason = True, ""
 
-    return verification_output
+    return verification_output, reason
 
 
 def statistics_from_solution(block_name: str, optimized_asm: List[AsmBytecode], outcome: str, solver_time: float, original_instrs: str, tout: int) -> Dict:
@@ -149,28 +156,45 @@ def statistics_from_solution(block_name: str, optimized_asm: List[AsmBytecode], 
     return generate_statistics_info(initial_block, outcome, solver_time, optimal_block, tout)
 
 
-def run_and_verify_solution(json_path, output_path):
+def run_and_verify_solution(json_path, output_path, options):
     # Name corresponds to the 
     block_name = Path(json_path).name.split(".")[0]
     sfs, output = load_from_minizinc(json_path, output_path)
-    optimized_asm_seq, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
-    is_equivalent = verify_solution(sfs, optimized_asm_seq, outcome)
+    
+    # Flatten args if needed
+    if options.ac:
+        asociatividad(sfs["user_instrs"])
+    
+    optimized_asm_seq, seq_ids, outcome, time_elapsed = process_output_from_minizinc(output, sfs)
+    is_equivalent, reason = verify_solution(sfs, seq_ids, outcome, options.stack_deps)
     csv_info = statistics_from_solution(block_name, optimized_asm_seq, outcome, time_elapsed, sfs["original_instrs"], 10)
-    csv_info["forves_checker"] = is_equivalent
+    csv_info["checker"] = is_equivalent
+    csv_info["reason"] = reason
     return csv_info
 
 
-def verify_solution_from_files(json_folder, output_folder, csv_file: str = "evaluation.csv"):
+def verify_solution_from_files(json_folder, output_folder, options, csv_file: str = "evaluation.csv"):
     csv_rows = []
-    for json_file in glob(json_folder + "/*.json"):
-        json_path = Path(json_file)
-        basename = json_path.name.split(".")[0]
-        output_file = Path(output_folder).joinpath(basename + ".txt")
-        csv_rows.append(run_and_verify_solution(json_file, output_file))
+    for output_file in glob(output_folder + "/*.txt"):
+        output_path = Path(output_file)
+        basename = output_path.name.split(".")[0]
+        json_file = Path(json_folder).joinpath(basename + ".json")
+        csv_rows.append(run_and_verify_solution(json_file, output_file, options))
     pd.DataFrame(csv_rows).to_csv(csv_file)
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(
+                    prog='Process solution',
+                    description='Program to validate the solutions produced by MiniZinc and produce the corresponding statistics')
+    parser.add_argument('json_dir')
+    parser.add_argument('output_dir')
+    parser.add_argument('-ac', '--ac', action='store_true')
+    parser.add_argument('-stack-deps', '--stack-deps', action='store_true')
+    return parser.parse_args()
 
 ### MAIN
 
 if __name__ == "__main__":
-    json_dir, output_dir = sys.argv[1:]
-    verify_solution_from_files(json_dir, output_dir)
+    args = parse_arguments()
+    verify_solution_from_files(args.json_dir, args.output_dir, args)

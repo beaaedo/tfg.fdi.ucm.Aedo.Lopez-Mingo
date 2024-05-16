@@ -37,6 +37,29 @@ def make_list(l):
     return s[:-2]
 
 
+def asociatividad(user_instr):
+    num = 0
+    for ins in user_instr:
+        if len(ins["inpt_sk"]) >= 2:
+            if ins["commutative"]:
+                for ins2 in user_instr:
+                    if ins["disasm"] == ins2["disasm"] and ins2 != ins:
+                        if ins2["outpt_sk"][0] == ins["inpt_sk"][0]:
+                            if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
+                                num += 1
+                            ins["inpt_sk"].pop(0)
+                            ins["inpt_sk"].extend(ins2["inpt_sk"])
+                            ins["disasm"] += ' ' + ins2["disasm"]
+                            user_instr.remove(ins2)
+                        elif ins2["outpt_sk"][0] == ins["inpt_sk"][1]:
+                            if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
+                                num += 1
+                            ins["inpt_sk"].pop(1)
+                            ins["inpt_sk"].extend(ins2["inpt_sk"])
+                            ins["disasm"] += ' ' + ins2["disasm"]
+                            user_instr.remove(ins2)
+    return num
+
 class SMSgreedy:
 
     def __init__(self, json_format, file=sys.stdout):
@@ -116,7 +139,7 @@ class SMSgreedy:
         storsz = []
         storlb = []
         storub = []
-        n_ins = self.asociatividad()
+        n_ins = asociatividad(self._user_instr)
         ASSOCIATIVEADDOP = []
         addin = [["null"] * 10 for _ in range(n_ins)]
         naddin = []
@@ -520,27 +543,6 @@ class SMSgreedy:
         print("nlib = " + str(len(order_dis)) + ";", file=self._f)
         print("lib_elem = " + order_tgt + ";", file=self._f)
         print("lib_dis = " + order_dis_p + ";", file=self._f)
-
-    def asociatividad(self):
-        num = 0
-        for ins in self._user_instr:
-            if len(ins["inpt_sk"]) >= 2:
-                if ins["commutative"]:
-                    for ins2 in self._user_instr:
-                        if len(ins2["inpt_sk"]) >= 2 and ins2 != ins and ins2["commutative"]:
-                            if ins2["outpt_sk"][0] == ins["inpt_sk"][0]:
-                                if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
-                                    num += 1
-                                ins["inpt_sk"].pop(0)
-                                ins["inpt_sk"].extend(ins2["inpt_sk"])
-                                self._user_instr.remove(ins2)
-                            elif ins2["outpt_sk"][0] == ins["inpt_sk"][1]:
-                                if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
-                                    num += 1
-                                ins["inpt_sk"].pop(1)
-                                ins["inpt_sk"].extend(ins2["inpt_sk"])
-                                self._user_instr.remove(ins2)
-        return num
         
 
 if __name__ == "__main__":
