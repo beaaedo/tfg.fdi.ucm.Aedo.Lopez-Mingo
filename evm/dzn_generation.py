@@ -522,9 +522,9 @@ class SMSgreedy:
             store_dep += "]"
         
         print("m_dep_n = " + str(num_mem) + ";", file=self._f)
-        print("memory_dependences = " + mem_dep + ";", file=self._f)
+        print("memory_dependences = " + str(mem_dep) + ";", file=self._f)
         print("s_dep_n = " + str(num_store) + ";", file=self._f)
-        print("store_dependences = " + store_dep + ";", file=self._f)
+        print("store_dependences = " + str(store_dep) + ";", file=self._f)
 
         order_tgt = "[|"
         order_dis = []
