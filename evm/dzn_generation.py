@@ -37,6 +37,10 @@ def make_list(l):
     return s[:-2]
 
 
+def make_list_deps(l):
+    return ', '.join(f"ST({elem})" if "STORE" in elem else f"U({elem})"for elem in l)
+
+
 def asociatividad(user_instr):
     num = 0
     for ins in user_instr:
@@ -509,7 +513,7 @@ class SMSgreedy:
         else: 
             mem_dep = "[|"
             for sublist in self._mem_order:
-                mem_dep += make_list(sublist) + "|"
+                mem_dep += make_list_deps(sublist) + "|"
             mem_dep += "]"
         
         num_store = len(self._sto_order)
@@ -518,7 +522,7 @@ class SMSgreedy:
         else:
             store_dep = "[|"
             for sublist in self._sto_order:
-                store_dep += make_list(sublist) + "|"
+                store_dep += make_list_deps(sublist) + "|"
             store_dep += "]"
         
         print("m_dep_n = " + str(num_mem) + ";", file=self._f)
