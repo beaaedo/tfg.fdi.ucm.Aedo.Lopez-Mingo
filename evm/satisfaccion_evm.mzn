@@ -201,7 +201,8 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
   /\ fgas[i] == storgas[x] /\ fsize[i] == storsz[x]);
   
 %MEMORY DEPENDENCIES
-constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,1])) (forall (z in 1..i)(program[z] != memory_dependences[i,2]));
+constraint forall (i in MDN, j in SS, z in j..s where ((U^-1(program[j]) = memory_dependences[i,2])\/(BI^-1(program[j]) = memory_dependences[i,2])\/(Z^-1(program[j]) = memory_dependences[i,2])\/(P^-1(program[j]) = memory_dependences[i,2])\/(ST^-1(program[j]) = memory_dependences[i,2])\/(A^-1(program[j]) = memory_dependences[i,2])))  
+((U^-1(program[z]) != memory_dependences[i,1])/\(BI^-1(program[z]) != memory_dependences[i,1])/\(Z^-1(program[z]) != memory_dependences[i,1])/\(P^-1(program[z]) != memory_dependences[i,1])/\(ST^-1(program[z]) != memory_dependences[i,1])/\(A^-1(program[z]) != memory_dependences[i,1]));
 
 % Contar el valor a minimizar dependiendo de option 
 constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) 
