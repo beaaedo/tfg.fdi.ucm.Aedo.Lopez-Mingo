@@ -175,7 +175,7 @@ constraint forall (i in SS where (program[i] in U(UNARYOP)))
 % BINARY OP (fusionadas para ahorrar codigo)
 constraint forall (i in SS where (program[i] in BI(BINARYOP))) 
   (let {var int: x = BI^-1(program[i])} in 
-  if (not bincomm[x]) then (states[i,1] = binin1[x]) /\
+  if (not bincomm[x] \/ binin1[x] = binin2[x]) then (states[i,1] = binin1[x]) /\
   (states[i,2] = binin2[x])
   else ((states[i,1] = binin2[x]) \/ (states[i,2] = binin2[x])) /\
   ((states[i,1] = binin1[x])\/(states[i,2] = binin1[x])) endif
