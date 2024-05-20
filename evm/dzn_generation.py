@@ -229,7 +229,7 @@ class SMSgreedy:
                 else:
                     unlb += [str(1)]
                     unub += [str(self._b0)]
-            elif "ADD" in ins["id"] and len(ins["inpt_sk"]) > 2:
+            elif ins["commutative"] and len(ins["inpt_sk"]) > 2:
                 ASSOCIATIVEADDOP += [ins["id"]]
                 x = 0
                 for inp in ins["inpt_sk"]:
