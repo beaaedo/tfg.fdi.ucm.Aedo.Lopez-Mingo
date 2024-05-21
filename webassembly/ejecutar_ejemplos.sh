@@ -16,6 +16,7 @@ minizinc="$base_folder/MiniZincIDE-2.8.3-bundle-linux-x86_64/bin/minizinc"
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
 
+# Function to execute MiniZinc solver
 solve_with_minizinc() {
     dzn_file="$1"
     result_folder="$2"
@@ -27,7 +28,7 @@ solve_with_minizinc() {
     result_file="$result_folder/$base_name.txt"
     
     # Ejecución del código de minizinc
-    timeout 300s "$minizinc" --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file"
+    "$minizinc" --solver Chuffed --output-time -i "$mzn_script" "$dzn_file" -o "$result_file"  --time-limit 180000
     
     # Devuelve éxito o error dependiendo de si se ha ejecutado bien mal. Si devuelve ERROR también devuelve los contenidos del archivo, mola para debugging.
     if [ $? -eq 0 ]; then

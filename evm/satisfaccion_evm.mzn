@@ -92,11 +92,6 @@ array[SN] of TERM: endstack;
 %array[1..0] of TERM: before;
 %array[1..0] of TERM: after;
 
-int: m_dep_n;
-array[MDN, 1..2] of int: memory_dependences;
-int: s_dep_n;
-array[1..s_dep_n, 1..2] of int: store_dependences;
-
 %Liberalizacion de pila
 bool: lib;
 int: nlib;
@@ -106,6 +101,11 @@ array[1..nlib] of int: lib_dis;
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
 enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP); %Crea el enum opcodes sumando todos los enums
+
+int: m_dep_n;
+array[MDN, 1..2] of OPCODES: memory_dependences;
+int: s_dep_n;
+array[1..s_dep_n, 1..2] of OPCODES: store_dependences;
 
 % VARIABLES
 % matriz s + 1 x n, s+1 pilas
@@ -175,7 +175,7 @@ constraint forall (i in SS where (program[i] in U(UNARYOP)))
 % BINARY OP (fusionadas para ahorrar codigo)
 constraint forall (i in SS where (program[i] in BI(BINARYOP))) 
   (let {var int: x = BI^-1(program[i])} in 
-  if (not bincomm[x]) then (states[i,1] = binin1[x]) /\
+  if (not bincomm[x] \/ binin1[x] = binin2[x]) then (states[i,1] = binin1[x]) /\
   (states[i,2] = binin2[x])
   else ((states[i,1] = binin2[x]) \/ (states[i,2] = binin2[x])) /\
   ((states[i,1] = binin1[x])\/(states[i,2] = binin1[x])) endif
@@ -201,8 +201,9 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
   /\ fgas[i] == storgas[x] /\ fsize[i] == storsz[x]);
   
 %MEMORY DEPENDENCIES
-constraint forall (i in MDN, j in SS, z in j..s where ((U^-1(program[j]) = memory_dependences[i,2])\/(BI^-1(program[j]) = memory_dependences[i,2])\/(Z^-1(program[j]) = memory_dependences[i,2])\/(P^-1(program[j]) = memory_dependences[i,2])\/(ST^-1(program[j]) = memory_dependences[i,2])\/(A^-1(program[j]) = memory_dependences[i,2])))  
-((U^-1(program[z]) != memory_dependences[i,1])/\(BI^-1(program[z]) != memory_dependences[i,1])/\(Z^-1(program[z]) != memory_dependences[i,1])/\(P^-1(program[z]) != memory_dependences[i,1])/\(ST^-1(program[z]) != memory_dependences[i,1])/\(A^-1(program[z]) != memory_dependences[i,1]));
+constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,2]))
+(forall (z in j+1..s) (program[z] != memory_dependences[i,1]));
+
 
 % Contar el valor a minimizar dependiendo de option 
 constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) 

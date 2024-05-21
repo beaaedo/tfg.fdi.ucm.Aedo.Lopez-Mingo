@@ -10,6 +10,7 @@ int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
 
 %Sets que se reusan
 set of int: SS = 1..s;
+set of int: SS1 = 1..s-1;
 set of int: SN = 1..n;
 set of int: S1N = 1..n-1;
 set of int: S2N = 2..n;
@@ -17,6 +18,7 @@ set of int: S3N = 3..n;
 set of int: S4N = 4..n;
 set of int: SNO = 1..N;
 set of int: DN = 1..ndeps;
+set of int: NRS = 1..NR;
 set of int: NR1 = 1..(NR+1);
 set of int: RN = 1..(NR+max_registers_sz);
 
@@ -52,6 +54,9 @@ array[DN, 1..2] of OP: dependencies;
 int: max_registers_sz;
 int: NR;
 array[1..NR, 1..2] of TERM: registers;
+
+int: indTEE = 2 + 2 * (NR + max_registers_sz);
+int: indSET = 2;
 
 % CONSTANTS USED FOR EXECUTION
 enum OPCODES = {NOP, POP} ++ S(SET_ENUM) ++ G(GET_ENUM) ++ TEE(TEE_ENUM) ++ O(OP); %Crea el enum opcodes sumando todos los enums
@@ -91,7 +96,7 @@ constraint forall (i in SS where (program[i] == OPCODES[2]))
 
 % SETX
 constraint forall (i in SS where (program[i] in S(SET_ENUM))) 
-(let {var int: x = S^-1(program[i])} in (states[i,1] != null) /\ 
+  (let {var int: x = S^-1(program[i])} in (states[i,1] != null) /\ 
   (states[i+1,n] = null) /\
   (register_states[i+1,x] == states[i,1]) /\
   (forall (j in RN where (j != x)) (register_states[i+1,j] == register_states[i,j])) /\
@@ -163,6 +168,9 @@ constraint forall (o in O(OP)) (count (i in SS, j in SNO where (j == O^-1(progra
 
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o GETk.
 constraint forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (g in G(GET_ENUM)) (program[i-1] == g)));
+
+constraint forall (i in SS1, x in NRS where (states[i,1] = registers[x,2])/\(register_states[i,x] != registers[x,2])) 
+  ((program[i+1] = OPCODES[indSET + x]) \/ (program[i+1] = OPCODES[indTEE + x]));
 
 %olve minimize value;
 solve minimize value;

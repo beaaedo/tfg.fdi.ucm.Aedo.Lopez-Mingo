@@ -8,7 +8,7 @@
 import json
 import os
 import sys
-
+from collections import defaultdict
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import itertools
@@ -37,28 +37,58 @@ def make_list(l):
     return s[:-2]
 
 
+def make_list_deps(l):
+    return ', '.join(f"ST({elem})" if "STORE" in elem else f"U({elem})"for elem in l)
+
+
+def count_subterms(user_instr): 
+    occurrences = defaultdict(lambda: 0)
+    for instr in user_instr:
+        for input_var in instr["inpt_sk"]:
+            occurrences[input_var] += 1
+    return occurrences
+
+def flatten_operation(instruction, flattened_repr, to_remove, var2instr):
+    # Flattening operations
+    var_count = count_subterms(var2instr.values())
+    if instruction["id"] not in flattened_repr and instruction["commutative"]:
+        input_vars = instruction["inpt_sk"]
+        new_input_vars = []
+        for input_var in input_vars:
+            input_instr = var2instr.get(input_var, None)
+
+            # Conditions for flattening
+            if input_instr is not None and instruction["disasm"] == input_instr["disasm"] and var_count[input_var] == 1:
+
+                # First flatten the subterm if it has not been flattened yet
+                # We only flatten operations that appear once as a subterm, as it 
+                # is unclear the behaviour when multiple occurrences happen
+                if input_instr["id"] not in flattened_repr:
+                    flatten_operation(input_instr, flattened_repr, to_remove, var2instr)
+
+                # Afterwards, we combine the operations
+                new_input_vars.extend(input_instr["inpt_sk"])
+
+                # We update the disasm info
+                instruction["disasm"] += " " + input_instr["disasm"]
+                # Remove the instruction afterwards
+                to_remove.add(input_instr["id"])
+        
+            else:
+                new_input_vars.append(input_var) 
+       
+        flattened_repr.add(instruction["id"])
+        instruction["inpt_sk"] = new_input_vars
+    
 def asociatividad(user_instr):
-    num = 0
-    for ins in user_instr:
-        if len(ins["inpt_sk"]) >= 2:
-            if ins["commutative"]:
-                for ins2 in user_instr:
-                    if ins["disasm"] == ins2["disasm"] and ins2 != ins:
-                        if ins2["outpt_sk"][0] == ins["inpt_sk"][0]:
-                            if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
-                                num += 1
-                            ins["inpt_sk"].pop(0)
-                            ins["inpt_sk"].extend(ins2["inpt_sk"])
-                            ins["disasm"] += ' ' + ins2["disasm"]
-                            user_instr.remove(ins2)
-                        elif ins2["outpt_sk"][0] == ins["inpt_sk"][1]:
-                            if len(ins["inpt_sk"]) == 2 and len(ins2["inpt_sk"]) == 2:
-                                num += 1
-                            ins["inpt_sk"].pop(1)
-                            ins["inpt_sk"].extend(ins2["inpt_sk"])
-                            ins["disasm"] += ' ' + ins2["disasm"]
-                            user_instr.remove(ins2)
-    return num
+    flattened, to_remove = set(), set()
+    var2instr = {out_var: instr for instr in user_instr for out_var in instr["outpt_sk"]}
+    for instr in user_instr:
+        flatten_operation(instr, flattened, to_remove, var2instr)
+
+    final_user_instr = [instr for instr in user_instr if instr["id"] not in to_remove]
+    return final_user_instr, len(to_remove), len([instr for instr in final_user_instr if instr["commutative"] and len(instr["input_sk"]) > 2])
+
 
 class SMSgreedy:
 
@@ -139,7 +169,13 @@ class SMSgreedy:
         storsz = []
         storlb = []
         storub = []
-        n_ins = asociatividad(self._user_instr)
+        final_instr, n_combined, n_ins = asociatividad(self._user_instr)
+        
+        # Remove one per combined operation
+        self._b0 -= n_combined
+
+        self._user_instr = final_instr
+        print(self._user_instr)
         ASSOCIATIVEADDOP = []
         addin = [["null"] * 10 for _ in range(n_ins)]
         naddin = []
@@ -150,7 +186,7 @@ class SMSgreedy:
         addlb = []
         addub = []
         
-        nadds = 1
+        nadds = 0
         for ins in self._user_instr:
             if "PUSH" in ins["id"]:
                 if " " in ins["id"]:
@@ -225,7 +261,7 @@ class SMSgreedy:
                 else:
                     unlb += [str(1)]
                     unub += [str(self._b0)]
-            elif "ADD" in ins["id"] and len(ins["inpt_sk"]) > 2:
+            elif ins["commutative"] and len(ins["inpt_sk"]) > 2:
                 ASSOCIATIVEADDOP += [ins["id"]]
                 x = 0
                 for inp in ins["inpt_sk"]:
@@ -235,9 +271,9 @@ class SMSgreedy:
                             i = constants.index(inp)
                         else:
                             constants += [inp]
-                        addin[n_ins - nadds][x] = "c" + str(i)
+                        addin[nadds][x] = "c" + str(i)
                     else:
-                        addin[n_ins - nadds][x] = "s" + inp[2:-1]
+                        addin[nadds][x] = "s" + inp[2:-1]
                     x = x + 1
                 naddin += str(x)
                 nadds += 1
@@ -396,18 +432,8 @@ class SMSgreedy:
             print("NA = " + str(len(ASSOCIATIVEADDOP)) + ";", file=self._f)
             print("ASSOCIATIVEADDOP = { " + make_list(ASSOCIATIVEADDOP) + " };", file=self._f)
             print("naddin = [" + make_list(naddin) + " ];", file=self._f)
-            str_addin = "addin = ["
-            for i, arr in enumerate(addin):
-                str_addin += "|"
-                for j, el in enumerate(arr):
-                    str_addin += " " + str(el)
-                    if j != len(arr) - 1:
-                        str_addin += "," 
-                str_addin += "|"
-                if i != len(addin) - 1:
-                    str_addin += " , "
-            str_addin += "];"
-            print(str_addin, file=self._f)
+            str_addin = "[|" + "|".join(make_list(sublist) for sublist in addin) + "|]"
+            print("addin =" + str_addin + ";", file=self._f)
             print("addout = [" + make_list(addout) + " ];", file=self._f)
             print("addcomm = [" + make_list(addcomm) + " ];", file=self._f)
             print("addgas = [" + make_list(addgas) + " ];", file=self._f)
@@ -509,7 +535,7 @@ class SMSgreedy:
         else: 
             mem_dep = "[|"
             for sublist in self._mem_order:
-                mem_dep += make_list(sublist) + "|"
+                mem_dep += make_list_deps(sublist) + "|"
             mem_dep += "]"
         
         num_store = len(self._sto_order)
@@ -518,7 +544,7 @@ class SMSgreedy:
         else:
             store_dep = "[|"
             for sublist in self._sto_order:
-                store_dep += make_list(sublist) + "|"
+                store_dep += make_list_deps(sublist) + "|"
             store_dep += "]"
         
         print("m_dep_n = " + str(num_mem) + ";", file=self._f)
