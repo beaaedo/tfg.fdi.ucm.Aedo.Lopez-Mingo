@@ -255,7 +255,7 @@ constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])
 constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
   (let {var int: z = A^-1(program[i]); var int: w = naddin[z]} in 
   (if addcomm[z] then 
-  (forall (k in TERM) (sum(j in 1..w)(states[i,j] == k) == sum(j in 1..w)(addin[z,j] == k))) 
+  (forall (k in TERM) (sum(j in 1..w)(states[i,j] == k) == sum(l in 1..w)(addin[z,l] == k))) 
   else (forall (k in 1..w)(addin[z,k] == states[i,k])) endif)/\
   (states[i+1,1] == addout[z])/\
   (forall(j in 2..n-(w-1)) (states[i+1,j] == states[i,j+(w-1)]))/\
