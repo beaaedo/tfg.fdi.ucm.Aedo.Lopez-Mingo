@@ -104,8 +104,6 @@ enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(U
 
 int: m_dep_n;
 array[MDN, 1..2] of OPCODES: memory_dependences;
-int: s_dep_n;
-array[1..s_dep_n, 1..2] of OPCODES: store_dependences;
 
 % VARIABLES
 % matriz s + 1 x n, s+1 pilas
@@ -177,8 +175,8 @@ constraint forall (i in SS where (program[i] in BI(BINARYOP)))
   (let {var int: x = BI^-1(program[i])} in 
   if (not bincomm[x]) then (states[i,1] = binin1[x]) /\
   (states[i,2] = binin2[x])
-  else ((states[i,1] = binin1[x]) /\ (states[i,2] = binin2[x])) \/
-  ((states[i,1] = binin2[x]) /\ (states[i,2] = binin1[x])) endif
+  else ((states[i,1] = binin2[x]) /\ (states[i,2] = binin2[x])) \/
+  ((states[i,1] = binin1[x]) /\ (states[i,2] = binin1[x])) endif
   /\ (states[i+1,1] = binout[x]) /\
   (states[i+1,n] = null) /\
   (forall (j in S3N)(states[i+1,j-1] = states[i,j]))
@@ -218,8 +216,7 @@ constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])
 constraint if opt1 then ((forall (x in Z(ZEROARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in U(UNARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in BI(BINARYOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in ST(STOROP)) (exists (z in SS) (program[z] = x)))/\(forall (x in P(PUSHOP)) (exists (z in SS) (program[z] = x)))/\(forall (x in A(ASSOCIATIVEADDOP)) (exists (z in SS) (program[z] = x)))) endif;
 
 % Cada TERM que aparece como entrada de una operacion definida o en la pila final debe insertarse al menos una vez.
-constraint if opt2 then (forall (e in endstack, ui in unin, bi1 in binin1, bi2 in binin2, si1 in storin1, 
-si2 in storin2, a in addin where (a != null)) 
+constraint if opt2 then (forall (e in endstack, ui in unin, bi1 in binin1, bi2 in binin2, si1 in storin1, si2 in storin2, a in addin where (a != null)) 
   (((e in zeroout)\/(e in unout)\/(e in binout)\/(e in pushout)\/(e in addout)\/ (e in startstack))/\
   ((ui in zeroout)\/(ui in unout)\/(ui in binout)\/(ui in pushout)\/(ui in addout)\/ (ui in startstack))/\
   ((bi1 in zeroout)\/(bi1 in unout)\/(bi1 in binout)\/(bi1 in pushout)\/(bi1 in addout)\/ (bi1 in startstack))/\

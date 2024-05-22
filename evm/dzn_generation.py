@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
 import itertools
 
+ASSOC=False
 
 def get_ops_map(instructions, op):
     res = {}
@@ -38,7 +39,7 @@ def make_list(l):
 
 
 def make_list_deps(l):
-    return ', '.join(f"ST({elem})" if "STORE" in elem else f"U({elem})"for elem in l)
+    return ', '.join(f"ST({elem})" if "STORE" in elem else f"BI({elem})" if "KECCAK" in elem else  f"U({elem})" for elem in l)
 
 
 def count_subterms(user_instr): 
@@ -87,13 +88,13 @@ def asociatividad(user_instr):
         flatten_operation(instr, flattened, to_remove, var2instr)
 
     final_user_instr = [instr for instr in user_instr if instr["id"] not in to_remove]
-    return final_user_instr, len(to_remove), len([instr for instr in final_user_instr if instr["commutative"] and len(instr["input_sk"]) > 2])
+    return final_user_instr, len(to_remove), len([instr for instr in final_user_instr if instr["commutative"] and len(instr["inpt_sk"]) > 2])
 
 
 class SMSgreedy:
 
     def __init__(self, json_format, file=sys.stdout):
-        self._bs = json_format['max_sk_sz']
+        self._bs = min(json_format['max_sk_sz'], 17)
         self._user_instr = json_format['user_instrs']
         self._b0 = json_format["init_progr_len"]
         self._initial_stack = json_format['src_ws']
@@ -169,13 +170,15 @@ class SMSgreedy:
         storsz = []
         storlb = []
         storub = []
-        final_instr, n_combined, n_ins = asociatividad(self._user_instr)
-        
+
+        if ASSOC:
+            final_instr, n_combined, n_ins = asociatividad(self._user_instr)
+        else:
+            final_instr, n_combined, n_ins = self._user_instr, 0, 0
         # Remove one per combined operation
         self._b0 -= n_combined
 
         self._user_instr = final_instr
-        print(self._user_instr)
         ASSOCIATIVEADDOP = []
         addin = [["null"] * 10 for _ in range(n_ins)]
         naddin = []
@@ -529,29 +532,18 @@ class SMSgreedy:
         #print("before = [ " + make_list(before) + " ];", file=self._f)
         #print("after = [ " + make_list(after) + " ];", file=self._f)
 
-        num_mem = len(self._mem_order)
+        num_mem = len(self._mem_order) + len(self._sto_order)
         if (num_mem == 0):
             mem_dep = "[| |]"
         else: 
             mem_dep = "[|"
-            for sublist in self._mem_order:
+            for sublist in self._mem_order + self._sto_order:
                 mem_dep += make_list_deps(sublist) + "|"
             mem_dep += "]"
-        
-        num_store = len(self._sto_order)
-        if (num_store == 0):
-            store_dep = "[| |]"
-        else:
-            store_dep = "[|"
-            for sublist in self._sto_order:
-                store_dep += make_list_deps(sublist) + "|"
-            store_dep += "]"
-        
+                
         print("m_dep_n = " + str(num_mem) + ";", file=self._f)
         print("memory_dependences = " + str(mem_dep) + ";", file=self._f)
-        print("s_dep_n = " + str(num_store) + ";", file=self._f)
-        print("store_dependences = " + str(store_dep) + ";", file=self._f)
-
+        
         order_tgt = "[|"
         order_dis = []
         if (self._liberalize == False):
