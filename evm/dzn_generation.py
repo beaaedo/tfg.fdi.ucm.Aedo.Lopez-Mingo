@@ -94,7 +94,7 @@ def asociatividad(user_instr):
 class SMSgreedy:
 
     def __init__(self, json_format, file=sys.stdout):
-        self._bs = min(json_format['max_sk_sz'], 17)
+        self._bs = json_format['max_sk_sz']
         self._user_instr = json_format['user_instrs']
         self._b0 = json_format["init_progr_len"]
         self._initial_stack = json_format['src_ws']
@@ -339,14 +339,14 @@ class SMSgreedy:
         # print("% when empty means not available", file=self._f)
 
         dups = "DUP_ENUM = {"
-        for x in range(self._bs - 1):
+        for x in range(min(self._bs - 1, 16)):
             if x == self._bs - 2: 
                 dups += " DUP" + str(x + 1)
             else: 
                 dups += " DUP" + str(x + 1) + ","
             
         swaps = "SWAP_ENUM = {"
-        for x in range(self._bs - 1):
+        for x in range(min(self._bs - 1, 16)):
             if x == self._bs -2:
                 swaps += " SWAP" + str(x + 1)
             else:

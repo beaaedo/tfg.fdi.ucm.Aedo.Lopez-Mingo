@@ -175,8 +175,8 @@ constraint forall (i in SS where (program[i] in BI(BINARYOP)))
   (let {var int: x = BI^-1(program[i])} in 
   if (not bincomm[x]) then (states[i,1] = binin1[x]) /\
   (states[i,2] = binin2[x])
-  else ((states[i,1] = binin2[x]) /\ (states[i,2] = binin2[x])) \/
-  ((states[i,1] = binin1[x]) /\ (states[i,2] = binin1[x])) endif
+  else ((states[i,1] = binin1[x]) /\ (states[i,2] = binin2[x])) \/
+  ((states[i,1] = binin2[x]) /\ (states[i,2] = binin1[x])) endif
   /\ (states[i+1,1] = binout[x]) /\
   (states[i+1,n] = null) /\
   (forall (j in S3N)(states[i+1,j-1] = states[i,j]))
