@@ -2,7 +2,7 @@
 
 # PATHS
 # Antes de la ejecución editar la variable base_folder con la ubicacion actual de los archivos
-base_folder="/Users/beaaedo/Desktop/tfg/codigo/evm_basico"
+base_folder="/home/beaclaudia/wasm"
 
 # Llamada a los dos scripts
 ./"$base_folder"/generar_dzn.sh

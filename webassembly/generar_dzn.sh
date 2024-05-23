@@ -2,10 +2,10 @@
 
 # PATHS
 # Antes de la ejecución editar la variable base_folder con la ubicacion actual de los archivos
-base_folder="/Users/beaaedo/Desktop/tfg/codigo/webassembly"
+base_folder=""/home/beaclaudia/wasm""
 json_folder="$base_folder/dataset_circom"
 dzn_folder="$base_folder/dataset_dzn"
-python_script="$base_folder/codigo/webassembly/dzn_generation.py"
+python_script="$base_folder/dzn_generation.py"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$dzn_folder"

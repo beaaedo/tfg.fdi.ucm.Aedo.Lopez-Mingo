@@ -2,12 +2,11 @@
 
 # PATHS
 # Antes de la ejecución editar la variable base_folder con la ubicacion actual de los archivos y minizinc con la ubicación de el ejecutable de Minizinc
-base_folder="/c/Users/claud/OneDrive/Escritorio/Clase/TFG/tfg/evm"
+base_folder="/home/beaclaudia/evm_basico"
 json_folder="$base_folder/ejemplos_json"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion_evm.mzn"
-verification_script="$base_folder/process_solution.py"
 json_folder="$base_folder/ejemplos_json"
 minizinc="$base_folder/MiniZincIDE-2.8.3-bundle-linux-x86_64/bin/minizinc"
 
@@ -44,7 +43,4 @@ export -f solve_with_minizinc
 
 # Ejecutar solver de MiniZinc concurrentemente en los 128 cores de la CPU
 find "$dzn_folder" -type f -name "*.dzn" | parallel -j 128 solve_with_minizinc {} "$results_folder"  "$minizinc" "$mzn_script"
-
-# Ejecutar python que crea el csv de las soluciones
-python "$verification_script" "$json_folder" "$results_folder"
 

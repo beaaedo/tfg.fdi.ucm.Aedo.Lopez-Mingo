@@ -6,8 +6,8 @@ base_folder="/home/beaclaudia/wasm"
 json_folder="$base_folder/dataset_circom"
 dzn_folder="$base_folder/dataset_dzn"
 results_folder="$base_folder/dataset_results"
-mzn_script="$base_folder/webassembly/satisfaccion_webassembly.mzn"
-verification_script="$base_folder/webassembly/process_solution.py"
+mzn_script="$base_folder/satisfaccion_webassembly.mzn"
+verification_script="$base_folder/process_solution.py"
 minizinc="$base_folder/MiniZincIDE-2.8.3-bundle-linux-x86_64/bin/minizinc"
 
 # Crear las carpetas que van a ser necesarias

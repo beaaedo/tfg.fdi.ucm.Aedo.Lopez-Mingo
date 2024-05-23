@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # PATHS
-base_folder="/Users/beaaedo/Desktop/tfg/codigo/evm_basico"
+base_folder="/home/beaclaudia/evm_basico"
 json_folder="$base_folder/ejemplos_json"
 dzn_folder="$base_folder/ejemplos_dzn"
 python_script="$base_folder/dzn_generation.py"
