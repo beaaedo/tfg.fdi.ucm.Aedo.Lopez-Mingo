@@ -1,25 +1,20 @@
 #!/bin/bash
 
-# ANTES DE EJECUTAR EN GIT BASH
-# 1. Ejecutar el comando export PATH=$PATH:{MINIZINC} donde {MINIZINC} es el path a tu instalacion de minzinc
-# 2. Cambiar el path de base_folder al de tu sistema
-# 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
-
 # PATHS
-#base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg/evm"
+# Antes de la ejecución editar la variable base_folder con la ubicacion actual de los archivos y minizinc con la ubicación de el ejecutable de Minizinc
 base_folder="/c/Users/claud/OneDrive/Escritorio/Clase/TFG/tfg/evm"
 json_folder="$base_folder/ejemplos_json"
-#json_folder="$base_folder/ejemplos_json_grande"
-#json_folder="$base_folder/ejemplos_json_stack_deps"
 dzn_folder="$base_folder/ejemplos_dzn"
 results_folder="$base_folder/ejemplos_results"
 mzn_script="$base_folder/satisfaccion_evm.mzn"
 verification_script="$base_folder/process_solution.py"
 json_folder="$base_folder/ejemplos_json"
+minizinc="$base_folder/MiniZincIDE-2.8.3-bundle-linux-x86_64/bin/minizinc"
 
 # Crear las carpetas que van a ser necesarias
 mkdir -p "$results_folder"
 
+# Función que ejecuta el solver de MiniZinc
 solve_with_minizinc() {
     dzn_file="$1"
     result_folder="$2"
@@ -44,12 +39,12 @@ solve_with_minizinc() {
     fi
 }
 
-# Export the function so it's accessible to parallel
+# Exportar la función para que sea accesible para parallel
 export -f solve_with_minizinc
 
-# Run MiniZinc solver concurrently on multiple CPU cores
+# Ejecutar solver de MiniZinc concurrentemente en los 128 cores de la CPU
 find "$dzn_folder" -type f -name "*.dzn" | parallel -j 128 solve_with_minizinc {} "$results_folder"  "$minizinc" "$mzn_script"
 
-# AHC: Comentar esta línea si da problemas
+# Ejecutar python que crea el csv de las soluciones
 python "$verification_script" "$json_folder" "$results_folder"
 

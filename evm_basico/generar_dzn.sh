@@ -1,16 +1,8 @@
 #!/bin/bash
 
-# ANTES DE EJECUTAR EN GIT BASH
-# 1. Ejecutar el comando export PATH=$PATH:{MINIZINC} donde {MINIZINC} es el path a tu instalacion de minzinc
-# 2. Cambiar el path de base_folder al de tu sistema
-# 3. Se ejecuta primero el de generar_dzn.sh y luego el de ejecutar_ejemplos.sh o solamente el de creardzn_ejecutarejemplos.sh
-
 # PATHS
-#base_folder="/c/Users/Bea/Documents/curso23-24/tfg/codigo/tfg/evm"
 base_folder="/Users/beaaedo/Desktop/tfg/codigo/evm_basico"
 json_folder="$base_folder/ejemplos_json"
-#json_folder="$base_folder/ejemplos_json_grande"
-#json_folder="$base_folder/ejemplos_json_stack_deps"
 dzn_folder="$base_folder/ejemplos_dzn"
 python_script="$base_folder/dzn_generation.py"
 
