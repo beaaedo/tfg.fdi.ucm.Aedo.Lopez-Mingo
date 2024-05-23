@@ -1,22 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                      DEFINITIONS                      %
+%                      DEFINICIONES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CONSTANTS FROM DZN
+
+% CONSTANTES DEL DZN
+%%%%%%%%%%%%%%%%%%%%
 enum TERM;
 int: s; % init_progr_len
 int: n; % max_sk_sz
 int: min;
 TERM: null; %string que representa null
 
-%Variables de control para usar unas constraints u otras (0 = no se usa, 1 = si se usa)
-int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
-bool: opt1 = true;
-bool: opt2 = true;
-bool: opt3 = true;
-bool: opt4 = true;
-bool: opt5 = true;
-
-%Sets que se reusan
+% Sets 
 set of int: SS = 1..s;
 set of int: SN = 1..n;
 set of int: S2N = 2..n;
@@ -29,6 +23,8 @@ set of int: SNPUSH = 1..NPUSH;
 set of int: SNSTORE = 1..NSTORE;
 set of int: MDN = 1..m_dep_n;
 
+% CONSTANTES PARA CADA TIPO DE OPERACIÓN
+% Operaciones Zeroarias
 enum ZEROARYOP;
 int: N0;
 array [SN0] of TERM: zeroout;
@@ -37,6 +33,7 @@ array [SN0] of int: zerosz;
 array [SN0] of int: zerolb;
 array [SN0] of int: zeroub;
 
+% Operaciones Unarias
 enum UNARYOP;
 int: N1;
 array [SN1] of TERM: unin;
@@ -46,6 +43,7 @@ array [SN1] of int: unsz;
 array [SN1] of int: unlb;
 array [SN1] of int: unub;
 
+% Operaciones Binarias
 enum BINARYOP;
 int: N2;
 array [SN2] of TERM: binin1;
@@ -57,6 +55,7 @@ array [SN2] of int: binsz;
 array [SN2] of int: binlb;
 array [SN2] of int: binub;
 
+% Operaciones Asociativas
 enum ASSOCIATIVEADDOP;
 int: NA;
 array[SNA] of int: naddin;
@@ -68,6 +67,7 @@ array[SNA] of int: addsz;
 array[SNA] of int: addlb;
 array[SNA] of int: addub;
 
+% Operaciones Push
 enum PUSHOP;
 int: NPUSH;
 array[SNPUSH] of TERM: pushout;
@@ -76,6 +76,7 @@ array[SNPUSH] of int: pushsz;
 array[SNPUSH] of int: pushlb;
 array[SNPUSH] of int: pushub;
 
+% Operaciones Store
 enum STOROP;
 int: NSTORE;
 array[SNSTORE] of TERM: storin1;
@@ -87,42 +88,56 @@ array[SNSTORE] of int: storsz;
 
 enum DUP_ENUM;   %Contiene Dups necesarios
 enum SWAP_ENUM;  %Contiene Swaps necesarios
-array[SN] of TERM: startstack;
-array[SN] of TERM: endstack;
-%array[1..0] of TERM: before;
-%array[1..0] of TERM: after;
+array[SN] of TERM: startstack; % Stack inicial
+array[SN] of TERM: endstack; % Stack final
 
-%Liberalizacion de pila
+% Constantes usadas para la liberalizacion de pila
 bool: lib;
 int: nlib;
 array[1..nlib,1..2] of TERM: lib_elem;
 array[1..nlib] of int: lib_dis; 
 
-% CONSTANTS USED FOR EXECUTION
-int: NDUPS_SWAPS = n - 1;
-enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) 
-++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP);
-
+% Constantes relacionadas con las dependencias de memoria
 int: m_dep_n;
 array[MDN, 1..2] of OPCODES: memory_dependences;
 
+% CONSTANTES USADAS PARA LA EJECUCIÓN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Número de Dups y Swaps que pueden ser ejecutados
+int: NDUPS_SWAPS = n - 1;
+%Crea el enum opcodes sumando todos los enums
+enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) 
+++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP);
+%Variables de control para usar unas constraints u otras (0 = no se usa, 1 = si se usa)
+int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
+bool: opt1 = true;
+bool: opt2 = true;
+bool: opt3 = true;
+bool: opt4 = true;
+bool: opt5 = true;
+
 % VARIABLES
-% matriz s + 1 x n, s+1 pilas
+%%%%%%%%%%%
+% Valor a optimizar
 var int: value;
+% Array con el gas gastado por las operaciones en cada estado
 array[SS] of var int: fgas;
+% Array con el size ocupado por las operaciones en cada estado
 array[SS] of var int: fsize;
+% Matriz con el estado de la pila en cada estado
 array[1..s+1, SN] of var TERM: states;
+% Operaciones que se ejecutan en cada estado
 array[SS] of var OPCODES: program;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                      CONSTRAINTS                      %
+%                     RESTRICCIONES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% INITIAL AND FINAL STACKS
+% Pila inicial y final
 constraint forall (i in SN) (states[1,i] == startstack[i]);
 constraint forall (i in SN) (if lib == false then (states[s+1,i] == endstack[i]) endif);
 
-% LIBERALIZACION DE PILA DE SALIDA
+% Liberalización de la pila de salida
 constraint if lib == true then forall (i in TERM) (sum(j in SN)(endstack[j] == i) == sum(j in SN)(states[s+1,j] == i)) endif;
 constraint if nlib != 0 then forall (i in 1..nlib) (forall (a in SN, b in SN 
 where (states[s+1,a] == lib_elem[i,1])/\(states[s+1,b] == lib_elem[i,2]))
@@ -171,7 +186,7 @@ constraint forall (i in SS where (program[i] in U(UNARYOP)))
   (forall (j in S2N)(states[i+1,j] = states[i,j]))
   /\ fgas[i] == ungas[x] /\ fsize[i] == unsz[x]);
 
-% BINARY OP (fusionadas para ahorrar codigo)
+% BINARY OP 
 constraint forall (i in SS where (program[i] in BI(BINARYOP))) 
   (let {var int: x = BI^-1(program[i])} in 
   if (not bincomm[x]) then (states[i,1] = binin1[x]) /\
@@ -199,7 +214,7 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
   (forall (j in S3N)(states[i+1,j-2] = states[i,j]))
   /\ fgas[i] == storgas[x] /\ fsize[i] == storsz[x]);
   
-%MEMORY DEPENDENCIES
+% Dependencias de memoria
 constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,2]))
 (forall (z in j+1..s) (program[z] != memory_dependences[i,1]));
 
@@ -210,7 +225,7 @@ constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])
   else value = sum(i in SS)(fsize[i]) endif;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                   CONSTRAINTS TOSEM                   %
+%                  RESTRICCIONES TOSEM                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Todas las operaciones definidas deben aparecer en program
@@ -238,7 +253,11 @@ constraint if opt4 then ((forall (z in Z(ZEROARYOP)) (count (i in SS, j in SN0 w
   (forall (p in P(PUSHOP)) (count (i in SS, j in SNPUSH where (j == P^-1(program[i])))((program[i] == p)/\(pushgas[j] >= 3)) <= 1))/\
   (forall (a in A(ASSOCIATIVEADDOP)) (count (i in SS, j in SNA where (j == A^-1(program[i])))((program[i] == a)/\(addgas[j] >= 3)) <= 1))) endif;
   
-% (NO TOSEM)Si la cima de la pila es x, la instruccion anterior es pop, nop, dup, swap, store o una operacion con output x.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                RESTRICCIONES EXTENSIÓN                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  
+% Si la cima de la pila es x, la instruccion anterior es pop, nop, dup, swap, store o una operacion con output x.
 constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1]) /\ (x != null)) 
   (((program[i-1] == OPCODES[1])
   \/(program[i-1] == OPCODES[2])
@@ -251,8 +270,7 @@ constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])
   \/((program[i-1] in P(PUSHOP))/\(x == pushout[P^-1(program[i-1])]))
   \/((program[i-1] in A(ASSOCIATIVEADDOP))/\(x == addout[A^-1(program[i-1])]))))) endif;
 
-%(NO TOSEM) Asociatividad
-
+% Asociatividad
 constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
   (let {var int: z = A^-1(program[i]); var int: w = naddin[z]} in 
   (forall (k in TERM) (sum(j in 1..w)(states[i,j] == k) == sum(l in 1..w)(addin[z,l] == k))/\
