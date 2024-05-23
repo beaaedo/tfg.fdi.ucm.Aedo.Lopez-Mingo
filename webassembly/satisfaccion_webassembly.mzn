@@ -1,14 +1,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                      DEFINITIONS                      %
+%                      DEFINICIONES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CONSTANTS FROM DZN
+
+% CONSTANTES DEL DZN
+%%%%%%%%%%%%%%%%%%%%
 enum TERM;
 int: s; % init_progr_len
 int: n; % max_sk_sz
-TERM: null; %string que representa null
-int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
+TERM: null; % string que representa null
 
-%Sets que se reusan
+% Sets 
 set of int: SS = 1..s;
 set of int: SN = 1..n;
 set of int: S1N = 1..n-1;
@@ -20,6 +21,7 @@ set of int: DN = 1..ndeps;
 set of int: NR1 = 1..(NR+1);
 set of int: RN = 1..(NR+max_registers_sz);
 
+% Constantes relacionadas con las operaciones
 array [SNO] of int: in_ops;
 array [SNO] of int: out_ops;
 enum OP;
@@ -40,39 +42,51 @@ array [SNO] of int: ub;
 enum SET_ENUM;   %Contiene SETs necesarios
 enum GET_ENUM;  %Contiene GETs necesarios
 enum TEE_ENUM;  %Contiene TEEs necesarios
-array[SN] of TERM: startstack;
-array[SN] of TERM: endstack;
-%array[1..0] of TERM: before;
-%array[1..0] of TERM: after;
+array[SN] of TERM: startstack; % Stack inicial
+array[SN] of TERM: endstack; % Stack final
 
+% Constantes relacionadas con las dependencias de memoria
 int: ndeps;
-
 array[DN, 1..2] of OP: dependencies;
 
-int: max_registers_sz;
+% Constantes relacionadas con registros
+% Número de registros adicionales
+int: max_registers_sz; 
+% Número de registros necesarios
 int: NR;
-array[1..NR, 1..2] of TERM: registers;
+% Matriz con el estado inicial y final de los registros 
+array[1..NR, 1..2] of TERM: registers; 
 
-% CONSTANTS USED FOR EXECUTION
-enum OPCODES = {NOP, POP} ++ S(SET_ENUM) ++ G(GET_ENUM) ++ TEE(TEE_ENUM) ++ O(OP); %Crea el enum opcodes sumando todos los enums
+% CONSTANTS USADAS PARA LA EJECUCIÓN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Crea el enum opcodes sumando todos los enums
+enum OPCODES = {NOP, POP} ++ S(SET_ENUM) ++ G(GET_ENUM) ++ TEE(TEE_ENUM) ++ O(OP); 
+% Define si queremos optimizar gas(1), size(2) o length(0). En el caso de WebAssembly siempre será igual a 0.
+int: option = 0; 
 
 % VARIABLES
-% matriz s + 1 x n, s+1 pilas
+%%%%%%%%%%%
+% Valor a optimizar
 var int: value;
+% Array con el gas gastado por las operaciones en cada estado
 array[SS] of var int: fgas;
+% Array con el size ocupado por las operaciones en cada estado
 array[SS] of var int: fsize;
+% Matriz con el estado de la pila en cada estado
 array[1..s+1, SN] of var TERM: states;
+% Matriz con el estado de los registros en cada estado
 array[1..s+1, RN] of var TERM: register_states;
+% Operaciones que se ejecutan en cada estado
 array[SS] of var OPCODES: program;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                      CONSTRAINTS                      %
+%                     RESTRICCIONES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% INITIAL AND FINAL STACKS
+% Pila inicial y final
 constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
 
-% INITIAL AND FINAL REGISTERS
+% Registros iniciales y finales
 constraint forall (i in 1..NR) ((register_states[1,i] == registers[i,1])/\(register_states[s+1,i] == registers[i,2]));
 constraint forall (i in (NR+1)..(NR + max_registers_sz)) ((register_states[1,i] = null) /\ (register_states[s+1,i] = null));
 
@@ -113,7 +127,7 @@ constraint forall (i in SS where (program[i] in TEE(TEE_ENUM)))
   (forall (j in RN where (j != x)) (register_states[i+1,j] == register_states[i,j])) /\
   (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
   
- % Asegura que, dependiendo de la cantidad de parámetros de entrada sean iguales a los del array al antes de la operación - CONMUTATIVAS
+% Asegura que, dependiendo de la cantidad de parámetros de entrada sean iguales a los del array al antes de la operación - CONMUTATIVAS
 constraint forall (i in SS where (program[i] in O(OP))) 
   (let {var int: x = O^-1(program[i])} in 
   if ((in_ops[x] == 2) /\ (comm[x])) then (((states[i,1] = in2[x]) /\ (states[i,2] = in1[x])) \/ ((states[i,1] = in1[x]) /\ (states[i,2] = in2[x])) /\ (fgas[i] = gas[x]) /\ (fsize[i] == gas[x])) endif);
@@ -143,7 +157,7 @@ constraint forall (i in SS where (program[i] in O(OP)))
 % Estado de los registros después de una operación NO de memoria
 constraint forall (i in SS where (program[i] in O(OP))) (forall (j in RN) (register_states[i+1,j] == register_states[i,j]));
 
-% DEPENDENCIES
+% Dependencias de memoria
 constraint forall (i in DN, j in SS where (program[j] = O(dependencies[i,1]))) (forall (z in 1..j)(program[z] !=  O(dependencies[i,2])));
  
 % Contar el valor a minimizar dependiendo de option 
@@ -152,7 +166,7 @@ elseif option = 1 then value = sum(i in SS)(fgas[i])
 else value = sum(i in SS)(fsize[i]) endif;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                   CONSTRAINTS TOSEM                   %
+%                  RESTRICCIONES TOSEM                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Todas las operaciones definidas deben aparecer en program
@@ -164,5 +178,4 @@ constraint forall (o in O(OP)) (count (i in SS, j in SNO where (j == O^-1(progra
 % La instrucción justo antes de POP no puede introducir un elemento en la pila. Antes de un POP solo puede ser otro POP o GETk.
 constraint forall (i in 2..s where (program[i] == OPCODES[2])) ((program[i-1] == OPCODES[2])\/(exists (g in G(GET_ENUM)) (program[i-1] == g)));
 
-%olve minimize value;
 solve minimize value;

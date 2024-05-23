@@ -1,17 +1,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                      DEFINITIONS                      %
+%                      DEFINICIONES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% CONSTANTS FROM DZN
+
+% CONSTANTES DEL DZN
+%%%%%%%%%%%%%%%%%%%%
 enum TERM;
 int: s; % init_progr_len
 int: n; % max_sk_sz
 int: min;
 TERM: null; %string que representa null
 
-%Variables de control para usar unas constraints u otras (0 = no se usa, 1 = si se usa)
-int: option = 0; %Define si queremos optimizar gas(1), size(2) o length(0)
-
-%Sets que se reusan
+% Sets 
 set of int: SS = 1..s;
 set of int: SN = 1..n;
 set of int: S2N = 2..n;
@@ -24,7 +23,8 @@ set of int: SNSTORE = 1..NSTORE;
 set of int: MDN = 1..m_dep_n;
 set of int: SDN = 1..s_dep_n;
 
-% Constantes con cada tipo de operación
+% CONSTANTES PARA CADA TIPO DE OPERACIÓN
+% Operaciones Zeroarias
 enum ZEROARYOP;
 int: N0;
 array [SN0] of TERM: zeroout;
@@ -33,6 +33,7 @@ array [SN0] of int: zerosz;
 array [SN0] of int: zerolb;
 array [SN0] of int: zeroub;
 
+% Operaciones Unarias
 enum UNARYOP;
 int: N1;
 array [SN1] of TERM: unin;
@@ -42,6 +43,7 @@ array [SN1] of int: unsz;
 array [SN1] of int: unlb;
 array [SN1] of int: unub;
 
+% Operaciones Binarias
 enum BINARYOP;
 int: N2;
 array [SN2] of TERM: binin1;
@@ -53,6 +55,7 @@ array [SN2] of int: binsz;
 array [SN2] of int: binlb;
 array [SN2] of int: binub;
 
+% Operaciones Push
 enum PUSHOP;
 int: NPUSH;
 array[SNPUSH] of TERM: pushout;
@@ -61,6 +64,7 @@ array[SNPUSH] of int: pushsz;
 array[SNPUSH] of int: pushlb;
 array[SNPUSH] of int: pushub;
 
+% Operaciones Store
 enum STOROP;
 int: NSTORE;
 array[SNSTORE] of TERM: storin1;
@@ -74,20 +78,24 @@ enum DUP_ENUM;   %Contiene Dups necesarios
 enum SWAP_ENUM;  %Contiene Swaps necesarios
 array[SN] of TERM: startstack; % Stack inicial
 array[SN] of TERM: endstack; % Stack final
-%array[1..0] of TERM: before;
-%array[1..0] of TERM: after;
 
-% CONSTANTES USADAS PARA LA EJECUCIÓN
-int: NDUPS_SWAPS = n - 1; % Número de Dups y Swaps que pueden ser ejecutados
-enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP); %Crea el enum opcodes sumando todos los enums
-
+% Constantes relacionadas con las dependencias de memoria
 int: m_dep_n;
 array[MDN, 1..2] of OPCODES: memory_dependences;
-
 int: s_dep_n;
 array[SDN, 1..2] of OPCODES: store_dependences;
 
+% CONSTANTES USADAS PARA LA EJECUCIÓN
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Número de Dups y Swaps que pueden ser ejecutados
+int: NDUPS_SWAPS = n - 1; 
+%Crea el enum opcodes sumando todos los enums
+enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP);
+%Define si queremos optimizar gas(1), size(2) o length(0) 
+int: option = 0; 
+
 % VARIABLES
+%%%%%%%%%%%
 % Valor a optimizar
 var int: value;
 % Array con el gas gastado por las operaciones en cada estado
@@ -100,10 +108,10 @@ array[1..s+1, SN] of var TERM: states;
 array[SS] of var OPCODES: program;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                      CONSTRAINTS                      %
+%                     RESTRICCIONES                     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% INITIAL AND FINAL STACKS
+% Pila inicial y final
 constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == endstack[i]));
 
 % NOP
@@ -177,10 +185,9 @@ constraint forall (i in SS where (program[i] in ST(STOROP)))
   (forall (j in S3N)(states[i+1,j-2] = states[i,j]))
   /\ fgas[i] == storgas[x] /\ fsize[i] == storsz[x]);
   
-%MEMORY DEPENDENCIES
+% Dependencias de memoria
 constraint forall (i in MDN, j in SS where (program[j] = memory_dependences[i,2]))
 (forall (z in j+1..s) (program[z] != memory_dependences[i,1]));
-
 
 % Contar el valor a minimizar dependiendo de option 
 constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])) 
@@ -188,7 +195,7 @@ constraint if option = 0 then value = s - (sum(i in SS)(program[i] = OPCODES[1])
   else value = sum(i in SS)(fsize[i]) endif;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%                   CONSTRAINTS TOSEM                   %
+%                  RESTRICCIONES TOSEM                  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Todas las operaciones definidas deben aparecer en program
