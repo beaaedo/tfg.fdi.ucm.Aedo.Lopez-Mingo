@@ -117,7 +117,7 @@ constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == e
 % NOP
 constraint forall (i in SS where (program[i] == OPCODES[1]))
   ((forall (x in i+1..s) (program[x] == OPCODES[1])) /\
-  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 0 /\ fsize[i] == 1);
+  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 0 /\ fsize[i] == 0);
 
 % POP
 constraint forall (i in SS where (program[i] == OPCODES[2])) 

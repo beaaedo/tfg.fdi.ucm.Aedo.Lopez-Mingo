@@ -94,7 +94,7 @@ constraint forall (i in (NR+1)..(NR + max_registers_sz)) ((register_states[1,i] 
 constraint forall (i in SS where (program[i] == OPCODES[1]))
   ((forall (x in i+1..s) (program[x] == OPCODES[1])) /\
   (forall (j in RN) (register_states[i+1,j] == register_states[i,j])) /\
-  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 0 /\ fsize[i] == 1);
+  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 0 /\ fsize[i] == 0);
 
 % POP
 constraint forall (i in SS where (program[i] == OPCODES[2])) 
