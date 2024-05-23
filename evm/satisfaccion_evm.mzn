@@ -100,7 +100,8 @@ array[1..nlib] of int: lib_dis;
 
 % CONSTANTS USED FOR EXECUTION
 int: NDUPS_SWAPS = n - 1;
-enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) ++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP); %Crea el enum opcodes sumando todos los enums
+enum OPCODES = {NOP, POP} ++ D(DUP_ENUM) ++ SW(SWAP_ENUM) ++ Z(ZEROARYOP) 
+++ U(UNARYOP) ++ BI(BINARYOP) ++ P(PUSHOP) ++ ST(STOROP) ++ A(ASSOCIATIVEADDOP);
 
 int: m_dep_n;
 array[MDN, 1..2] of OPCODES: memory_dependences;
@@ -254,13 +255,11 @@ constraint if opt5 then (forall (i in 2..s+1, x in TERM where (x == states[i,1])
 
 constraint forall (i in SS where (program[i] in A(ASSOCIATIVEADDOP)))
   (let {var int: z = A^-1(program[i]); var int: w = naddin[z]} in 
-  (if addcomm[z] then 
-  (forall (k in TERM) (sum(j in 1..w)(states[i,j] == k) == sum(l in 1..w)(addin[z,l] == k))) 
-  else (forall (k in 1..w)(addin[z,k] == states[i,k])) endif)/\
+  (forall (k in TERM) (sum(j in 1..w)(states[i,j] == k) == sum(l in 1..w)(addin[z,l] == k))/\
   (states[i+1,1] == addout[z])/\
   (forall(j in 2..n-(w-1)) (states[i+1,j] == states[i,j+(w-1)]))/\
   (forall(j in n-(w-2)..n)(states[i+1,j] == null))
-  /\ fgas[i] == addgas[z] /\ fsize[i] == addsz[z]);
+  /\ fgas[i] == addgas[z] /\ fsize[i] == addsz[z]));
   
 
 
