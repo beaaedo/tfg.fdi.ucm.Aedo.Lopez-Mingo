@@ -60,7 +60,9 @@ array[1..NR, 1..2] of TERM: registers;
 % CONSTANTS USADAS PARA LA EJECUCIÓN
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Crea el enum opcodes sumando todos los enums
+
 enum OPCODES = {NOP, POP} ++ S(SET_ENUM) ++ G(GET_ENUM) ++ TEE(TEE_ENUM) ++ O(OP); 
+
 % Define si queremos optimizar gas(1), size(2) o length(0). En el caso de WebAssembly siempre será igual a 0.
 int: option = 0; 
 
@@ -94,14 +96,14 @@ constraint forall (i in (NR+1)..(NR + max_registers_sz)) (register_states[1,i] =
 constraint forall (i in SS where (program[i] == OPCODES[1]))
   ((forall (x in i+1..s) (program[x] == OPCODES[1])) /\
   (forall (j in RN) (register_states[i+1,j] == register_states[i,j])) /\
-  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 0 /\ fsize[i] == 0);
+  (forall (j in SN)(states[i+1,j] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
 
 % POP
 constraint forall (i in SS where (program[i] == OPCODES[2])) 
   ((states[i,1] != null) /\ 
   (states[i+1,n] = null) /\
   (forall (j in RN) (register_states[i+1,j] == register_states[i,j])) /\
-  (forall (j in S2N)(states[i+1,j-1] = states[i,j])) /\ fgas[i] == 2 /\ fsize[i] == 1);
+  (forall (j in S2N)(states[i+1,j-1] = states[i,j])) /\ fgas[i] == 1 /\ fsize[i] == 1);
 
 % SETX
 constraint forall (i in SS where (program[i] in S(SET_ENUM))) 
@@ -154,8 +156,9 @@ constraint forall (i in SS where (program[i] in O(OP)))
   (if (out_ops[x] < in_ops[x]) then ((forall (j in out_ops[x]+1..n-in_ops[x])(states[i+1,j] = states[i,j+(in_ops[x] - out_ops[x])])) /\ (forall (j in (n-in_ops[x])..n) (states[i+1,j] = null))) endif) /\
   (if (out_ops[x] == in_ops[x]) then (forall (j in out_ops[x]+1..n)(states[i+1,j] = states[i,j])) endif));
   
-% Estado de los registros después de una operación NO de memoria
-constraint forall (i in SS where (program[i] in O(OP))) (forall (j in RN) (register_states[i+1,j] == register_states[i,j]));
+% Estado de los registros después de una operación NO de registros
+constraint forall (i in SS where (program[i] in O(OP))) 
+  (forall (j in RN) (register_states[i+1,j] == register_states[i,j]));
 
 % Dependencias de memoria
 constraint forall (i in DN, j in SS where (program[j] = O(dependencies[i,1]))) (forall (z in 1..j)(program[z] !=  O(dependencies[i,2])));

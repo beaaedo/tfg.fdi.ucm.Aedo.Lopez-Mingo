@@ -262,6 +262,8 @@ def check_execution_from_ids(sfs: Dict, instr_ids: List[id_T]) -> Tuple[bool,str
     user_instr: List[instr_T] = sfs['user_instrs']
     local_changes: List[Tuple[var_T, var_T]] = sfs['register_changes']
     dependencies: List[Tuple[id_T, id_T]] = sfs['dependencies']
+    max_registers_sz = sfs['max_registers_sz']
+    NR = len(local_changes)
 
     # We split into two different dicts the initial values and final values in locals
     ilocals: List[var_T] = [local_repr[0] for local_repr in local_changes]
@@ -269,6 +271,10 @@ def check_execution_from_ids(sfs: Dict, instr_ids: List[id_T]) -> Tuple[bool,str
 
     # Check that the ids returned generate the final state
     cstack, clocals_list = sfs['src_ws'].copy(), ilocals.copy()
+    for i in range (NR, NR + max_registers_sz):
+        clocals_list += '.'
+    
+    
     flocal_list = [local_repr[1] for local_repr in local_changes]
 
     for instr_id in instr_ids:
