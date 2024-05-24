@@ -88,7 +88,7 @@ constraint forall (i in SN) ((states[1,i] == startstack[i])/\(states[s+1,i] == e
 
 % Registros iniciales y finales
 constraint forall (i in 1..NR) ((register_states[1,i] == registers[i,1])/\(register_states[s+1,i] == registers[i,2]));
-constraint forall (i in (NR+1)..(NR + max_registers_sz)) ((register_states[1,i] = null) /\ (register_states[s+1,i] = null));
+constraint forall (i in (NR+1)..(NR + max_registers_sz)) (register_states[1,i] = null);
 
 % NOP
 constraint forall (i in SS where (program[i] == OPCODES[1]))
