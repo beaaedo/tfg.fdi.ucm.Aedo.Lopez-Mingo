@@ -1,8 +1,7 @@
 Síntesis de código de bajo nivel mediante programación con restricciones
 ------------------------------------------------------------------------
 
-Repostitorio con el código creado por Beatriz Aedo Díaz y Claudia López-Mingo Moreno.
-Trabajo de Fin de Grado de la Facultad de Informática de la Universidad Complutense de Madrid.
+Repostitorio con el código creado por Beatriz Aedo Díaz y Claudia López-Mingo Moreno para el Trabajo de Fin de Grado de la Facultad de Informática de la Universidad Complutense de Madrid.
 
 Instrucciones para la ejecución del código
 ------------------------------------------
