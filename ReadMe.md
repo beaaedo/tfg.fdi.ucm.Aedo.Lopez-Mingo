@@ -18,10 +18,10 @@ Archivos comunes en cada directorio
 - Modelo de Minizinc: en todos los directorios hay un modelo de Minizinc (.mzn) con el modelo que se ejecutará. Los contenidos y especificaciones de cada modelo están explicados en la memoria de este proyecto.
 
 Archivos comunes en los directorios de evm_extensiones y webassembly: los siguientes archivos se han usado para la experimentación por lo que únicamente han sido usados para las extensiones.
-- Script process_solution.py: script de python que procesa cada solución y ejecuta el script "symbolic_execution.py" para crear el csv con los resultados.
-- Script symbolic_execution.py: script que ejecuta simbólicamente cada ejemplo.
+- Script process_solution.py: script de Python que procesa cada solución y ejecuta el script "symbolic_execution.py" para crear el csv con los resultados.
+- Script symbolic_execution.py: script de Python que ejecuta simbólicamente cada ejemplo.
 
-Requisitos antes de la ejecución: para poder ejecutar en su sistema debe tener instalado los siguientes programas. Es importante comentar que los scripts de bash están preparados para correr en un entorno Linux, por lo que si se intentan ejecutar en Windows o MacOS podrían dar algún problema.
+Requisitos antes de la ejecución: para poder ejecutar en su sistema debe tener instalado los siguientes programas. Es importante comentar que los scripts de bash están preparados para correr en un entorno Linux, por lo que si se intentan ejecutar en Windows o MacOS podrían dar algún problema. Se deben tener instalados los siguientes programas para poder ejecutarlo.
 - Python
 - Minizinc
 - GNU Parallel
