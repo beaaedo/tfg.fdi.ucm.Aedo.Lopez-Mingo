@@ -19,3 +19,4 @@ Archivos comunes en los directorios de evm_extensiones y webassembly: los siguie
 Requisitos antes de la ejecución: para poder ejecutar en su sistema debe tener instalado los siguientes programas. Es importante comentar que los scripts de bash están preparados para correr en un entorno Linux, por lo que si se intentan ejecutar en Windows o MacOS podrían dar algún problema.
 - Python
 - Minizinc
+- GNU Parallel
